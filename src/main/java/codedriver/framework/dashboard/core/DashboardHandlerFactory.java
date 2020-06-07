@@ -13,6 +13,13 @@ import codedriver.framework.common.RootComponent;
 import codedriver.framework.dashboard.dto.DashboardHandlerVo;
 import codedriver.module.dashboard.exception.DashboardHandlerNotFoundException;
 
+/**
+ * 
+ * @Author:chenqiwei
+ * @Time:Jun 7, 2020
+ * @ClassName: DashboardHandlerFactory
+ * @Description: 生产仪表板数据源处理类
+ */
 @RootComponent
 public class DashboardHandlerFactory implements ApplicationListener<ContextRefreshedEvent> {
 	private static Map<String, IDashboardHandler> componentMap = new HashMap<>();
