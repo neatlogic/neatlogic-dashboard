@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 
-import codedriver.framework.apiparam.core.ApiParamType;
+import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.dashboard.core.DashboardHandlerFactory;
 import codedriver.framework.dashboard.core.IDashboardHandler;
 import codedriver.framework.dashboard.dao.mapper.DashboardMapper;
