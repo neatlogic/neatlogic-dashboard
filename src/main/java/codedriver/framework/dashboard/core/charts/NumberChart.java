@@ -51,11 +51,8 @@ public class NumberChart extends DashboardChartBase {
 				data.put("total", resultMap.get(key));
 				dataList.add(data);
 			}
-			dataJson.put("dataList", dataList);
-		}else {
-			dataJson.put("dataList", CollectionUtils.EMPTY_COLLECTION);
-			
 		}
+		dataJson.put("dataList", dataList);
 		return dataJson;
 	}
 
