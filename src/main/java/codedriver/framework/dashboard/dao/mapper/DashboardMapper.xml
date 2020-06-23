@@ -28,13 +28,12 @@
 		`dashboard` a
 		LEFT JOIN `dashboard_authority` da ON a.`uuid` = da.`dashboard_uuid`
 		<where>
-			 a.fcu = #{fcu}
 			<if test="keyword !=null and keyword!=''">
-				AND a.name LIKE concat('%', #{keyword}, '%')
+				a.name LIKE concat('%', #{keyword}, '%')
 			</if>
 				and ((da.type = 'common' AND da.`uuid` = 'alluser')
 			<if test="userUuid != null and userUuid != ''">
-				OR	(da.type = 'custom' AND da.`uuid` = #{userUuid})
+				OR	(da.type = 'user' AND da.`uuid` = #{userUuid})
 			</if>
 			<if test="teamUuidList != null and teamUuidList.size() > 0">
 				OR (da.type = 'team' AND da.`uuid` IN 
@@ -100,7 +99,7 @@
 				</if>
 					and (da.type = 'common' AND da.`uuid` = 'alluser')
 				<if test="userUuid != null and userUuid != ''">
-				  	OR	(da.type = 'custom' AND da.`uuid` = #{userUuid})
+				  	OR	(da.type = 'user' AND da.`uuid` = #{userUuid})
 				</if>
 				<if test="teamUuidList != null and teamUuidList.size() > 0">
 					OR (da.type = 'team' AND da.`uuid` IN 
@@ -249,7 +248,7 @@
 			and
 			((da.type = 'common' AND da.`uuid` = 'alluser')
 			<if test="userUuid != null and userUuid != ''">
-			  	OR	(da.type = 'custom' AND da.`uuid` = #{userUuid})
+			  	OR	(da.type = 'user' AND da.`uuid` = #{userUuid})
 			</if>
 			<if test="teamUuidList != null and teamUuidList.size() > 0">
 				OR (da.type = 'team' AND da.`uuid` IN 
