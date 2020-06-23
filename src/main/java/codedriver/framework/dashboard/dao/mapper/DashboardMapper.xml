@@ -28,6 +28,7 @@
 		`dashboard` a
 		LEFT JOIN `dashboard_authority` da ON a.`uuid` = da.`dashboard_uuid`
 		<where>
+			
 			<if test="keyword !=null and keyword!=''">
 				a.name LIKE concat('%', #{keyword}, '%')
 			</if>
@@ -53,6 +54,9 @@
 			or	a.`fcu` = #{fcu}
 			</if>
 			)
+			<if test="isMine != null and isMine == 1">
+				and a.`fcu` = #{fcu}
+			</if>
 		</where>
 	</sql>
 
@@ -97,7 +101,7 @@
 				<if test="keyword !=null and keyword!=''">
 					AND a.name LIKE concat('%', #{keyword}, '%')
 				</if>
-					and (da.type = 'common' AND da.`uuid` = 'alluser')
+					and ((da.type = 'common' AND da.`uuid` = 'alluser')
 				<if test="userUuid != null and userUuid != ''">
 				  	OR	(da.type = 'user' AND da.`uuid` = #{userUuid})
 				</if>
@@ -117,6 +121,10 @@
 				</if>
 				<if test="fcu != null and fcu != ''">
 				or	a.`fcu` = #{fcu}
+				</if>
+				)
+				<if test="isMine != null and isMine == 1">
+					and a.`fcu` = #{fcu}
 				</if>
 			</where>
 		)b LEFT JOIN `dashboard` c on b.uuid = c.uuid

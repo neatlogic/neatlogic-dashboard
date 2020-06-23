@@ -63,6 +63,7 @@ public class DashboardVo extends BasePageVo {
 	private String userUuid;
 	private List<String> teamUuidList;
 	private List<String> roleUuidList;
+	private Integer isMine;
 	
 	public String getUuid() {
 		if (StringUtils.isBlank(uuid)) {
@@ -272,6 +273,16 @@ public class DashboardVo extends BasePageVo {
 
 	public void setRoleUuidList(List<String> roleUuidList) {
 		this.roleUuidList = roleUuidList;
+	}
+
+
+
+	public Integer getIsMine() {
+		return isMine;
+	}
+
+	public void setIsMine(Integer isMine) {
+		this.isMine = isMine;
 	}
 
 
