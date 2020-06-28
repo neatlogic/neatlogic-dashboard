@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
+import codedriver.framework.applicationlistener.core.ApplicationListenerBase;
 import codedriver.framework.common.RootComponent;
 import codedriver.framework.dashboard.dto.DashboardHandlerVo;
 import codedriver.module.dashboard.exception.DashboardHandlerNotFoundException;
@@ -21,7 +21,7 @@ import codedriver.module.dashboard.exception.DashboardHandlerNotFoundException;
  * @Description: 生产仪表板数据源处理类
  */
 @RootComponent
-public class DashboardHandlerFactory implements ApplicationListener<ContextRefreshedEvent> {
+public class DashboardHandlerFactory extends ApplicationListenerBase {
 	private static Map<String, IDashboardHandler> componentMap = new HashMap<>();
 	private static List<DashboardHandlerVo> dashboardHandlerList = new ArrayList<>();
 
@@ -55,5 +55,11 @@ public class DashboardHandlerFactory implements ApplicationListener<ContextRefre
 				dashboardHandlerList.add(dashboardHandlerVo);
 			}
 		}
+	}
+
+	@Override
+	protected void myInit() {
+		// TODO Auto-generated method stub
+		
 	}
 }
