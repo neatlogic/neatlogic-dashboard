@@ -58,8 +58,8 @@ public class SeriesChart extends DashboardChartBase {
 				data.put("value", resultMap.get(key));
 				dataList.add(data);
 			}
-			dataJson.put("dataList", dataList);
 		}
+		dataJson.put("dataList", dataList);
 		return dataJson;
 	}
 

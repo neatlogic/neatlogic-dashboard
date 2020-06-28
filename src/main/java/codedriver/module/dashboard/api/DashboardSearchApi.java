@@ -56,7 +56,7 @@ public class DashboardSearchApi extends ApiComponentBase {
 
 	@Input({ 
 		@Param(name = "keyword", type = ApiParamType.STRING, desc = "关键字"), 
-		@Param(name = "type", type = ApiParamType.ENUM, rule = "all,mine", desc = "类型，all或吗mine，默认值:all"), 
+		@Param(name = "type", type = ApiParamType.ENUM, rule = "all,mine", desc = "类型，all或mine，默认值:all"), 
 		@Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "当前页数", isRequired = false), 
 		@Param(name = "pageSize", type = ApiParamType.INTEGER, desc = "每页展示数量 默认20", isRequired = false), 
 		@Param(name = "needPage", type = ApiParamType.BOOLEAN, desc = "是否分页") })
@@ -77,6 +77,9 @@ public class DashboardSearchApi extends ApiComponentBase {
 		}
 		if(jsonObj.containsKey("keyword")) {
 			dashboardVo.setKeyword(jsonObj.getString("keyword"));
+		}
+		if(jsonObj.containsKey("type")) {
+			dashboardVo.setIsMine(jsonObj.getString("type").equals("mine")?1:0);
 		}
 		String userUuid = UserContext.get().getUserUuid(true);
 		dashboardVo.setFcu(userUuid);

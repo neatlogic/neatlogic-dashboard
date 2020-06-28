@@ -123,6 +123,9 @@ public class TableChart extends DashboardChartBase {
 					for(Object groupTmp :groupArray) {
 						JSONObject group = ((JSONObject)groupTmp);
 						String value = group.getString("value");
+						if(StringUtils.isBlank(value)||StringUtils.isBlank(group.getString("text"))) {
+							continue;
+						}
 						for(Object subGroupTmp :subGroupArray) {
 							JSONObject subGroup = ((JSONObject)subGroupTmp);
 							String subValue = subGroup.getString("value");
@@ -164,6 +167,9 @@ public class TableChart extends DashboardChartBase {
 					for(Object groupTmp :groupArray) {
 						JSONObject group = ((JSONObject)groupTmp);
 						String value = group.getString("value");
+						if(StringUtils.isBlank(value)||StringUtils.isBlank(group.getString("text"))) {
+							continue;
+						}
 						if(dataMap.containsKey(value)) {
 							dataMap.put(value, ((int)dataMap.get(value))+1);
 						}else {

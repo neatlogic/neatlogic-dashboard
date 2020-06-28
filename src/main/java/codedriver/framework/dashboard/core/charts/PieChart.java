@@ -42,8 +42,8 @@ public class PieChart extends DashboardChartBase {
 				data.put("total", resultMap.get(key));
 				dataList.add(data);
 			}
-			dataJson.put("dataList", dataList);
 		}
+		dataJson.put("dataList", dataList);
 		return dataJson;
 	}
 
