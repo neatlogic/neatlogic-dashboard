@@ -14,7 +14,6 @@ import codedriver.framework.dashboard.dto.ChartDataVo;
 import codedriver.framework.dashboard.dto.DashboardWidgetVo;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
-import codedriver.framework.restful.annotation.IsActived;
 import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
@@ -23,7 +22,6 @@ import codedriver.module.dashboard.exception.DashboardParamException;
 import codedriver.module.dashboard.exception.DashboardWidgetNotFoundException;
 
 @Component
-@IsActived
 public class DashboardWidgetDataGetApi extends ApiComponentBase {
 
 	@Autowired
