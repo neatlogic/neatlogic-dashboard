@@ -8,13 +8,11 @@ import com.alibaba.fastjson.JSONObject;
 import codedriver.framework.common.constvalue.dashboard.Chart;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
-import codedriver.framework.restful.annotation.IsActived;
 import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 
 @Service
-@IsActived
 @Transactional
 public class DashboardChartListApi extends ApiComponentBase {
 

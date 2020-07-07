@@ -17,7 +17,6 @@ import codedriver.framework.dashboard.dto.DashboardVo;
 import codedriver.framework.dto.UserAuthVo;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
-import codedriver.framework.restful.annotation.IsActived;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.dashboard.auth.label.DASHBOARD_MODIFY;
@@ -26,7 +25,6 @@ import codedriver.module.dashboard.exception.DashboardNotFoundException;
 
 @Service
 @Transactional
-@IsActived
 public class DashboardDeleteApi extends ApiComponentBase {
 
 	@Autowired

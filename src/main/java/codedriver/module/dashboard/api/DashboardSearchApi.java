@@ -20,14 +20,12 @@ import codedriver.framework.dashboard.dto.DashboardVo;
 import codedriver.framework.dto.UserAuthVo;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
-import codedriver.framework.restful.annotation.IsActived;
 import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.dashboard.auth.label.DASHBOARD_MODIFY;
 
 @Component
-@IsActived
 public class DashboardSearchApi extends ApiComponentBase {
 
 	@Autowired
