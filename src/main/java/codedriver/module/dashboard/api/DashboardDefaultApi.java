@@ -2,6 +2,8 @@ package codedriver.module.dashboard.api;
 
 import java.util.List;
 
+import codedriver.framework.reminder.core.OperationTypeEnum;
+import codedriver.framework.restful.annotation.OperationType;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import codedriver.module.dashboard.exception.DashboardNotFoundException;
 
 @Service
 @Transactional
+@OperationType(type = OperationTypeEnum.UPDATE)
 public class DashboardDefaultApi extends ApiComponentBase {
 
 	@Autowired

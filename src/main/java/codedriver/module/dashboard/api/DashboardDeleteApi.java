@@ -2,6 +2,8 @@ package codedriver.module.dashboard.api;
 
 import java.util.List;
 
+import codedriver.framework.reminder.core.OperationTypeEnum;
+import codedriver.framework.restful.annotation.OperationType;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ import codedriver.module.dashboard.exception.DashboardNotFoundException;
 
 @Service
 @Transactional
+@OperationType(type = OperationTypeEnum.DELETE)
 public class DashboardDeleteApi extends ApiComponentBase {
 
 	@Autowired
