@@ -15,16 +15,14 @@ import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.dashboard.dao.mapper.DashboardMapper;
 import codedriver.framework.dashboard.dto.DashboardVo;
 import codedriver.framework.dashboard.dto.DashboardWidgetVo;
-import codedriver.framework.restful.annotation.Description;
-import codedriver.framework.restful.annotation.Input;
-import codedriver.framework.restful.annotation.Output;
-import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.dashboard.exception.DashboardNotFoundException;
 import codedriver.module.dashboard.exception.DashboardParamException;
-
+import codedriver.framework.reminder.core.OperationTypeEnum;
+import codedriver.framework.restful.annotation.*;
 @Service
 @Transactional
+@OperationType(type = OperationTypeEnum.CREATE)
 public class DashboardCopyApi extends ApiComponentBase {
 
 	@Autowired

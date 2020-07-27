@@ -23,9 +23,11 @@ import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.dashboard.auth.label.DASHBOARD_MODIFY;
 import codedriver.module.dashboard.exception.DashboardAuthenticationException;
 import codedriver.module.dashboard.exception.DashboardNotFoundException;
-
+import codedriver.framework.reminder.core.OperationTypeEnum;
+import codedriver.framework.restful.annotation.OperationType;
 @Service
 @Transactional
+@OperationType(type = OperationTypeEnum.UPDATE)
 public class DashboardDefaultApi extends ApiComponentBase {
 
 	@Autowired

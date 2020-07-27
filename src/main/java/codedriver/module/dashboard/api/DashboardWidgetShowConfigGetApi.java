@@ -1,5 +1,7 @@
 package codedriver.module.dashboard.api;
 
+import codedriver.framework.reminder.core.OperationTypeEnum;
+import codedriver.framework.restful.annotation.*;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
@@ -9,14 +11,11 @@ import codedriver.framework.dashboard.core.DashboardHandlerFactory;
 import codedriver.framework.dashboard.core.IDashboardHandler;
 import codedriver.framework.dashboard.dto.DashboardShowConfigVo;
 import codedriver.framework.dashboard.dto.DashboardWidgetVo;
-import codedriver.framework.restful.annotation.Description;
-import codedriver.framework.restful.annotation.Input;
-import codedriver.framework.restful.annotation.Output;
-import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.dashboard.exception.DashboardHandlerNotFoundException;
 
 @Component
+@OperationType(type = OperationTypeEnum.SEARCH)
 public class DashboardWidgetShowConfigGetApi extends ApiComponentBase {
 
 	@Override
