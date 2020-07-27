@@ -1,8 +1,6 @@
 package codedriver.module.dashboard.api;
 
-import codedriver.framework.reminder.core.OperationTypeEnum;
-import codedriver.framework.restful.annotation.*;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +19,8 @@ import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.dashboard.auth.label.DASHBOARD_MODIFY;
 import codedriver.module.dashboard.exception.DashboardAuthenticationException;
 import codedriver.module.dashboard.exception.DashboardNotFoundException;
-
+import codedriver.framework.reminder.core.OperationTypeEnum;
+import codedriver.framework.restful.annotation.*;
 @Service
 @Transactional
 @OperationType(type = OperationTypeEnum.CREATE)

@@ -3,9 +3,7 @@ package codedriver.module.dashboard.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import codedriver.framework.reminder.core.OperationTypeEnum;
-import codedriver.framework.restful.annotation.*;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +20,8 @@ import codedriver.framework.dashboard.dto.DashboardVo;
 import codedriver.framework.dto.UserAuthVo;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.dashboard.auth.label.DASHBOARD_MODIFY;
-
+import codedriver.framework.reminder.core.OperationTypeEnum;
+import codedriver.framework.restful.annotation.*;
 @Component
 @OperationType(type = OperationTypeEnum.SEARCH)
 public class DashboardSearchApi extends ApiComponentBase {
