@@ -15,7 +15,7 @@
 		http://codedriver.techsure.com/schema/codedriver
 		http://codedriver.techsure.com/schema/codedriver.xsd">
 
-	<codedriver:module id="dashboard" name="仪表板模块" groupName="仪表板" group="dashboard" groupSort="0" groupDescription="图形化编辑页面，轻松实现数据可视化交互" />
+	<codedriver:module id="dashboard" name="仪表板模块" groupName="仪表板" group="dashboard" groupSort="0" groupDescription="灵活高效的数据可视化平台" />
 
 	<context:component-scan base-package="codedriver.module.dashboard" />
 
