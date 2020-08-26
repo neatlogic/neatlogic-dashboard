@@ -14,11 +14,11 @@ import codedriver.framework.dashboard.dto.DashboardHandlerVo;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
-import codedriver.framework.restful.core.ApiComponentBase;
+import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
 
 @OperationType(type = OperationTypeEnum.SEARCH)
 @Service
-public class DashboardHandlerListApi extends ApiComponentBase {
+public class DashboardHandlerListApi extends PrivateApiComponentBase {
 
 	@Override
 	public String getToken() {

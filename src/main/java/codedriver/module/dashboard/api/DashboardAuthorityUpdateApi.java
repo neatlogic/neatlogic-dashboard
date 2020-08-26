@@ -17,17 +17,17 @@ import codedriver.framework.dashboard.dao.mapper.DashboardMapper;
 import codedriver.framework.dashboard.dto.DashboardVo;
 import codedriver.framework.dto.AuthorityVo;
 import codedriver.framework.dto.UserAuthVo;
-import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.dashboard.auth.label.DASHBOARD_MODIFY;
 import codedriver.module.dashboard.exception.DashboardAuthenticationException;
 import codedriver.module.dashboard.exception.DashboardNotFoundException;
 import codedriver.module.dashboard.exception.DashboardParamException;
 import codedriver.framework.reminder.core.OperationTypeEnum;
 import codedriver.framework.restful.annotation.*;
+import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
 @Service
 @Transactional
 @OperationType(type = OperationTypeEnum.UPDATE)
-public class DashboardAuthorityUpdateApi extends ApiComponentBase {
+public class DashboardAuthorityUpdateApi extends PrivateApiComponentBase {
 
 	@Autowired
 	private DashboardMapper dashboardMapper;

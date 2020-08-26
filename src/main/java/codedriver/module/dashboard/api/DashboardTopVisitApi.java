@@ -4,6 +4,8 @@ import java.util.List;
 
 import codedriver.framework.reminder.core.OperationTypeEnum;
 import codedriver.framework.restful.annotation.*;
+import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,12 +17,11 @@ import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.dao.mapper.TeamMapper;
 import codedriver.framework.dashboard.dao.mapper.DashboardMapper;
 import codedriver.framework.dashboard.dto.DashboardVo;
-import codedriver.framework.restful.core.ApiComponentBase;
 
 @Service
 @Transactional
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class DashboardTopVisitApi extends ApiComponentBase {
+public class DashboardTopVisitApi extends PrivateApiComponentBase {
 
 	@Autowired
 	private DashboardMapper dashboardMapper;

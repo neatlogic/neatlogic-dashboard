@@ -2,6 +2,8 @@ package codedriver.module.dashboard.api;
 
 import codedriver.framework.reminder.core.OperationTypeEnum;
 import codedriver.framework.restful.annotation.*;
+import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,14 +16,13 @@ import codedriver.framework.dashboard.core.IDashboardHandler;
 import codedriver.framework.dashboard.dao.mapper.DashboardMapper;
 import codedriver.framework.dashboard.dto.ChartDataVo;
 import codedriver.framework.dashboard.dto.DashboardWidgetVo;
-import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.dashboard.exception.DashboardHandlerNotFoundException;
 import codedriver.module.dashboard.exception.DashboardParamException;
 import codedriver.module.dashboard.exception.DashboardWidgetNotFoundException;
 
 @OperationType(type = OperationTypeEnum.SEARCH)
 @Component
-public class DashboardWidgetDataGetApi extends ApiComponentBase {
+public class DashboardWidgetDataGetApi extends PrivateApiComponentBase {
 
 	@Autowired
 	private DashboardMapper dashboardMapper;

@@ -2,6 +2,8 @@ package codedriver.module.dashboard.api;
 
 import codedriver.framework.reminder.core.OperationTypeEnum;
 import codedriver.framework.restful.annotation.*;
+import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,12 +12,11 @@ import com.alibaba.fastjson.JSONObject;
 import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.dashboard.dao.mapper.DashboardMapper;
 import codedriver.framework.dashboard.dto.DashboardWidgetVo;
-import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.dashboard.exception.DashboardWidgetNotFoundException;
 
 @Service
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class DashboardWidgetGetApi extends ApiComponentBase {
+public class DashboardWidgetGetApi extends PrivateApiComponentBase {
 
 	@Autowired
 	private DashboardMapper dashboardMapper;
