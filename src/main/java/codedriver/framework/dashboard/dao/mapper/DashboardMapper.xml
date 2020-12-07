@@ -312,7 +312,7 @@
 		`description` = #{description},
 		`is_active` = #{isActive},
 		`type` = #{type},
-		`lcd` = NOW(),
+		`lcd` = NOW(3),
 		`lcu` = #{lcu}
 		WHERE `uuid` = #{uuid}
 	</update>
@@ -371,7 +371,7 @@
 		#{type},
 		#{description},
 		#{isActive},
-		NOW(),
+		NOW(3),
 		#{fcu}
 		)
 	</insert>
