@@ -23,7 +23,7 @@ import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
 import codedriver.module.dashboard.exception.DashboardNotFoundDefaultException;
 import codedriver.module.dashboard.exception.DashboardNotFoundException;
-import codedriver.framework.restful.core.constvalue.OperationTypeEnum;
+import codedriver.framework.restful.constvalue.OperationTypeEnum;
 import codedriver.framework.restful.annotation.OperationType;
 @Component
 @OperationType(type = OperationTypeEnum.SEARCH)
