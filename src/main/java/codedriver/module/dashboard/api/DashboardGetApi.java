@@ -20,7 +20,7 @@ import codedriver.framework.dashboard.dto.DashboardWidgetVo;
 import codedriver.framework.dto.UserAuthVo;
 import codedriver.module.dashboard.auth.label.DASHBOARD_MODIFY;
 import codedriver.module.dashboard.exception.DashboardNotFoundException;
-import codedriver.framework.reminder.core.OperationTypeEnum;
+import codedriver.framework.restful.constvalue.OperationTypeEnum;
 import codedriver.framework.restful.annotation.*;
 import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
 @Component
