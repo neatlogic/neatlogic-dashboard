@@ -11,15 +11,18 @@ import codedriver.framework.dashboard.dao.mapper.DashboardMapper;
 import codedriver.framework.dashboard.dto.DashboardVo;
 import codedriver.framework.dashboard.dto.DashboardWidgetVo;
 import codedriver.framework.dto.AuthorityVo;
+import codedriver.framework.dto.FieldValidResultVo;
 import codedriver.framework.dto.UserAuthVo;
 import codedriver.framework.restful.constvalue.OperationTypeEnum;
 import codedriver.framework.restful.annotation.*;
+import codedriver.framework.restful.core.IValid;
 import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
 import codedriver.module.dashboard.auth.label.DASHBOARD_MODIFY;
 import codedriver.module.dashboard.exception.DashboardAuthenticationException;
 import codedriver.module.dashboard.exception.DashboardNameExistsException;
 import codedriver.module.dashboard.exception.DashboardNotFoundException;
 import codedriver.module.dashboard.exception.DashboardParamException;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -139,5 +142,15 @@ public class DashboardSaveApi extends PrivateApiComponentBase {
 				dashboardMapper.insertDashboardWidget(widgetVo);
 			}
 		}
+	}
+
+	public IValid name(){
+		return value -> {
+			DashboardVo dashboardVo = JSON.toJavaObject(value, DashboardVo.class);
+			if(dashboardMapper.checkDashboardNameIsExists(dashboardVo) > 0) {
+				return new FieldValidResultVo(new DashboardNameExistsException(dashboardVo.getName()));
+			}
+			return new FieldValidResultVo();
+		};
 	}
 }
