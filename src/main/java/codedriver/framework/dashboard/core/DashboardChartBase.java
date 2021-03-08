@@ -1,6 +1,5 @@
 package codedriver.framework.dashboard.core;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 public abstract class DashboardChartBase {
@@ -16,22 +15,12 @@ public abstract class DashboardChartBase {
 
 	/**
 	 * 
-	 * @Description: 流式返回数据
+	 * @Description: 返回数据
 	 * @param @return
 	 * @return JSONObject
 	 */
-	public abstract JSONObject getData(JSONObject dataMap);
-	
-	/**
-	 * 
-	 * @Description: 流式累加统计
-	 * @param nextDataList
-	 * @param configObj
-	 * @param preDatas
-	 * @return
-	 */
-	public abstract JSONObject getDataMap(JSONArray nextDataList, JSONObject configObj, JSONObject preDatas);
-	
+	public abstract JSONObject getData(JSONObject data);
+
 	/**
 	 * 
 	 * @Description: 回显规则
