@@ -14,14 +14,6 @@ public class BarColumnChart extends DashboardChartBase {
 		return new String[] {ChartType.BARCHART.getValue(),ChartType.STACKBARCHART.getValue(),ChartType.COLUMNCHART.getValue(),ChartType.STACKCOLUMNCHART.getValue()};
 	}
 
-	@Override
-	public JSONObject getData(JSONObject data) {
-		JSONObject dataJson = new JSONObject();
-		JSONArray dataList = new JSONArray();
-
-		dataJson.put("dataList", dataList);
-		return dataJson;
-	}
 
 	@Override
 	public JSONObject getChartConfig() {

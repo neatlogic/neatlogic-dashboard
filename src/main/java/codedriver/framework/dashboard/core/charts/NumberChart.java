@@ -3,6 +3,7 @@ package codedriver.framework.dashboard.core.charts;
 import codedriver.framework.common.constvalue.dashboard.ChartType;
 import codedriver.framework.common.constvalue.dashboard.DashboardShowConfig;
 import codedriver.framework.dashboard.core.DashboardChartBase;
+import codedriver.framework.dashboard.dto.DashboardDataVo;
 import codedriver.framework.dashboard.dto.DashboardShowConfigVo;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -15,7 +16,7 @@ public class NumberChart extends DashboardChartBase {
 	}
 
 	@Override
-	public JSONObject getData(JSONObject data) {
+	public JSONObject getData(DashboardDataVo dashboardDataVo) {
 		JSONObject dataJson = new JSONObject();
 		JSONArray dataList = new JSONArray();
 

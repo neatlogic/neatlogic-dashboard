@@ -15,15 +15,6 @@ public class PieChart extends DashboardChartBase {
 	}
 
 	@Override
-	public JSONObject getData(JSONObject data) {
-		JSONObject dataJson = new JSONObject();
-		JSONArray dataList = new JSONArray();
-
-		dataJson.put("dataList", dataList);
-		return dataJson;
-	}
-
-	@Override
 	public JSONObject getChartConfig() {
 		JSONObject charConfig = new JSONObject();
 		JSONObject showConfig = new JSONObject();
