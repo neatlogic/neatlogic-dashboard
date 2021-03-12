@@ -1,5 +1,7 @@
 package codedriver.framework.dashboard.dto;
 
+import com.alibaba.fastjson.JSONObject;
+
 /**
  * @Title: DashboardDataVo
  * @Package: codedriver.module.report.dto
@@ -12,6 +14,7 @@ package codedriver.framework.dashboard.dto;
 public class DashboardDataVo {
     private DashboardDataGroupVo dataGroupVo;
     private DashboardDataSubGroupVo dataSubGroupVo;
+    private JSONObject chartConfig;
 
     public DashboardDataGroupVo getDataGroupVo() {
         return dataGroupVo;
@@ -27,5 +30,13 @@ public class DashboardDataVo {
 
     public void setDataSubGroupVo(DashboardDataSubGroupVo dataSubGroupVo) {
         this.dataSubGroupVo = dataSubGroupVo;
+    }
+
+    public JSONObject getChartConfig() {
+        return chartConfig;
+    }
+
+    public void setChartConfig(JSONObject chartConfig) {
+        this.chartConfig = chartConfig;
     }
 }

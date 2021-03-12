@@ -8,6 +8,10 @@ import codedriver.framework.dashboard.dto.DashboardShowConfigVo;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class NumberChart extends DashboardChartBase {
 
 	@Override
@@ -18,9 +22,23 @@ public class NumberChart extends DashboardChartBase {
 	@Override
 	public JSONObject getData(DashboardDataVo dashboardDataVo) {
 		JSONObject dataJson = new JSONObject();
-		JSONArray dataList = new JSONArray();
-
-		dataJson.put("dataList", dataList);
+		List<Map<String, String>> resultDataList = getDefaultData(dashboardDataVo);
+		//多值图补充总数
+		int total = 0;
+		for(Map<String,String> map : resultDataList){
+			for(Map.Entry<String,String> entry : map.entrySet() ){
+				String key = entry.getKey();
+				if(key.equals("total")){
+					total += Integer.parseInt(entry.getValue());
+				}
+			}
+		}
+		Map<String,String> totalMap = new HashMap<String,String>();
+		totalMap.put("total", Integer.toString(total));
+		totalMap.put("column","总数");
+		totalMap.put("value", Integer.toString(total));
+		resultDataList.add(0,totalMap);
+		dataJson.put("dataList", resultDataList);
 		return dataJson;
 	}
 

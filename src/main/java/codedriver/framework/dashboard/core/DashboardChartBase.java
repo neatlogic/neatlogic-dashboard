@@ -29,6 +29,18 @@ public abstract class DashboardChartBase {
 
     public JSONObject getMyData(DashboardDataVo dashboardDataVo) {
         JSONObject dataJson = new JSONObject();
+        dataJson.put("dataList", getDefaultData(dashboardDataVo));
+        return dataJson;
+    }
+
+    /**
+     * @Description: 支持 普遍chart的数据处理
+     * @Author: 89770
+     * @Date: 2021/3/12 15:01
+     * @Params: [dashboardDataVo]
+     * @Returns: com.alibaba.fastjson.JSONObject
+     **/
+    protected  List<Map<String, String>> getDefaultData(DashboardDataVo dashboardDataVo){
         List<Map<String, String>> resultDataList = new ArrayList<>();
         DashboardDataGroupVo dataGroupVo = dashboardDataVo.getDataGroupVo();
         DashboardDataSubGroupVo dataSubGroupVo = dashboardDataVo.getDataSubGroupVo();
@@ -69,8 +81,7 @@ public abstract class DashboardChartBase {
                 resultDataList.add(resultDataMap);
             }
         }
-        dataJson.put("dataList", resultDataList);
-        return dataJson;
+        return resultDataList;
     }
 
     /**
