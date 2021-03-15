@@ -36,6 +36,9 @@ public class TableChart extends DashboardChartBase {
             for (Map<String, Object> dataMap : dataGroupVo.getDataList()) {
                 Map<String, String> theadMap = new LinkedHashMap<>();
                 Map<String, String> columnMap = new LinkedHashMap<>();
+                if(!dataMap.containsKey(dataGroupVo.getPrimaryKey())){
+                    continue;
+                }
                 String column = dataMap.get(dataGroupVo.getPrimaryKey()).toString();
                 if (StringUtils.isNotBlank(column)) {
                     //columnList
@@ -50,6 +53,9 @@ public class TableChart extends DashboardChartBase {
                     String name = StringUtils.EMPTY;
                     if (dataSubGroupVo != null) {
                         //拼接map column_type->value
+                        if(!dataMap.containsKey(dataSubGroupVo.getPrimaryKey())){
+                            continue;
+                        }
                         String type = dataMap.get(dataSubGroupVo.getPrimaryKey()).toString();
                         if (StringUtils.isNotBlank(type)) {
                             columnTypeMap.put(column + "_" + type, dataMap.get("count"));
