@@ -1,185 +1,113 @@
 package codedriver.framework.dashboard.core.charts;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-
 import codedriver.framework.common.constvalue.dashboard.ChartType;
 import codedriver.framework.common.constvalue.dashboard.DashboardShowConfig;
 import codedriver.framework.dashboard.core.DashboardChartBase;
+import codedriver.framework.dashboard.dto.DashboardDataGroupVo;
+import codedriver.framework.dashboard.dto.DashboardDataSubGroupVo;
+import codedriver.framework.dashboard.dto.DashboardDataVo;
 import codedriver.framework.dashboard.dto.DashboardShowConfigVo;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.*;
 
 public class TableChart extends DashboardChartBase {
 
-	@Override
-	public String[] getSupportChart() {
-		return new String[] {ChartType.TABLECHART.getValue()};
-	}
+    @Override
+    public String[] getSupportChart() {
+        return new String[]{ChartType.TABLECHART.getValue()};
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public JSONObject getData(JSONObject allData) {
-		Map<String, Object> dataMap = (Map<String, Object>) allData.get("dataMap");
-		JSONArray theadArray = allData.getJSONArray("theadList");
-		JSONArray columnArray = allData.getJSONArray("columnList");
-		JSONObject configObj = allData.getJSONObject("configObj");
-		JSONArray dataList = new JSONArray();
-		for(Object columnObj : columnArray) {
-			String column = ((JSONObject)columnObj).getString("name");
-			JSONObject dataJson = new JSONObject();
-			if(StringUtils.isNotBlank(configObj.getString(DashboardShowConfig.SUBGROUPFIELD.getValue()))) {
-				for(Object theadObj : theadArray ) {
-					String thead = ((JSONObject)theadObj).getString("name");
-					 Map<String, Integer> theadMap = (Map<String, Integer>)dataMap.get(column);
-					if(dataMap.containsKey(column)&&theadMap.containsKey(thead)) {
-						dataJson.put(thead, theadMap.get(thead));
-					}else {
-						dataJson.put(thead, 0);
-					}
+    @Override
+    public JSONObject getData(DashboardDataVo dashboardDataVo) {
+        JSONObject dataJson = new JSONObject();
+        List<Map<String, Object>> dataList = new ArrayList<>();
+        List<Map<String, String>> theadList = new ArrayList<>();
+        List<Map<String, String>> columnList = new ArrayList<>();
+        Map<String, Object> columnTypeMap = new HashMap<>();
+        DashboardDataGroupVo dataGroupVo = dashboardDataVo.getDataGroupVo();
+        DashboardDataSubGroupVo dataSubGroupVo = dashboardDataVo.getDataSubGroupVo();
+        if (CollectionUtils.isNotEmpty(dataGroupVo.getDataList())) {
+            List<String> theads = new ArrayList<>();
+            List<String> columns = new ArrayList<>();
+            for (Map<String, Object> dataMap : dataGroupVo.getDataList()) {
+                Map<String, String> theadMap = new LinkedHashMap<>();
+                Map<String, String> columnMap = new LinkedHashMap<>();
+                String column = dataMap.get(dataGroupVo.getPrimaryKey()).toString();
+                if (StringUtils.isNotBlank(column)) {
+                    //columnList
+                    String columnValue = dataMap.get(dataGroupVo.getProName()).toString();
+                    if (!columns.contains(columnValue)) {
+                        columnMap.put("displayName", columnValue);
+                        columnMap.put("name", column);
+                        columns.add(columnValue);
+                        columnList.add(columnMap);
+                    }
+                    String displayName = StringUtils.EMPTY;
+                    String name = StringUtils.EMPTY;
+                    if (dataSubGroupVo != null) {
+                        //拼接map column_type->value
+                        String type = dataMap.get(dataSubGroupVo.getPrimaryKey()).toString();
+                        if (StringUtils.isNotBlank(type)) {
+                            columnTypeMap.put(column + "_" + type, dataMap.get("count"));
+                        }
+                        //theadList
+                        String theadValue = dataMap.get(dataSubGroupVo.getProName()).toString();
+                        if (!theads.contains(theadValue)) {
+                            displayName = theadValue;
+                            name = dataMap.get(dataSubGroupVo.getPrimaryKey()).toString();
+                        }
+                    } else {
+                        displayName = name = "总数";
+                        columnTypeMap.put(column, dataMap.get("count"));
+                    }
+                    if (StringUtils.isNotBlank(displayName) && !theads.contains(displayName)) {
+                        theadMap.put("displayName", displayName);
+                        theadMap.put("name", name);
+                        theads.add(displayName);
+                        theadList.add(theadMap);
+                    }
+                }
+            }
+        }
+        //返回dataList
+        if (CollectionUtils.isNotEmpty(columnList)) {
+            for (Map<String, String> columnMap : columnList) {
+                String column = columnMap.get("name");
+                Map<String, Object> dataMap = new HashMap<>();
+                if (dataSubGroupVo != null) {
+                    for (Map<String, String> theadMap : theadList) {
+                        String type = theadMap.get("name");
+                        String count = String.valueOf(columnTypeMap.get(column + "_" + type) == null ? "0" : columnTypeMap.get(column + "_" + type));
+                        if (StringUtils.isNotBlank(count)) {
+                            dataMap.put(type, count);
+                        }
+                    }
+				} else {
+                    dataMap.put("总数", columnTypeMap.get(column));
 				}
-			}else {
-				dataJson.put(theadArray.getJSONObject(0).getString("displayName"), dataMap.get(column));
+				dataList.add(dataMap);
 			}
-			
-			dataList.add(dataJson);
-		}
-		allData.put("dataList", dataList);
-		return allData;
-	}
+        }
+        dataJson.put("dataList", dataList);
+        dataJson.put("columnList", columnList);
+        dataJson.put("theadList", theadList);
+        return dataJson;
+    }
 
-	@Override
-	public JSONObject getChartConfig() {
-		JSONObject charConfig = new JSONObject();
-		JSONObject showConfig = new JSONObject();
-		showConfig.put(DashboardShowConfig.AGGREGATE.getValue(),new DashboardShowConfigVo(DashboardShowConfig.AGGREGATE,JSONArray.parseArray("[{'value':'count','text':'计数','isDefault':1}]")));
-		showConfig.put(DashboardShowConfig.GROUPFIELD.getValue(),new DashboardShowConfigVo(DashboardShowConfig.GROUPFIELD,new JSONArray()));
-		showConfig.put(DashboardShowConfig.SUBGROUPFIELD.getValue(),new DashboardShowConfigVo(DashboardShowConfig.SUBGROUPFIELD,new JSONArray()));
-		showConfig.put(DashboardShowConfig.MAXGROUP.getValue(),new DashboardShowConfigVo(DashboardShowConfig.MAXGROUP,JSONArray.parseArray("[{'value':'10','text':'10','isDefault':1},{'value':'20','text':'20'}]")));
-		showConfig.put(DashboardShowConfig.REFRESHTIME.getValue(),new DashboardShowConfigVo(DashboardShowConfig.REFRESHTIME,JSONArray.parseArray("[{'value':'-1','text':'不刷新','isDefault':1},{'value':'30','text':'30'}]")));
-		charConfig.put("showConfig", showConfig);
-		return charConfig;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public JSONObject getDataMap(JSONArray nextDataList, JSONObject configObj, JSONObject preDatas) {
-		String groupField = configObj.getString(DashboardShowConfig.GROUPFIELD.getValue());
-		String subGroupField = configObj.getString(DashboardShowConfig.SUBGROUPFIELD.getValue());
-		String aggregate = configObj.getString(DashboardShowConfig.AGGREGATE.getValue());
-		Map<String,Object> dataMap = null;
-		JSONArray theadArray = null;
-		JSONArray columnArray = null;
-		if(!preDatas.containsKey("configObj")) {
-			preDatas.put("configObj", configObj);
-		}
-		if(preDatas.containsKey("dataMap")) {
-			dataMap = (Map<String, Object>) preDatas.get("dataMap");
-		}else {
-			dataMap = new HashMap<String,Object>();
-			preDatas.put("dataMap",dataMap);
-		}
-		if(preDatas.containsKey("theadList")) {
-			theadArray = preDatas.getJSONArray("theadList");
-		}else {
-			theadArray = new JSONArray();
-			preDatas.put("theadList",theadArray);
-			//theadArray.add(JSONObject.parse(String.format("{'name': '%s','displayName':'%s'}", groupField,groupField)));
-			if (StringUtils.isBlank(subGroupField)&&aggregate.equals("count")) {
-				theadArray.add(JSONObject.parse(String.format("{'name': '%s','displayName':'%s'}", "总数","总数")));
-			}
-		}
-		if(preDatas.containsKey("columnList")) {
-			columnArray = preDatas.getJSONArray("columnList");
-		}else {
-			columnArray = new JSONArray();
-			preDatas.put("columnList",columnArray);
-		}
-		if (aggregate.equals("count")) {
-			if(StringUtils.isNotBlank(subGroupField)){
-				for (int i = 0; i < nextDataList.size(); i++) {
-					JSONObject dataJson = nextDataList.getJSONObject(i);
-					JSONArray  groupArray = new JSONArray();
-					Object groupObj = dataJson.get(groupField);
-					if(groupObj instanceof JSONObject) {
-						groupArray.add(groupObj);
-					}else if(groupObj instanceof JSONArray){
-						groupArray = (JSONArray) groupObj;
-					}else {
-						continue;
-					}
-					Object subGroupObj = dataJson.get(subGroupField);
-					JSONArray  subGroupArray = new JSONArray();
-					if(subGroupObj instanceof JSONObject) {
-						subGroupArray.add(subGroupObj);
-					}else if(subGroupObj instanceof JSONArray){
-						subGroupArray = (JSONArray) subGroupObj;
-					}else {
-						continue;
-					}
-					for(Object groupTmp :groupArray) {
-						JSONObject group = ((JSONObject)groupTmp);
-						String value = group.getString("value");
-						if(StringUtils.isBlank(value)||StringUtils.isBlank(group.getString("text"))) {
-							continue;
-						}
-						for(Object subGroupTmp :subGroupArray) {
-							JSONObject subGroup = ((JSONObject)subGroupTmp);
-							String subValue = subGroup.getString("value");
-							if(StringUtils.isBlank(subValue)||StringUtils.isBlank(subGroup.getString("text"))) {
-								continue;
-							}
-							if(!theadArray.contains(JSONObject.parse(String.format("{'name': '%s','displayName':'%s'}", subValue,subGroup.getString("text"))))) {
-								theadArray.add(JSONObject.parse(String.format("{'name': '%s','displayName':'%s'}", subValue,subGroup.getString("text"))));
-							}
-							if(dataMap.containsKey(value)) {
-								 Map<String, Integer> subGroupMap = (Map<String, Integer>)dataMap.get(value);
-								if(subGroupMap.containsKey(subValue)) {
-									Integer num = subGroupMap.get(subValue);
-									subGroupMap.put(subValue, num+1);
-								}else {
-									subGroupMap.put(subValue, 1);
-								}
-							}else {
-								columnArray.add(JSONObject.parse(String.format("{'name': '%s','displayName':'%s'}", value, group.getString("text"))));
-								Map<String,Integer> subGoupMap = new HashMap<String,Integer>();
-								subGoupMap.put(subValue, 1);
-								dataMap.put(value, subGoupMap);
-							}
-						}
-					}
-				}
-			}else {
-				for (int i = 0; i < nextDataList.size(); i++) {
-					JSONObject dataJson = nextDataList.getJSONObject(i);
-					JSONArray  groupArray = new JSONArray();
-					Object groupObj = dataJson.get(groupField);
-					if(groupObj instanceof JSONObject) {
-						groupArray.add(groupObj);
-					}else if(groupObj instanceof JSONArray){
-						groupArray = (JSONArray) groupObj;
-					}else {
-						continue;
-					}
-					for(Object groupTmp :groupArray) {
-						JSONObject group = ((JSONObject)groupTmp);
-						String value = group.getString("value");
-						if(StringUtils.isBlank(value)||StringUtils.isBlank(group.getString("text"))) {
-							continue;
-						}
-						if(dataMap.containsKey(value)) {
-							dataMap.put(value, ((int)dataMap.get(value))+1);
-						}else {
-							columnArray.add(JSONObject.parse(String.format("{'name': '%s','displayName':'%s'}", value,group.getString("text"))));
-							dataMap.put(value, 1);
-						}
-					}
-				}	
-			}
-		}
-		return preDatas;
-	}
+    @Override
+    public JSONObject getChartConfig() {
+        JSONObject charConfig = new JSONObject();
+        JSONObject showConfig = new JSONObject();
+        showConfig.put(DashboardShowConfig.AGGREGATE.getValue(), new DashboardShowConfigVo(DashboardShowConfig.AGGREGATE, JSONArray.parseArray("[{'value':'count','text':'计数','isDefault':1}]")));
+        showConfig.put(DashboardShowConfig.GROUPFIELD.getValue(), new DashboardShowConfigVo(DashboardShowConfig.GROUPFIELD, new JSONArray()));
+        showConfig.put(DashboardShowConfig.SUBGROUPFIELD.getValue(), new DashboardShowConfigVo(DashboardShowConfig.SUBGROUPFIELD, new JSONArray()));
+        showConfig.put(DashboardShowConfig.MAXGROUP.getValue(), new DashboardShowConfigVo(DashboardShowConfig.MAXGROUP, JSONArray.parseArray("[{'value':'10','text':'10','isDefault':1},{'value':'20','text':'20'}]")));
+        showConfig.put(DashboardShowConfig.REFRESHTIME.getValue(), new DashboardShowConfigVo(DashboardShowConfig.REFRESHTIME, JSONArray.parseArray("[{'value':'-1','text':'不刷新','isDefault':1},{'value':'30','text':'30'}]")));
+        charConfig.put("showConfig", showConfig);
+        return charConfig;
+    }
 }
