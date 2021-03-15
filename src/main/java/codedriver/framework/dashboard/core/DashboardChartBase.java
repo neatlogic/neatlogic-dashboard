@@ -40,22 +40,22 @@ public abstract class DashboardChartBase {
      * @Params: [dashboardDataVo]
      * @Returns: com.alibaba.fastjson.JSONObject
      **/
-    protected  List<Map<String, String>> getDefaultData(DashboardDataVo dashboardDataVo){
-        List<Map<String, String>> resultDataList = new ArrayList<>();
+    protected List<Map<String, Object>> getDefaultData(DashboardDataVo dashboardDataVo) {
+        List<Map<String, Object>> resultDataList = new ArrayList<>();
         DashboardDataGroupVo dataGroupVo = dashboardDataVo.getDataGroupVo();
         DashboardDataSubGroupVo dataSubGroupVo = dashboardDataVo.getDataSubGroupVo();
         if (CollectionUtils.isNotEmpty(dataGroupVo.getDataList())) {
-            Map<String, String> groupDataCountMap = dataGroupVo.getDataCountMap();
+            Map<String, Object> groupDataCountMap = dataGroupVo.getDataCountMap();
             //循环获取需要的字段数据
-            for (Map<String, String> dataMap : dataGroupVo.getDataList()) {
-                Iterator<Map.Entry<String, String>> iterator = dataMap.entrySet().iterator();
-                Map<String, String> resultDataMap = new HashMap<>();
+            for (Map<String, Object> dataMap : dataGroupVo.getDataList()) {
+                Iterator<Map.Entry<String, Object>> iterator = dataMap.entrySet().iterator();
+                Map<String, Object> resultDataMap = new HashMap<>();
                 //如果不包含primaryKey 或 存在值为null 的列，则废弃该数据
                 if (!dataMap.containsKey(dataGroupVo.getPrimaryKey()) || dataMap.containsValue(null)) {
                     continue;
                 }
                 while (iterator.hasNext()) {
-                    Map.Entry<String, String> entry = iterator.next();
+                    Map.Entry<String, Object> entry = iterator.next();
                     String key = entry.getKey();
                     String value = String.valueOf(entry.getValue());
                     //如果是分组

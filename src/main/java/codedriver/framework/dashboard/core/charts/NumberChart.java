@@ -7,6 +7,7 @@ import codedriver.framework.dashboard.dto.DashboardDataVo;
 import codedriver.framework.dashboard.dto.DashboardShowConfigVo;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,22 +23,25 @@ public class NumberChart extends DashboardChartBase {
 	@Override
 	public JSONObject getData(DashboardDataVo dashboardDataVo) {
 		JSONObject dataJson = new JSONObject();
-		List<Map<String, String>> resultDataList = getDefaultData(dashboardDataVo);
+		List<Map<String, Object>> resultDataList = getDefaultData(dashboardDataVo);
 		//多值图补充总数
-		int total = 0;
-		for(Map<String,String> map : resultDataList){
-			for(Map.Entry<String,String> entry : map.entrySet() ){
-				String key = entry.getKey();
-				if(key.equals("total")){
-					total += Integer.parseInt(entry.getValue());
+		String type = dashboardDataVo.getChartConfig().getString("type");
+		if(StringUtils.isNotBlank(type) && type.equals("many")) {
+			int total = 0;
+			for (Map<String, Object> map : resultDataList) {
+				for (Map.Entry<String, Object> entry : map.entrySet()) {
+					String key = entry.getKey();
+					if (key.equals("total")) {
+						total += Long.parseLong(String.valueOf(entry.getValue()));
+					}
 				}
 			}
+			Map<String, Object> totalMap = new HashMap<String, Object>();
+			totalMap.put("total", Integer.toString(total));
+			totalMap.put("column", "总数");
+			totalMap.put("value", Integer.toString(total));
+			resultDataList.add(0, totalMap);
 		}
-		Map<String,String> totalMap = new HashMap<String,String>();
-		totalMap.put("total", Integer.toString(total));
-		totalMap.put("column","总数");
-		totalMap.put("value", Integer.toString(total));
-		resultDataList.add(0,totalMap);
 		dataJson.put("dataList", resultDataList);
 		return dataJson;
 	}

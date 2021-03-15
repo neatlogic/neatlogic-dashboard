@@ -16,13 +16,13 @@ public class DashboardDataGroupVo {
     private String primaryKey;
     private String handleName;
     private String proName;
-    private List<Map<String, String>> dataList;
-    private Map<String, String> dataCountMap;
+    private List<Map<String, Object>> dataList;
+    private Map<String, Object> dataCountMap;
 
     public DashboardDataGroupVo() {
     }
 
-    public DashboardDataGroupVo(String primaryKey, String handleName, String proName, Map<String, String> dataCountMap) {
+    public DashboardDataGroupVo(String primaryKey, String handleName, String proName, Map<String, Object> dataCountMap) {
         this.primaryKey = primaryKey;
         this.handleName = handleName;
         this.proName = proName;
@@ -53,19 +53,19 @@ public class DashboardDataGroupVo {
         this.proName = proName;
     }
 
-    public List<Map<String, String>> getDataList() {
+    public List<Map<String, Object>> getDataList() {
         return dataList;
     }
 
-    public void setDataList(List<Map<String, String>> dataList) {
+    public void setDataList(List<Map<String, Object>> dataList) {
         this.dataList = dataList;
     }
 
-    public Map<String, String> getDataCountMap() {
+    public Map<String, Object> getDataCountMap() {
         return dataCountMap;
     }
 
-    public void setDataCountMap(Map<String, String> dataCountMap) {
+    public void setDataCountMap(Map<String, Object> dataCountMap) {
         this.dataCountMap = dataCountMap;
     }
 }

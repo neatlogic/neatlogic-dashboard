@@ -16,7 +16,7 @@ import java.util.LinkedHashMap;
 public class DashboardConfigVo {
     private String group;
     private String subGroup;
-    private LinkedHashMap<String,String> groupDataCountMap;
+    private LinkedHashMap<String,Object> groupDataCountMap;
     private String groupType;
     private JSONObject chartConfig;
 
@@ -36,11 +36,11 @@ public class DashboardConfigVo {
         this.subGroup = subGroup;
     }
 
-    public LinkedHashMap<String, String> getGroupDataCountMap() {
+    public LinkedHashMap<String, Object> getGroupDataCountMap() {
         return groupDataCountMap;
     }
 
-    public void setGroupDataCountMap(LinkedHashMap<String, String> groupDataCountMap) {
+    public void setGroupDataCountMap(LinkedHashMap<String, Object> groupDataCountMap) {
         this.groupDataCountMap = groupDataCountMap;
     }
 
