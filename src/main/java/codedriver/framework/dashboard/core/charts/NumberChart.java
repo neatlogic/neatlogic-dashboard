@@ -1,20 +1,17 @@
 package codedriver.framework.dashboard.core.charts;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-
 import codedriver.framework.common.constvalue.dashboard.ChartType;
 import codedriver.framework.common.constvalue.dashboard.DashboardShowConfig;
 import codedriver.framework.dashboard.core.DashboardChartBase;
+import codedriver.framework.dashboard.dto.DashboardDataVo;
 import codedriver.framework.dashboard.dto.DashboardShowConfigVo;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class NumberChart extends DashboardChartBase {
 
@@ -23,36 +20,29 @@ public class NumberChart extends DashboardChartBase {
 		return new String[] {ChartType.NUMBERCHART.getValue()};
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public JSONObject getData(JSONObject dataMap) {
+	public JSONObject getData(DashboardDataVo dashboardDataVo) {
 		JSONObject dataJson = new JSONObject();
-		JSONArray dataList = new JSONArray();
-		Map<String,Object> resultMap = (Map<String,Object>)dataMap.get("resultMap");
-		Map<String, String> valueTextMap = (Map<String,String>)dataMap.get("valueTextMap");
-		JSONObject configObj = dataMap.getJSONObject("configObj");
-		if (MapUtils.isNotEmpty(resultMap)) {
-			Iterator<String> itKey = resultMap.keySet().iterator();
-			JSONObject data = new JSONObject();
-			if(configObj.getString("type").equals("many")) {
-				data.put("column", "总数");
-				data.put("value", dataMap.get("total"));
-				data.put("total", dataMap.get("total"));
-				dataList.add(data);
-			}
-			while (itKey.hasNext()) {
-				String key = itKey.next();
-				if(!valueTextMap.containsKey(key)) {
-					continue;
+		List<Map<String, Object>> resultDataList = getDefaultData(dashboardDataVo);
+		//多值图补充总数
+		String type = dashboardDataVo.getChartConfig().getString("type");
+		if(StringUtils.isNotBlank(type) && type.equals("many")) {
+			int total = 0;
+			for (Map<String, Object> map : resultDataList) {
+				for (Map.Entry<String, Object> entry : map.entrySet()) {
+					String key = entry.getKey();
+					if (key.equals("total")) {
+						total += Long.parseLong(String.valueOf(entry.getValue()));
+					}
 				}
-				data = new JSONObject();
-				data.put("column", valueTextMap.get(key));
-				data.put("value", resultMap.get(key));
-				data.put("total", resultMap.get(key));
-				dataList.add(data);
 			}
+			Map<String, Object> totalMap = new HashMap<String, Object>();
+			totalMap.put("total", Integer.toString(total));
+			totalMap.put("column", "总数");
+			totalMap.put("value", Integer.toString(total));
+			resultDataList.add(0, totalMap);
 		}
-		dataJson.put("dataList", dataList);
+		dataJson.put("dataList", resultDataList);
 		return dataJson;
 	}
 
@@ -68,67 +58,5 @@ public class NumberChart extends DashboardChartBase {
 		showConfig.put(DashboardShowConfig.COLOR.getValue(),new DashboardShowConfigVo(DashboardShowConfig.COLOR,JSONArray.parseArray("[{'value':'#D18CBD','isDefault':1},{'value':'#FFBA5A'},{'value':'#78D8DE'},{'value':'#A78375'},{'value':'#B9D582'},{'value':'#898DDD'},{'value':'#F3E67B'},{'value':'#527CA6'},{'value':'#50BFF2'},{'value':'#FF6666'},{'value':'#15BF81'},{'value':'#90A4AE'}]")));
 		charConfig.put("showConfig", showConfig);
 		return charConfig;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public JSONObject getDataMap(JSONArray nextDataList, JSONObject configObj, JSONObject preDatas) {
-		String groupField = configObj.getString(DashboardShowConfig.GROUPFIELD.getValue());
-		String aggregate = configObj.getString(DashboardShowConfig.AGGREGATE.getValue());
-		JSONArray configList = configObj.getJSONArray("configlist");
-		Map<String, Object> resultMap = null;
-		Map<String, String> valueTextMap = null;
-		Integer total = 0;
-		if(preDatas.containsKey("resultMap")) {
-			resultMap = (Map<String,Object>)preDatas.get("resultMap");
-		}else {
-			resultMap =  new HashMap<String,Object>();
-			if(CollectionUtils.isNotEmpty(configList)) {
-				for(Object config:configList) {
-					resultMap.put(config.toString(), 0);
-				}
-			}
-			preDatas.put("resultMap", resultMap);
-		}
-		if(preDatas.containsKey("valueTextMap")) {
-			valueTextMap = (Map<String,String>)preDatas.get("valueTextMap");
-		}else {
-			valueTextMap =  new HashMap<String,String>();
-			preDatas.put("valueTextMap", valueTextMap);
-		}
-		
-		if(preDatas.containsKey("total")) {
-			total = preDatas.getInteger("total");
-		}
-		if (aggregate.equals("count")) {
-			for (int i = 0; i < nextDataList.size(); i++) {
-				JSONObject data = nextDataList.getJSONObject(i);
-				JSONArray  groupArray = new JSONArray();
-				Object groupObj = data.get(groupField);
-				if(groupObj instanceof JSONObject) {
-					groupArray.add(groupObj);
-				}else if(groupObj instanceof JSONArray){
-					groupArray = (JSONArray) groupObj;
-				}else {
-					continue;
-				}
-				for(Object group :groupArray) {
-					String value = StringUtils.EMPTY;
-					if(group != null) {
-						value = ((JSONObject)group).getString("value");
-						valueTextMap.put(value, ((JSONObject)group).getString("text"));
-					}
-					if(CollectionUtils.isEmpty(configList)) {
-						break;
-					}
-					if (resultMap.containsKey(value)) {
-						resultMap.put(value, Integer.valueOf(resultMap.get(value).toString()) + 1);
-						total++;
-					}
-				}
-			}
-		} 
-		preDatas.put("total", total);
-		return preDatas;
 	}
 }
