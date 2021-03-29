@@ -1,8 +1,8 @@
 package codedriver.module.dashboard.exception;
 
-import codedriver.framework.exception.core.ApiFieldValidRuntimeException;
+import codedriver.framework.exception.core.ApiRuntimeException;
 
-public class DashboardNameExistsException extends ApiFieldValidRuntimeException {
+public class DashboardNameExistsException extends ApiRuntimeException {
 	private static final long serialVersionUID = 4230545560652554738L;
 
 	public DashboardNameExistsException(String uuid) {
