@@ -2,16 +2,16 @@ package codedriver.module.dashboard.auth.label;
 
 import codedriver.framework.auth.core.AuthBase;
 
-public class DASHBOARD_MODIFY extends AuthBase {
+public class DASHBOARD_BASE extends AuthBase {
 
 	@Override
 	public String getAuthDisplayName() {
-		return "面板管理权限";
+		return "面板查看权限";
 	}
 
 	@Override
 	public String getAuthIntroduction() {
-		return "对系统类面板进行新增、编辑、授权和删除";
+		return "查看系统类面板";
 	}
 
 	@Override
@@ -21,6 +21,6 @@ public class DASHBOARD_MODIFY extends AuthBase {
 
 	@Override
 	public Integer sort() {
-		return 2;
+		return 1;
 	}
 }
