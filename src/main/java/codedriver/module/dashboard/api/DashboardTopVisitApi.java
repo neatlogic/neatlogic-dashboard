@@ -2,10 +2,12 @@ package codedriver.module.dashboard.api;
 
 import java.util.List;
 
+import codedriver.framework.auth.core.AuthAction;
 import codedriver.framework.restful.constvalue.OperationTypeEnum;
 import codedriver.framework.restful.annotation.*;
 import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
 
+import codedriver.module.dashboard.auth.label.DASHBOARD_BASE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ import codedriver.framework.dashboard.dto.DashboardVo;
 
 @Service
 @Transactional
+@AuthAction(action = DASHBOARD_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
 public class DashboardTopVisitApi extends PrivateApiComponentBase {
 

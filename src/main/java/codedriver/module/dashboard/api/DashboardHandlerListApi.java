@@ -2,8 +2,10 @@ package codedriver.module.dashboard.api;
 
 import java.util.List;
 
+import codedriver.framework.auth.core.AuthAction;
 import codedriver.framework.restful.constvalue.OperationTypeEnum;
 import codedriver.framework.restful.annotation.OperationType;
+import codedriver.module.dashboard.auth.label.DASHBOARD_BASE;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
@@ -16,6 +18,7 @@ import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
 
+@AuthAction(action = DASHBOARD_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
 @Service
 public class DashboardHandlerListApi extends PrivateApiComponentBase {

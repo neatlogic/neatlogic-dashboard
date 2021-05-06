@@ -2,6 +2,8 @@ package codedriver.module.dashboard.api;
 
 import java.util.List;
 
+import codedriver.framework.auth.core.AuthAction;
+import codedriver.module.dashboard.auth.label.DASHBOARD_BASE;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,6 +26,7 @@ import codedriver.framework.restful.constvalue.OperationTypeEnum;
 import codedriver.framework.restful.annotation.*;
 import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
 @Component
+@AuthAction(action = DASHBOARD_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
 public class DashboardGetApi extends PrivateApiComponentBase {
 
