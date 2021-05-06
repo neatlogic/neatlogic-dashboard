@@ -1,9 +1,11 @@
 package codedriver.module.dashboard.api;
 
+import codedriver.framework.auth.core.AuthAction;
 import codedriver.framework.restful.constvalue.OperationTypeEnum;
 import codedriver.framework.restful.annotation.*;
 import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
 
+import codedriver.module.dashboard.auth.label.DASHBOARD_BASE;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,7 @@ import codedriver.module.dashboard.exception.DashboardHandlerNotFoundException;
 import codedriver.module.dashboard.exception.DashboardParamException;
 import codedriver.module.dashboard.exception.DashboardWidgetNotFoundException;
 
+@AuthAction(action = DASHBOARD_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
 @Component
 public class DashboardWidgetDataGetApi extends PrivateApiComponentBase {

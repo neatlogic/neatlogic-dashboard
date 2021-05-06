@@ -2,6 +2,8 @@ package codedriver.module.dashboard.api;
 
 import java.util.List;
 
+import codedriver.framework.auth.core.AuthAction;
+import codedriver.module.dashboard.auth.label.DASHBOARD_BASE;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import codedriver.module.dashboard.exception.DashboardNotFoundException;
 import codedriver.framework.restful.constvalue.OperationTypeEnum;
 import codedriver.framework.restful.annotation.OperationType;
 @Component
+@AuthAction(action = DASHBOARD_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
 public class DashboardGetDefaultApi extends PrivateApiComponentBase {
 
