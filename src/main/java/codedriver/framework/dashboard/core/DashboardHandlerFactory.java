@@ -1,27 +1,29 @@
+/*
+ * Copyright(c) 2021 TechSure Co., Ltd. All Rights Reserved.
+ * 本内容仅限于深圳市赞悦科技有限公司内部传阅，禁止外泄以及用于其他的商业项目。
+ */
+
 package codedriver.framework.dashboard.core;
+
+import codedriver.framework.applicationlistener.core.ModuleInitializedListenerBase;
+import codedriver.framework.bootstrap.CodedriverWebApplicationContext;
+import codedriver.framework.common.RootComponent;
+import codedriver.framework.dashboard.dto.DashboardHandlerVo;
+import codedriver.module.dashboard.exception.DashboardHandlerNotFoundException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.event.ContextRefreshedEvent;
-
-import codedriver.framework.applicationlistener.core.ApplicationListenerBase;
-import codedriver.framework.common.RootComponent;
-import codedriver.framework.dashboard.dto.DashboardHandlerVo;
-import codedriver.module.dashboard.exception.DashboardHandlerNotFoundException;
-
 /**
- * 
  * @Author:chenqiwei
  * @Time:Jun 7, 2020
  * @ClassName: DashboardHandlerFactory
  * @Description: 生产仪表板数据源处理类
  */
 @RootComponent
-public class DashboardHandlerFactory extends ApplicationListenerBase {
+public class DashboardHandlerFactory extends ModuleInitializedListenerBase {
 	private static Map<String, IDashboardHandler> componentMap = new HashMap<>();
 	private static List<DashboardHandlerVo> dashboardHandlerList = new ArrayList<>();
 
@@ -37,8 +39,7 @@ public class DashboardHandlerFactory extends ApplicationListenerBase {
 	}
 
 	@Override
-	public void onApplicationEvent(ContextRefreshedEvent event) {
-		ApplicationContext context = event.getApplicationContext();
+	public void onInitialized(CodedriverWebApplicationContext context) {
 		Map<String, IDashboardHandler> myMap = context.getBeansOfType(IDashboardHandler.class);
 		for (Map.Entry<String, IDashboardHandler> entry : myMap.entrySet()) {
 			IDashboardHandler component = entry.getValue();
