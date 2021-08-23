@@ -1,24 +1,24 @@
 package codedriver.module.dashboard.api;
 
-import java.util.List;
-
-import codedriver.framework.auth.core.AuthAction;
-import codedriver.framework.restful.constvalue.OperationTypeEnum;
-import codedriver.framework.restful.annotation.*;
-import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
-
-import codedriver.module.dashboard.auth.label.DASHBOARD_BASE;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.alibaba.fastjson.JSONObject;
-
 import codedriver.framework.asynchronization.threadlocal.UserContext;
+import codedriver.framework.auth.core.AuthAction;
 import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.dao.mapper.TeamMapper;
 import codedriver.framework.dashboard.dao.mapper.DashboardMapper;
 import codedriver.framework.dashboard.dto.DashboardVo;
+import codedriver.framework.dto.AuthenticationInfoVo;
+import codedriver.framework.restful.annotation.*;
+import codedriver.framework.restful.constvalue.OperationTypeEnum;
+import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
+import codedriver.framework.service.AuthenticationInfoService;
+import codedriver.module.dashboard.auth.label.DASHBOARD_BASE;
+import com.alibaba.fastjson.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 @Transactional
@@ -28,6 +28,9 @@ public class DashboardTopVisitApi extends PrivateApiComponentBase {
 
 	@Autowired
 	private DashboardMapper dashboardMapper;
+
+	@Resource
+	private AuthenticationInfoService authenticationInfoService;
 	
 	@Autowired
 	TeamMapper teamMapper;
@@ -61,9 +64,10 @@ public class DashboardTopVisitApi extends PrivateApiComponentBase {
 			dashboardVo.setPageSize(3);
 		}
 		List<String> teamUuidList = teamMapper.getTeamUuidListByUserUuid(userUuid);
-		dashboardVo.setUserUuid(userUuid);
-		dashboardVo.setTeamUuidList(teamUuidList);
-		dashboardVo.setRoleUuidList(UserContext.get().getRoleUuidList());
+		AuthenticationInfoVo authenticationInfoVo = authenticationInfoService.getAuthenticationInfo(userUuid);
+		dashboardVo.setUserUuid(authenticationInfoVo.getUserUuid());
+		dashboardVo.setTeamUuidList(authenticationInfoVo.getTeamUuidList());
+		dashboardVo.setRoleUuidList(authenticationInfoVo.getRoleUuidList());
 		return dashboardMapper.searchTopVisitDashboard(dashboardVo);
 	}
 }

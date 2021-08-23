@@ -1,17 +1,7 @@
 package codedriver.module.dashboard.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import codedriver.framework.auth.core.AuthAction;
-import codedriver.module.dashboard.auth.label.DASHBOARD_BASE;
-import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.alibaba.fastjson.JSONObject;
-
 import codedriver.framework.asynchronization.threadlocal.UserContext;
+import codedriver.framework.auth.core.AuthAction;
 import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.common.util.PageUtil;
 import codedriver.framework.dao.mapper.TeamMapper;
@@ -19,11 +9,22 @@ import codedriver.framework.dao.mapper.UserMapper;
 import codedriver.framework.dashboard.dao.mapper.DashboardMapper;
 import codedriver.framework.dashboard.dto.DashboardDefaultVo;
 import codedriver.framework.dashboard.dto.DashboardVo;
+import codedriver.framework.dto.AuthenticationInfoVo;
 import codedriver.framework.dto.UserAuthVo;
-import codedriver.module.dashboard.auth.label.DASHBOARD_MODIFY;
-import codedriver.framework.restful.constvalue.OperationTypeEnum;
 import codedriver.framework.restful.annotation.*;
+import codedriver.framework.restful.constvalue.OperationTypeEnum;
 import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
+import codedriver.framework.service.AuthenticationInfoService;
+import codedriver.module.dashboard.auth.label.DASHBOARD_BASE;
+import codedriver.module.dashboard.auth.label.DASHBOARD_MODIFY;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 @Component
 @AuthAction(action = DASHBOARD_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
@@ -37,6 +38,9 @@ public class DashboardSearchApi extends PrivateApiComponentBase {
 	
 	@Autowired
 	TeamMapper teamMapper;
+
+	@Resource
+	private AuthenticationInfoService authenticationInfoService;
 
 	@Override
 	public String getToken() {
@@ -82,10 +86,10 @@ public class DashboardSearchApi extends PrivateApiComponentBase {
 		}
 		String userUuid = UserContext.get().getUserUuid(true);
 		dashboardVo.setFcu(userUuid);
-		List<String> teamUuidList = teamMapper.getTeamUuidListByUserUuid(userUuid);
-		dashboardVo.setUserUuid(userUuid);
-		dashboardVo.setTeamUuidList(teamUuidList);
-		dashboardVo.setRoleUuidList(UserContext.get().getRoleUuidList());
+		AuthenticationInfoVo authenticationInfoVo = authenticationInfoService.getAuthenticationInfo(userUuid);
+		dashboardVo.setUserUuid(authenticationInfoVo.getUserUuid());
+		dashboardVo.setTeamUuidList(authenticationInfoVo.getTeamUuidList());
+		dashboardVo.setRoleUuidList(authenticationInfoVo.getRoleUuidList());
 		int rowNum = dashboardMapper.searchDashboardCount(dashboardVo);
 		int pageCount = PageUtil.getPageCount(rowNum, dashboardVo.getPageSize());
 		List<String> dashboardUuidList = dashboardMapper.searchAuthorizedDashboardUuid(dashboardVo);
