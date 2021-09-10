@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class DashboardVo extends BasePageVo {
-    private transient String keyword;
+    @JSONField(serialize = false)
+    private String keyword;
     @EntityField(name = "仪表板uuid", type = ApiParamType.STRING)
     private String uuid;
     @EntityField(name = "仪表板名称", type = ApiParamType.STRING)
