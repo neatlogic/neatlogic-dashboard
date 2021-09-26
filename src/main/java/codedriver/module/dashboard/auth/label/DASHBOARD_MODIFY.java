@@ -19,7 +19,7 @@ public class DASHBOARD_MODIFY extends AuthBase {
 
 	@Override
 	public String getAuthGroup() {
-		return "framework";
+		return "dashboard";
 	}
 
 	@Override
