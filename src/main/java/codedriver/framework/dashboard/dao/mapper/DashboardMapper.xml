@@ -73,10 +73,10 @@
 		<result column="name" property="name" />
 		<result column="description" property="description" />
 		<result column="fcu" property="fcu" />
-		<result column="fcuName" property="fcuName" />
+		<!-- <result column="fcuName" property="fcuName" />-->
 		<result column="fcd" property="fcd" />
 		<result column="lcu" property="lcu" />
-		<result column="lcuName" property="lcuName" />
+		<!--<result column="lcuName" property="lcuName" />-->
 		<result column="lcd" property="lcd" />
 		<result column="defaultUser" property="defaultUser" />
 		<result column="defaultType" property="defaultType" />
@@ -141,10 +141,10 @@
 		a.description,
 		a.is_active AS isActive,
 		a.fcu,
-		(SELECT user_name FROM `user` x WHERE x.uuid = a.`fcu`) AS fcuName,
+		<!--(SELECT user_name FROM `user` x WHERE x.uuid = a.`fcu`) AS fcuName,-->
 		a.fcd,
 		a.lcu,
-		(SELECT user_name FROM `user` x WHERE x.uuid = a.`lcu`) AS lcuName,
+		<!--(SELECT user_name FROM `user` x WHERE x.uuid = a.`lcu`) AS lcuName,-->
 		a.lcd,
 		a.type,
 		da.`type` as authType,
@@ -362,7 +362,9 @@
 		`description`,
 		`is_active`,
 		`fcd`,
-		`fcu`
+		`fcu`,
+		`lcd`,
+		`lcu`
 		)
 		VALUES
 		(
@@ -371,6 +373,8 @@
 		#{type},
 		#{description},
 		#{isActive},
+		NOW(3),
+		#{fcu},
 		NOW(3),
 		#{fcu}
 		)
