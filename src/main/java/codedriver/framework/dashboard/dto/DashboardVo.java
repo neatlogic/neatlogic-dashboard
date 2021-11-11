@@ -7,6 +7,7 @@ package codedriver.framework.dashboard.dto;
 
 import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.common.constvalue.GroupSearch;
+import codedriver.framework.common.dto.BaseEditorVo;
 import codedriver.framework.common.dto.BasePageVo;
 import codedriver.framework.dto.AuthorityVo;
 import codedriver.framework.restful.annotation.EntityField;
@@ -19,7 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public class DashboardVo extends BasePageVo {
+public class DashboardVo extends BaseEditorVo {
     @EntityField(name = "仪表板uuid", type = ApiParamType.STRING)
     private String uuid;
     @EntityField(name = "仪表板名称", type = ApiParamType.STRING)
@@ -32,18 +33,6 @@ public class DashboardVo extends BasePageVo {
     private int isCustomDefault;
     @EntityField(name = "描述", type = ApiParamType.STRING)
     private String description;
-    @EntityField(name = "仪表板创建时间", type = ApiParamType.LONG)
-    private Date fcd;
-    @EntityField(name = "仪表板创建人", type = ApiParamType.STRING)
-    private String fcu;
-    @EntityField(name = "仪表板创建人名", type = ApiParamType.STRING)
-    private String fcuName;
-    @EntityField(name = "仪表板修改时间", type = ApiParamType.LONG)
-    private Date lcd;
-    @EntityField(name = "仪表板修改人", type = ApiParamType.STRING)
-    private String lcu;
-    @EntityField(name = "仪表板修改人名", type = ApiParamType.STRING)
-    private String lcuName;
     @EntityField(name = "仪表板组件列表", type = ApiParamType.JSONOBJECT)
     private List<DashboardWidgetVo> widgetList;
     @EntityField(name = "system：系统分类  custom：自定义分类", type = ApiParamType.STRING)
@@ -86,37 +75,7 @@ public class DashboardVo extends BasePageVo {
         this.name = name;
     }
 
-    public Date getFcd() {
-        return fcd;
-    }
 
-    public void setFcd(Date fcd) {
-        this.fcd = fcd;
-    }
-
-    public String getFcu() {
-        return fcu;
-    }
-
-    public void setFcu(String fcu) {
-        this.fcu = fcu;
-    }
-
-    public Date getLcd() {
-        return lcd;
-    }
-
-    public void setLcd(Date lcd) {
-        this.lcd = lcd;
-    }
-
-    public String getLcu() {
-        return lcu;
-    }
-
-    public void setLcu(String lcu) {
-        this.lcu = lcu;
-    }
 
     public int getIsActive() {
         return isActive;
@@ -166,23 +125,6 @@ public class DashboardVo extends BasePageVo {
     public void setIsCustomDefault(int isCustomDefault) {
         this.isCustomDefault = isCustomDefault;
     }
-
-    public String getFcuName() {
-        return fcuName;
-    }
-
-    public void setFcuName(String fcuName) {
-        this.fcuName = fcuName;
-    }
-
-    public String getLcuName() {
-        return lcuName;
-    }
-
-    public void setLcuName(String lcuName) {
-        this.lcuName = lcuName;
-    }
-
 
     public List<String> getValueList() {
         if (CollectionUtils.isEmpty(valueList)) {
