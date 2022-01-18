@@ -1,5 +1,8 @@
 package codedriver.framework.dashboard.dto;
 
+import codedriver.framework.common.constvalue.ApiParamType;
+import codedriver.framework.restful.annotation.EntityField;
+
 import java.util.List;
 import java.util.Map;
 
@@ -13,8 +16,11 @@ import java.util.Map;
  * 本内容仅限于深圳市赞悦科技有限公司内部传阅，禁止外泄以及用于其他的商业项目。
  **/
 public class DashboardDataGroupVo {
+    @EntityField(name = "主键key", type = ApiParamType.STRING)
     private String primaryKey;
+    @EntityField(name = "组件名", type = ApiParamType.STRING)
     private String handleName;
+    @EntityField(name = "属性名", type = ApiParamType.STRING)
     private String proName;
     private List<Map<String, Object>> dataList;
     private Map<String, Object> dataCountMap;
