@@ -2,7 +2,7 @@ package codedriver.framework.dashboard.core;
 
 import codedriver.framework.dashboard.dto.DashboardDataGroupVo;
 import codedriver.framework.dashboard.dto.DashboardDataSubGroupVo;
-import codedriver.framework.dashboard.dto.DashboardDataVo;
+import codedriver.framework.dashboard.dto.DashboardWidgetDataVo;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -23,11 +23,11 @@ public abstract class DashboardChartBase {
      * @return JSONObject
      * @Description: 返回数据
      */
-    public JSONObject getData(DashboardDataVo dashboardDataVo) {
+    public JSONObject getData(DashboardWidgetDataVo dashboardDataVo) {
         return getMyData(dashboardDataVo);
     }
 
-    public JSONObject getMyData(DashboardDataVo dashboardDataVo) {
+    public JSONObject getMyData(DashboardWidgetDataVo dashboardDataVo) {
         JSONObject dataJson = new JSONObject();
         dataJson.put("dataList", getDefaultData(dashboardDataVo));
         return dataJson;
@@ -40,7 +40,7 @@ public abstract class DashboardChartBase {
      * @Params: [dashboardDataVo]
      * @Returns: com.alibaba.fastjson.JSONObject
      **/
-    protected List<Map<String, Object>> getDefaultData(DashboardDataVo dashboardDataVo) {
+    protected List<Map<String, Object>> getDefaultData(DashboardWidgetDataVo dashboardDataVo) {
         List<Map<String, Object>> resultDataList = new ArrayList<>();
         DashboardDataGroupVo dataGroupVo = dashboardDataVo.getDataGroupVo();
         DashboardDataSubGroupVo dataSubGroupVo = dashboardDataVo.getDataSubGroupVo();

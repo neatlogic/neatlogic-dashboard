@@ -86,12 +86,12 @@ public class DashboardSaveApi extends PrivateApiComponentBase {
 				//更新角色
 				for(String value:dashboardVo.getValueList()) {
 					AuthorityVo authorityVo = new AuthorityVo();
-					if(value.toString().startsWith(GroupSearch.ROLE.getValuePlugin())) {
+					if(value.startsWith(GroupSearch.ROLE.getValuePlugin())) {
 						authorityVo.setType(GroupSearch.ROLE.getValue());
-						authorityVo.setUuid(value.toString().replaceAll(GroupSearch.ROLE.getValuePlugin(), StringUtils.EMPTY));
-					}else if(value.toString().startsWith(GroupSearch.USER.getValuePlugin())) {
+						authorityVo.setUuid(value.replaceAll(GroupSearch.ROLE.getValuePlugin(), StringUtils.EMPTY));
+					}else if(value.startsWith(GroupSearch.USER.getValuePlugin())) {
 						authorityVo.setType(GroupSearch.USER.getValue());
-						authorityVo.setUuid(value.toString().replaceAll(GroupSearch.USER.getValuePlugin(), StringUtils.EMPTY));
+						authorityVo.setUuid(value.replaceAll(GroupSearch.USER.getValuePlugin(), StringUtils.EMPTY));
 					}else {
 						throw new DashboardParamException("valueList");
 					}

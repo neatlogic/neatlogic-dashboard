@@ -3,7 +3,7 @@ package codedriver.framework.dashboard.core.charts;
 import codedriver.framework.common.constvalue.dashboard.ChartType;
 import codedriver.framework.common.constvalue.dashboard.DashboardShowConfig;
 import codedriver.framework.dashboard.core.DashboardChartBase;
-import codedriver.framework.dashboard.dto.DashboardDataVo;
+import codedriver.framework.dashboard.dto.DashboardWidgetDataVo;
 import codedriver.framework.dashboard.dto.DashboardShowConfigVo;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -21,11 +21,11 @@ public class NumberChart extends DashboardChartBase {
 	}
 
 	@Override
-	public JSONObject getData(DashboardDataVo dashboardDataVo) {
+	public JSONObject getData(DashboardWidgetDataVo dashboardDataVo) {
 		JSONObject dataJson = new JSONObject();
 		List<Map<String, Object>> resultDataList = getDefaultData(dashboardDataVo);
 		//多值图补充总数
-		String type = dashboardDataVo.getChartConfig().getString("type");
+		String type = dashboardDataVo.getChartConfigVo().getType();
 		if(StringUtils.isNotBlank(type) && type.equals("many")) {
 			int total = 0;
 			for (Map<String, Object> map : resultDataList) {

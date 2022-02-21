@@ -2,7 +2,6 @@ package codedriver.framework.dashboard.dto;
 
 import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.restful.annotation.EntityField;
-import com.alibaba.fastjson.JSONObject;
 
 /**
  * @Title: DashboardDataVo
@@ -13,12 +12,13 @@ import com.alibaba.fastjson.JSONObject;
  * Copyright(c) 2021 TechSure Co., Ltd. All Rights Reserved.
  * 本内容仅限于深圳市赞悦科技有限公司内部传阅，禁止外泄以及用于其他的商业项目。
  **/
-public class DashboardDataVo {
-    @EntityField(name = "分组vo", type = ApiParamType.STRING)
+public class DashboardWidgetDataVo {
+    @EntityField(name = "分组数据vo", type = ApiParamType.STRING)
     private DashboardDataGroupVo dataGroupVo;
-    @EntityField(name = "二级分组vo", type = ApiParamType.STRING)
+    @EntityField(name = "二级分组数据vo", type = ApiParamType.STRING)
     private DashboardDataSubGroupVo dataSubGroupVo;
-    private JSONObject chartConfig;
+    @EntityField(name = "配置", type = ApiParamType.STRING)
+    private DashboardWidgetChartConfigVo chartConfigVo;
 
     public DashboardDataGroupVo getDataGroupVo() {
         return dataGroupVo;
@@ -36,11 +36,11 @@ public class DashboardDataVo {
         this.dataSubGroupVo = dataSubGroupVo;
     }
 
-    public JSONObject getChartConfig() {
-        return chartConfig;
+    public DashboardWidgetChartConfigVo getChartConfigVo() {
+        return chartConfigVo;
     }
 
-    public void setChartConfig(JSONObject chartConfig) {
-        this.chartConfig = chartConfig;
+    public void setChartConfigVo(DashboardWidgetChartConfigVo chartConfigVo) {
+        this.chartConfigVo = chartConfigVo;
     }
 }
