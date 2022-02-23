@@ -4,6 +4,7 @@ import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.restful.annotation.EntityField;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.annotation.JSONField;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -39,6 +40,9 @@ public class DashboardWidgetChartConfigVo implements Serializable {
     private JSONArray configList;
     @EntityField(name = "将数据集提取map, 用于过滤，并按list 权重排序", type = ApiParamType.JSONOBJECT)
     private LinkedHashMap<String,Object> groupDataCountMap;
+    @EntityField(name = "子sql，用于'累积总和（group_sum）'", type = ApiParamType.STRING)
+    @JSONField(serialize = false)
+    private String subSql;
 
     public DashboardWidgetChartConfigVo(){}
     public DashboardWidgetChartConfigVo(JSONObject configChart) {
@@ -144,5 +148,13 @@ public class DashboardWidgetChartConfigVo implements Serializable {
 
     public void setConfigList(JSONArray configList) {
         this.configList = configList;
+    }
+
+    public String getSubSql() {
+        return subSql;
+    }
+
+    public void setSubSql(String subSql) {
+        this.subSql = subSql;
     }
 }
