@@ -6,8 +6,9 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.util.List;
 
-public interface IDashboardChartCustom {
+public interface IDashboardWidgetShowConfig {
 
+    String getName();
     /**
      * 获取支持的chart类型
      * @return chart类型

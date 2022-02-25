@@ -10,4 +10,5 @@ public interface IDashboardGroupField {
     String getValue();
 
     String getText();
+
 }
