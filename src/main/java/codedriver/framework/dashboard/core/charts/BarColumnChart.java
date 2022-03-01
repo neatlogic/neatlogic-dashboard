@@ -22,7 +22,7 @@ public class BarColumnChart extends DashboardChartBase {
         JSONObject showConfig = new JSONObject();
         showConfig.put(DashboardShowConfig.TYPE.getValue(), new DashboardShowConfigVo(DashboardShowConfig.TYPE, JSONArray.parseArray("[{'value':'bar','text':'横向'},{'value':'column','text':'纵向','isDefault':1}]")));
         showConfig.put(DashboardShowConfig.AGGREGATE.getValue(), new DashboardShowConfigVo(DashboardShowConfig.AGGREGATE, JSONArray.parseArray(
-                String.format("[{'value':'%s','text':'%s','isDefault':1}]", DashboardStatistics.COUNT.getValue(), DashboardStatistics.COUNT.getText())
+                String.format("[{'value':'%s','text':'%s','isDefault':1,'unit':''}]", DashboardStatistics.COUNT.getValue(), DashboardStatistics.COUNT.getText())
         )));
         showConfig.put(DashboardShowConfig.GROUPFIELD.getValue(), new DashboardShowConfigVo(DashboardShowConfig.GROUPFIELD, new JSONArray()));
         showConfig.put(DashboardShowConfig.SUBGROUPFIELD.getValue(), new DashboardShowConfigVo(DashboardShowConfig.SUBGROUPFIELD, new JSONArray()));
