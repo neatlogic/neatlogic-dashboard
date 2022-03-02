@@ -82,6 +82,7 @@ public class DashboardWidgetDataGetApi extends PrivateApiComponentBase {
 		if (handler == null) {
 			throw new DashboardHandlerNotFoundException(widgetVo.getHandler());
 		}
+		widgetVo.setHandler(handler.getName());
 		ChartDataVo chartDataVo = handler.getData(widgetVo);
 		JSONObject chartDataJson =  (JSONObject) JSONObject.toJSON(chartDataVo);
 		JSONObject dataJson = chartDataJson.getJSONObject("data");

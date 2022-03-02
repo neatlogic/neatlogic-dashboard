@@ -6,8 +6,9 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.util.List;
 
-public interface IDashboardChartCustom {
+public interface IDashboardWidgetShowConfig {
 
+    String getName();
     /**
      * 获取支持的chart类型
      * @return chart类型
@@ -18,25 +19,31 @@ public interface IDashboardChartCustom {
      * 获取分组选项字段
      * @return 分组选项字段
      */
-    List<IDashboardGroupField> getGroupFields();
+    JSONArray getStatisticsOptionList();
+
+    /**
+     * 获取分组选项字段
+     * @return 分组选项字段
+     */
+    List<IDashboardGroupField> getGroupFieldOptionList();
 
     /**
      * 获取分组选项配置，用于前端渲染分组
      * @return 分组选项配置
      */
-    JSONArray getGroupFieldsConfig();
+    JSONArray getGroupFieldOptionListConfig();
 
     /**
      * 获取二级分组选项字段
      * @return 二级分组选项字段
      */
-    List<IDashboardGroupField> getSubGroupFields();
+    List<IDashboardGroupField> getSubGroupFieldOptionList();
 
     /**
      * 获取二级分组选项配置，用于前端渲染二级分组
      * @return 二级分组选项配置
      */
-    JSONArray getSubGroupFieldsConfig();
+    JSONArray getSubGroupFieldOptionListConfig();
 
     /**
      * 获取最终前端渲染配置

@@ -157,4 +157,5 @@ public class DashboardWidgetChartConfigVo implements Serializable {
     public void setSubSql(String subSql) {
         this.subSql = subSql;
     }
+
 }
