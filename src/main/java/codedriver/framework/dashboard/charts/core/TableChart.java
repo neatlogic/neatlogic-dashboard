@@ -1,11 +1,11 @@
-package codedriver.framework.dashboard.core.charts;
+package codedriver.framework.dashboard.charts.core;
 
 import codedriver.framework.common.constvalue.dashboard.ChartType;
 import codedriver.framework.common.constvalue.dashboard.DashboardShowConfig;
-import codedriver.framework.dashboard.core.DashboardChartBase;
+import codedriver.framework.dashboard.charts.DashboardChartBase;
 import codedriver.framework.dashboard.dto.DashboardDataGroupVo;
 import codedriver.framework.dashboard.dto.DashboardDataSubGroupVo;
-import codedriver.framework.dashboard.dto.DashboardWidgetDataVo;
+import codedriver.framework.dashboard.dto.DashboardWidgetDataGroupVo;
 import codedriver.framework.dashboard.dto.DashboardShowConfigVo;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -22,7 +22,7 @@ public class TableChart extends DashboardChartBase {
     }
 
     @Override
-    public JSONObject getData(DashboardWidgetDataVo dashboardDataVo) {
+    public JSONObject getData(DashboardWidgetDataGroupVo dashboardDataVo) {
         JSONObject dataJson = new JSONObject();
         List<Map<String, Object>> dataList = new ArrayList<>();
         List<Map<String, String>> theadList = new ArrayList<>();

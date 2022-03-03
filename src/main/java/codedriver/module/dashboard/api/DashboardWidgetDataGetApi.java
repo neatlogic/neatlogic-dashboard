@@ -1,26 +1,23 @@
 package codedriver.module.dashboard.api;
 
 import codedriver.framework.auth.core.AuthAction;
-import codedriver.framework.restful.constvalue.OperationTypeEnum;
-import codedriver.framework.restful.annotation.*;
-import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
-
-import codedriver.module.dashboard.auth.label.DASHBOARD_BASE;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.alibaba.fastjson.JSONObject;
-
 import codedriver.framework.common.constvalue.ApiParamType;
-import codedriver.framework.dashboard.core.DashboardHandlerFactory;
-import codedriver.framework.dashboard.core.IDashboardHandler;
+import codedriver.framework.dashboard.handler.DashboardHandlerFactory;
+import codedriver.framework.dashboard.handler.IDashboardHandler;
 import codedriver.framework.dashboard.dao.mapper.DashboardMapper;
 import codedriver.framework.dashboard.dto.ChartDataVo;
 import codedriver.framework.dashboard.dto.DashboardWidgetVo;
+import codedriver.framework.restful.annotation.*;
+import codedriver.framework.restful.constvalue.OperationTypeEnum;
+import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
+import codedriver.module.dashboard.auth.label.DASHBOARD_BASE;
 import codedriver.module.dashboard.exception.DashboardHandlerNotFoundException;
 import codedriver.module.dashboard.exception.DashboardParamException;
 import codedriver.module.dashboard.exception.DashboardWidgetNotFoundException;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @AuthAction(action = DASHBOARD_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
@@ -84,7 +81,7 @@ public class DashboardWidgetDataGetApi extends PrivateApiComponentBase {
 		}
 		widgetVo.setHandler(handler.getName());
 		ChartDataVo chartDataVo = handler.getData(widgetVo);
-		JSONObject chartDataJson =  (JSONObject) JSONObject.toJSON(chartDataVo);
+		JSONObject chartDataJson =  JSONObject.parseObject(JSONObject.toJSONString(chartDataVo));
 		JSONObject dataJson = chartDataJson.getJSONObject("data");
 		chartDataJson.remove("data");
 		chartDataJson.put("theadList", dataJson.get("theadList"));

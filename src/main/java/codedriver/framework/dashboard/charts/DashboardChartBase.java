@@ -1,7 +1,8 @@
-package codedriver.framework.dashboard.core;
+package codedriver.framework.dashboard.charts;
 
 import codedriver.framework.dashboard.dto.DashboardDataGroupVo;
 import codedriver.framework.dashboard.dto.DashboardDataSubGroupVo;
+import codedriver.framework.dashboard.dto.DashboardWidgetDataGroupVo;
 import codedriver.framework.dashboard.dto.DashboardWidgetDataVo;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections4.CollectionUtils;
@@ -23,11 +24,11 @@ public abstract class DashboardChartBase {
      * @return JSONObject
      * @Description: 返回数据
      */
-    public JSONObject getData(DashboardWidgetDataVo dashboardDataVo) {
+    public JSONObject getData(DashboardWidgetDataGroupVo dashboardDataVo) {
         return getMyData(dashboardDataVo);
     }
 
-    public JSONObject getMyData(DashboardWidgetDataVo dashboardDataVo) {
+    public JSONObject getMyData(DashboardWidgetDataGroupVo dashboardDataVo) {
         JSONObject dataJson = new JSONObject();
         dataJson.put("dataList", getDefaultData(dashboardDataVo));
         return dataJson;
@@ -40,16 +41,16 @@ public abstract class DashboardChartBase {
      * @Params: [dashboardDataVo]
      * @Returns: com.alibaba.fastjson.JSONObject
      **/
-    protected List<Map<String, Object>> getDefaultData(DashboardWidgetDataVo dashboardDataVo) {
-        List<Map<String, Object>> resultDataList = new ArrayList<>();
-        DashboardDataGroupVo dataGroupVo = dashboardDataVo.getDataGroupVo();
-        DashboardDataSubGroupVo dataSubGroupVo = dashboardDataVo.getDataSubGroupVo();
+    protected List<DashboardWidgetDataVo> getDefaultData(DashboardWidgetDataGroupVo dashboardDataGroupVo) {
+        List<DashboardWidgetDataVo> resultDataList = new ArrayList<>();
+        DashboardDataGroupVo dataGroupVo = dashboardDataGroupVo.getDataGroupVo();
+        DashboardDataSubGroupVo dataSubGroupVo = dashboardDataGroupVo.getDataSubGroupVo();
         if (CollectionUtils.isNotEmpty(dataGroupVo.getDataList())) {
             Map<String, Object> groupDataCountMap = dataGroupVo.getDataCountMap();
             //循环获取需要的字段数据
             for (Map<String, Object> dataMap : dataGroupVo.getDataList()) {
                 Iterator<Map.Entry<String, Object>> iterator = dataMap.entrySet().iterator();
-                Map<String, Object> resultDataMap = new HashMap<>();
+                DashboardWidgetDataVo dashboardWidgetDataVo = new DashboardWidgetDataVo();
                 //如果不包含primaryKey 或 存在值为null 的列，则废弃该数据
                 if (!dataMap.containsKey(dataGroupVo.getPrimaryKey()) || dataMap.containsValue(null)) {
                     continue;
@@ -61,24 +62,24 @@ public abstract class DashboardChartBase {
                     //如果是分组
                     if (dataGroupVo.getPrimaryKey().equals(key)) {
                         if (dataSubGroupVo != null) {
-                            resultDataMap.put("total", groupDataCountMap.get(value));
+                            dashboardWidgetDataVo.setTotal(groupDataCountMap.get(value).toString());
                         } else {
-                            resultDataMap.put("total", dataMap.get("count"));
+                            dashboardWidgetDataVo.setTotal(dataMap.get("count").toString());
                         }
                     }
                     if (dataGroupVo.getProName().equals(key)) {
-                        resultDataMap.put("column", value);
+                        dashboardWidgetDataVo.setColumn(value);
                     }
                     //如果是子分组
                     if (dataSubGroupVo != null && dataSubGroupVo.getProName().equals(key)) {
-                        resultDataMap.put("type", value);
+                        dashboardWidgetDataVo.setType(value);
                     }
 
                     if ("count".equals(key)) {
-                        resultDataMap.put("value", dataMap.get("count"));
+                        dashboardWidgetDataVo.setValue(dataMap.get("count").toString());
                     }
                 }
-                resultDataList.add(resultDataMap);
+                resultDataList.add(dashboardWidgetDataVo);
             }
         }
         return resultDataList;

@@ -1,9 +1,9 @@
-package codedriver.framework.dashboard.core.charts;
+package codedriver.framework.dashboard.charts.core;
 
 import codedriver.framework.common.constvalue.dashboard.ChartType;
 import codedriver.framework.common.constvalue.dashboard.DashboardShowConfig;
 import codedriver.framework.dashboard.constvalue.DashboardStatistics;
-import codedriver.framework.dashboard.core.DashboardChartBase;
+import codedriver.framework.dashboard.charts.DashboardChartBase;
 import codedriver.framework.dashboard.dto.DashboardShowConfigVo;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;

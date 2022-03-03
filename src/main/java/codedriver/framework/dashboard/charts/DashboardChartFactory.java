@@ -1,18 +1,14 @@
-package codedriver.framework.dashboard.core;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+package codedriver.framework.dashboard.charts;
 
 import org.reflections.Reflections;
+
+import java.util.*;
 
 public class DashboardChartFactory {
 	private static Map<String, DashboardChartBase> chartMap = new HashMap<>();
 	private static List<DashboardChartBase> charList = new ArrayList<DashboardChartBase>();
 	static {
-		Reflections reflections = new Reflections("codedriver.framework.dashboard.core.charts");
+		Reflections reflections = new Reflections("codedriver.framework.dashboard.charts.core");
 		Set<Class<? extends DashboardChartBase>> modules = reflections.getSubTypesOf(DashboardChartBase.class);
 		for (Class<? extends DashboardChartBase> c : modules) {
 			DashboardChartBase chart;

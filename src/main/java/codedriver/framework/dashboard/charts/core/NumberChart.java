@@ -1,17 +1,16 @@
-package codedriver.framework.dashboard.core.charts;
+package codedriver.framework.dashboard.charts.core;
 
 import codedriver.framework.common.constvalue.dashboard.ChartType;
 import codedriver.framework.common.constvalue.dashboard.DashboardShowConfig;
-import codedriver.framework.dashboard.core.DashboardChartBase;
-import codedriver.framework.dashboard.dto.DashboardWidgetDataVo;
+import codedriver.framework.dashboard.charts.DashboardChartBase;
 import codedriver.framework.dashboard.dto.DashboardShowConfigVo;
+import codedriver.framework.dashboard.dto.DashboardWidgetDataGroupVo;
+import codedriver.framework.dashboard.dto.DashboardWidgetDataVo;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class NumberChart extends DashboardChartBase {
 
@@ -21,26 +20,21 @@ public class NumberChart extends DashboardChartBase {
 	}
 
 	@Override
-	public JSONObject getData(DashboardWidgetDataVo dashboardDataVo) {
+	public JSONObject getData(DashboardWidgetDataGroupVo dashboardDataVo) {
 		JSONObject dataJson = new JSONObject();
-		List<Map<String, Object>> resultDataList = getDefaultData(dashboardDataVo);
+		List<DashboardWidgetDataVo> resultDataList = getDefaultData(dashboardDataVo);
 		//多值图补充总数
 		String type = dashboardDataVo.getChartConfigVo().getType();
 		if(StringUtils.isNotBlank(type) && type.equals("many")) {
 			int total = 0;
-			for (Map<String, Object> map : resultDataList) {
-				for (Map.Entry<String, Object> entry : map.entrySet()) {
-					String key = entry.getKey();
-					if (key.equals("total")) {
-						total += Long.parseLong(String.valueOf(entry.getValue()));
-					}
-				}
+			for (DashboardWidgetDataVo widgetDataVo : resultDataList) {
+						total += Long.parseLong(widgetDataVo.getTotal());
 			}
-			Map<String, Object> totalMap = new HashMap<String, Object>();
-			totalMap.put("total", Integer.toString(total));
-			totalMap.put("column", "总数");
-			totalMap.put("value", Integer.toString(total));
-			resultDataList.add(0, totalMap);
+			DashboardWidgetDataVo widgetTotalDataVo = new DashboardWidgetDataVo();
+			widgetTotalDataVo.setTotal(Integer.toString(total));
+			widgetTotalDataVo.setColumn("总数");
+			widgetTotalDataVo.setValue(Integer.toString(total));
+			resultDataList.add(0, widgetTotalDataVo);
 		}
 		dataJson.put("dataList", resultDataList);
 		return dataJson;

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-import codedriver.framework.dashboard.core.DashboardHandlerFactory;
+import codedriver.framework.dashboard.handler.DashboardHandlerFactory;
 import codedriver.framework.dashboard.dto.DashboardHandlerVo;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Output;
