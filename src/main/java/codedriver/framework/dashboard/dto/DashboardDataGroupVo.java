@@ -22,6 +22,8 @@ public class DashboardDataGroupVo {
     private String handleName;
     @EntityField(name = "属性名", type = ApiParamType.STRING)
     private String proName;
+    @EntityField(name = "属性 提示", type = ApiParamType.STRING)
+    private String proTitle;
     private List<Map<String, Object>> dataList;
     private Map<String, Object> dataCountMap;
 
@@ -32,6 +34,14 @@ public class DashboardDataGroupVo {
         this.primaryKey = primaryKey;
         this.handleName = handleName;
         this.proName = proName;
+        this.dataCountMap = dataCountMap;
+    }
+
+    public DashboardDataGroupVo(String primaryKey, String handleName, String proName,String proTitle, Map<String, Object> dataCountMap) {
+        this.primaryKey = primaryKey;
+        this.handleName = handleName;
+        this.proName = proName;
+        this.proTitle = proTitle;
         this.dataCountMap = dataCountMap;
     }
 
@@ -69,6 +79,14 @@ public class DashboardDataGroupVo {
 
     public Map<String, Object> getDataCountMap() {
         return dataCountMap;
+    }
+
+    public String getProTitle() {
+        return proTitle;
+    }
+
+    public void setProTitle(String proTitle) {
+        this.proTitle = proTitle;
     }
 
     public void setDataCountMap(Map<String, Object> dataCountMap) {

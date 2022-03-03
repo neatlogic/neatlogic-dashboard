@@ -7,6 +7,7 @@ package codedriver.framework.dashboard.dto;
 
 import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.restful.annotation.EntityField;
+import org.apache.commons.lang3.StringUtils;
 
 public class DashboardWidgetDataVo {
     @EntityField(name = "总数", type = ApiParamType.STRING)
@@ -17,6 +18,9 @@ public class DashboardWidgetDataVo {
 
     @EntityField(name = "分组名", type = ApiParamType.STRING)
     private String column;
+
+    @EntityField(name = "分组名 提示", type = ApiParamType.STRING)
+    private String columnTitle = StringUtils.EMPTY;
 
     @EntityField(name = "类型", type = ApiParamType.STRING)
     private String type;
@@ -51,5 +55,13 @@ public class DashboardWidgetDataVo {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getColumnTitle() {
+        return columnTitle;
+    }
+
+    public void setColumnTitle(String columnTitle) {
+        this.columnTitle = columnTitle;
     }
 }

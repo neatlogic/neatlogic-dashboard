@@ -6,6 +6,7 @@ import codedriver.framework.dashboard.dto.DashboardWidgetDataGroupVo;
 import codedriver.framework.dashboard.dto.DashboardWidgetDataVo;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -69,6 +70,10 @@ public abstract class DashboardChartBase {
                     }
                     if (dataGroupVo.getProName().equals(key)) {
                         dashboardWidgetDataVo.setColumn(value);
+                    }
+
+                    if (StringUtils.isNotBlank(dataGroupVo.getProTitle()) && dataGroupVo.getProTitle().equals(key)) {
+                        dashboardWidgetDataVo.setColumnTitle(value);
                     }
                     //如果是子分组
                     if (dataSubGroupVo != null && dataSubGroupVo.getProName().equals(key)) {
