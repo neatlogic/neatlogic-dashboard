@@ -26,4 +26,8 @@ public abstract class DashboardHandlerBase implements IDashboardHandler {
 	}
 	
 	protected abstract JSONObject myGetConfig(DashboardWidgetVo widgetVo);
+
+	public String getDistinctCountColumnSql(){
+		return null;
+	}
 }

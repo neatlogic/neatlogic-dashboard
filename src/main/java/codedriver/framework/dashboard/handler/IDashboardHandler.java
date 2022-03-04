@@ -5,61 +5,58 @@
 
 package codedriver.framework.dashboard.handler;
 
-import org.springframework.util.ClassUtils;
-
-import com.alibaba.fastjson.JSONObject;
-
 import codedriver.framework.dashboard.dto.ChartDataVo;
 import codedriver.framework.dashboard.dto.DashboardWidgetVo;
+import com.alibaba.fastjson.JSONObject;
+import org.springframework.util.ClassUtils;
 
 public interface IDashboardHandler {
 
-	public String getType();
+	 String getType();
 
-	public default String getClassName() {
+	 default String getClassName() {
 		return ClassUtils.getUserClass(this.getClass()).getName();
 	}
 
 	/**
-	 * @Time:Mar 2, 2020
-	 * @Description: 获取唯一名
-	 * @param @return
+	 * @date Mar 2, 2020
+	 * @description 获取唯一名
 	 * @return String
 	 */
-	public String getName();
+	 String getName();
 	
 	/**
-	* @Author: chenqiwei
-	* @Time:Mar 20, 2020
+	* @author chenqiwei
+	* @date Mar 20, 2020
 	* @Description: 获取图标 
-	* @param @return 
 	* @return String
 	 */
-	public String getIcon();
+	 String getIcon();
 	
 	/**
-	* @Author: chenqiwei
-	* @Time:Mar 20, 2020
+	* @author chenqiwei
+	* @date Mar 20, 2020
 	* @Description: 获取显示名 
-	* @param @return 
 	* @return String
 	 */
-	public String getDisplayName();
+	 String getDisplayName();
 
 	/**
-	 * @Time:Mar 2, 2020
-	 * @Description: 获取数据
-	 * @param @return
+	 * @date Mar 2, 2020
+	 * @description 获取数据
+	 * @param widgetVo widget配置
 	 * @return ChartDataVo
 	 */
-	public ChartDataVo getData(DashboardWidgetVo dashboardWidgetVo);
+	 ChartDataVo getData(DashboardWidgetVo widgetVo);
 
 	/**
-	 * @Time:Mar 2, 2020
-	 * @Description: TODO 获取图表视图配置数据
-	 * @param @return
+	 * @date Mar 2, 2020
+	 * @description TODO 获取图表视图配置数据
+	 * @param widgetVo widget配置
 	 * @return JSONObject
 	 */
-	public JSONObject getConfig(DashboardWidgetVo widgetVo);
+	 JSONObject getConfig(DashboardWidgetVo widgetVo);
+
+	 String getDistinctCountColumnSql();
 	
 }

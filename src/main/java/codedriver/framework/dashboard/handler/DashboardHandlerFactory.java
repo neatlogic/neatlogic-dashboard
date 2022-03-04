@@ -9,7 +9,6 @@ import codedriver.framework.applicationlistener.core.ModuleInitializedListenerBa
 import codedriver.framework.bootstrap.CodedriverWebApplicationContext;
 import codedriver.framework.common.RootComponent;
 import codedriver.framework.dashboard.dto.DashboardHandlerVo;
-import codedriver.module.dashboard.exception.DashboardHandlerNotFoundException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,9 +27,6 @@ public class DashboardHandlerFactory extends ModuleInitializedListenerBase {
 	private static List<DashboardHandlerVo> dashboardHandlerList = new ArrayList<>();
 
 	public static IDashboardHandler getHandler(String handler) {
-		if (!componentMap.containsKey(handler) || componentMap.get(handler) == null) {
-			throw new DashboardHandlerNotFoundException(handler);
-		}
 		return componentMap.get(handler);
 	}
 
