@@ -79,6 +79,9 @@ public abstract class DashboardChartBase {
                     if (dataSubGroupVo != null && dataSubGroupVo.getProName().equals(key)) {
                         dashboardWidgetDataVo.setType(value);
                     }
+                    if (dataSubGroupVo != null && StringUtils.isNotBlank(dataSubGroupVo.getProTitle()) && dataSubGroupVo.getProTitle().equals(key)) {
+                        dashboardWidgetDataVo.setTypeTitle(value);
+                    }
 
                     if ("count".equals(key)) {
                         dashboardWidgetDataVo.setValue(dataMap.get("count").toString());

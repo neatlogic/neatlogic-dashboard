@@ -25,6 +25,9 @@ public class DashboardWidgetDataVo {
     @EntityField(name = "类型", type = ApiParamType.STRING)
     private String type;
 
+    @EntityField(name = "类型 提示", type = ApiParamType.STRING)
+    private String typeTitle;
+
     public String getTotal() {
         return total;
     }
@@ -63,5 +66,13 @@ public class DashboardWidgetDataVo {
 
     public void setColumnTitle(String columnTitle) {
         this.columnTitle = columnTitle;
+    }
+
+    public String getTypeTitle() {
+        return typeTitle;
+    }
+
+    public void setTypeTitle(String typeTitle) {
+        this.typeTitle = typeTitle;
     }
 }

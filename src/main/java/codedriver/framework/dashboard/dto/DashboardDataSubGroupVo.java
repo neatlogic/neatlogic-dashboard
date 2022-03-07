@@ -16,6 +16,7 @@ public class DashboardDataSubGroupVo {
     private String primaryKey;
     private String handleName;
     private String proName;
+    private String proTitle;
     private List<Map<String,String>> dataList;
 
     public DashboardDataSubGroupVo() {
@@ -25,6 +26,13 @@ public class DashboardDataSubGroupVo {
         this.primaryKey = primaryKey;
         this.handleName = handleName;
         this.proName = proName;
+    }
+
+    public DashboardDataSubGroupVo(String primaryKey, String handleName, String proName,String proTitle) {
+        this.primaryKey = primaryKey;
+        this.handleName = handleName;
+        this.proName = proName;
+        this.proTitle = proTitle;
     }
 
     public String getPrimaryKey() {
@@ -57,5 +65,13 @@ public class DashboardDataSubGroupVo {
 
     public void setDataList(List<Map<String, String>> dataList) {
         this.dataList = dataList;
+    }
+
+    public String getProTitle() {
+        return proTitle;
+    }
+
+    public void setProTitle(String proTitle) {
+        this.proTitle = proTitle;
     }
 }
