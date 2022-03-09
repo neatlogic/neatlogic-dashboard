@@ -5,7 +5,7 @@ import codedriver.framework.auth.core.AuthAction;
 import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.dao.mapper.RoleMapper;
 import codedriver.framework.dao.mapper.UserMapper;
-import codedriver.framework.dashboard.dao.mapper.DashboardMapper;
+import codedriver.module.dashboard.dao.mapper.DashboardMapper;
 import codedriver.framework.dashboard.dto.DashboardVo;
 import codedriver.framework.dto.UserAuthVo;
 import codedriver.framework.restful.constvalue.OperationTypeEnum;

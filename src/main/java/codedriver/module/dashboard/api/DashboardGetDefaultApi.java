@@ -14,7 +14,7 @@ import com.alibaba.fastjson.JSONObject;
 import codedriver.framework.asynchronization.threadlocal.UserContext;
 import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.dao.mapper.UserMapper;
-import codedriver.framework.dashboard.dao.mapper.DashboardMapper;
+import codedriver.module.dashboard.dao.mapper.DashboardMapper;
 import codedriver.framework.dashboard.dto.DashboardDefaultVo;
 import codedriver.framework.dashboard.dto.DashboardVisitCounterVo;
 import codedriver.framework.dashboard.dto.DashboardVo;

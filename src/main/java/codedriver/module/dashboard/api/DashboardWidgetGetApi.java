@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 
 import codedriver.framework.common.constvalue.ApiParamType;
-import codedriver.framework.dashboard.dao.mapper.DashboardMapper;
+import codedriver.module.dashboard.dao.mapper.DashboardMapper;
 import codedriver.framework.dashboard.dto.DashboardWidgetVo;
 import codedriver.module.dashboard.exception.DashboardWidgetNotFoundException;
 

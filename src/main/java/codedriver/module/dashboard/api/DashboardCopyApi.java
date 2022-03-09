@@ -3,7 +3,7 @@ package codedriver.module.dashboard.api;
 import codedriver.framework.asynchronization.threadlocal.UserContext;
 import codedriver.framework.auth.core.AuthAction;
 import codedriver.framework.common.constvalue.ApiParamType;
-import codedriver.framework.dashboard.dao.mapper.DashboardMapper;
+import codedriver.module.dashboard.dao.mapper.DashboardMapper;
 import codedriver.framework.dashboard.dto.DashboardVo;
 import codedriver.framework.dashboard.dto.DashboardWidgetVo;
 import codedriver.framework.restful.annotation.*;

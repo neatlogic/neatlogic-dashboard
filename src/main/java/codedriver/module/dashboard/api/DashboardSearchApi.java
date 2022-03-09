@@ -6,7 +6,7 @@ import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.common.util.PageUtil;
 import codedriver.framework.dao.mapper.TeamMapper;
 import codedriver.framework.dao.mapper.UserMapper;
-import codedriver.framework.dashboard.dao.mapper.DashboardMapper;
+import codedriver.module.dashboard.dao.mapper.DashboardMapper;
 import codedriver.framework.dashboard.dto.DashboardDefaultVo;
 import codedriver.framework.dashboard.dto.DashboardVo;
 import codedriver.framework.dto.AuthenticationInfoVo;
