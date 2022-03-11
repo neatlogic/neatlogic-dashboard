@@ -3,7 +3,7 @@ package codedriver.module.dashboard.api;
 import codedriver.framework.auth.core.AuthAction;
 import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.module.dashboard.dao.mapper.DashboardMapper;
-import codedriver.framework.dashboard.dto.ChartDataVo;
+import codedriver.framework.dashboard.dto.DashboardDataVo;
 import codedriver.framework.dashboard.dto.DashboardWidgetVo;
 import codedriver.framework.dashboard.handler.DashboardHandlerFactory;
 import codedriver.framework.dashboard.handler.IDashboardHandler;
@@ -47,7 +47,7 @@ public class DashboardWidgetDataGetApi extends PrivateApiComponentBase {
             @Param(name = "handler", type = ApiParamType.STRING, desc = "组件处理类"),
             @Param(name = "chartConfig", type = ApiParamType.STRING, desc = "显示格式")
     })
-    @Output({@Param(explode = ChartDataVo.class, desc = "数据集")})
+    @Output({@Param(explode = DashboardDataVo.class, desc = "数据集")})
     @Description(desc = "获取仪表板组件数据接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
@@ -79,15 +79,7 @@ public class DashboardWidgetDataGetApi extends PrivateApiComponentBase {
             throw new DashboardHandlerNotFoundException(widgetVo.getHandler());
         }
         widgetVo.setHandler(handler.getName());
-        ChartDataVo chartDataVo = handler.getData(widgetVo);
-        JSONObject chartDataJson = JSONObject.parseObject(JSONObject.toJSONString(chartDataVo));
-        JSONObject dataJson = chartDataJson.getJSONObject("data");
-        chartDataJson.remove("data");
-        chartDataJson.put("theadList", dataJson.get("theadList"));
-        chartDataJson.put("columnList", dataJson.get("columnList"));
-        chartDataJson.put("dataList", dataJson.get("dataList"));
-        chartDataJson.put("total", dataJson.get("total"));
-        return chartDataJson;
+        return handler.getData(widgetVo);
     }
 
     /**
