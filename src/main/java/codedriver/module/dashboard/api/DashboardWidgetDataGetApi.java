@@ -79,6 +79,8 @@ public class DashboardWidgetDataGetApi extends PrivateApiComponentBase {
             throw new DashboardHandlerNotFoundException(widgetVo.getHandler());
         }
         widgetVo.setHandler(handler.getName());
+        DashboardDataVo dashboardDataVo = handler.getData(widgetVo);
+        dashboardDataVo.setName(widgetVo.getName());
         return handler.getData(widgetVo);
     }
 
