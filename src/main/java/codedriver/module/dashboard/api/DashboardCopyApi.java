@@ -6,7 +6,6 @@ import codedriver.framework.auth.core.AuthActionChecker;
 import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.dashboard.dto.DashboardVo;
 import codedriver.framework.dashboard.dto.DashboardWidgetVo;
-import codedriver.framework.dto.AuthorityVo;
 import codedriver.framework.restful.annotation.*;
 import codedriver.framework.restful.constvalue.OperationTypeEnum;
 import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
@@ -67,10 +66,7 @@ public class DashboardCopyApi extends PrivateApiComponentBase {
         if (StringUtils.equals(oldDashboardVo.getType(), DashboardVo.DashBoardType.SYSTEM.getValue())) {
             if (AuthActionChecker.checkByUserUuid(UserContext.get().getUserUuid(), DASHBOARD_MODIFY.class.getSimpleName())) {
                 //如果是复制的是系统类型的仪表板，且拥有仪表板的管理权限，复制仪表板的授权范围
-                List<AuthorityVo> oldAuthorityList = dashboardMapper.getAuthorizedDashboardByDashboardUuid(oldDashboardVoUid).getAuthorityList();
-                if (CollectionUtils.isNotEmpty(oldAuthorityList)) {
-                    dashboardMapper.insertDashboardAuthorityList(oldAuthorityList, oldDashboardVo.getUuid());
-                }
+                dashboardMapper.insertDashboardAuthorityList(dashboardMapper.getAuthorizedDashboardByDashboardUuid(oldDashboardVoUid).getAuthorityList(), oldDashboardVo.getUuid());
             } else {
                 oldDashboardVo.setType(DashboardVo.DashBoardType.CUSTOM.getValue());
             }
