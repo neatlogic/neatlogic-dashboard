@@ -57,19 +57,19 @@ public class DashboardCopyApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         DashboardVo paramDashboardVo = JSONObject.toJavaObject(jsonObj, DashboardVo.class);
-        String paramDashboardVoUid = paramDashboardVo.getUuid();
-        DashboardVo oldDashboardVo = dashboardMapper.getDashboardByUuid(paramDashboardVoUid);
+        String oldDashboardVoUid = paramDashboardVo.getUuid();
+        DashboardVo oldDashboardVo = dashboardMapper.getDashboardByUuid(oldDashboardVoUid);
         if (oldDashboardVo == null) {
-            throw new DashboardNotFoundException(paramDashboardVoUid);
+            throw new DashboardNotFoundException(oldDashboardVoUid);
         }
         updateWidgetList(oldDashboardVo);
         //修改dashboard
         if (StringUtils.equals(oldDashboardVo.getType(), DashboardVo.DashBoardType.SYSTEM.getValue())) {
             if (AuthActionChecker.checkByUserUuid(UserContext.get().getUserUuid(), DASHBOARD_MODIFY.class.getSimpleName())) {
                 //如果是复制的是系统类型的仪表板，且拥有仪表板的管理权限，复制仪表板的授权范围
-                List<AuthorityVo> authorityList = dashboardMapper.getAuthorizedDashboardByDashboardUuid(paramDashboardVoUid).getAuthorityList();
-                if (CollectionUtils.isNotEmpty(authorityList)) {
-                    dashboardMapper.insertDashboardAuthorityList(authorityList, oldDashboardVo.getUuid());
+                List<AuthorityVo> oldAuthorityList = dashboardMapper.getAuthorizedDashboardByDashboardUuid(oldDashboardVoUid).getAuthorityList();
+                if (CollectionUtils.isNotEmpty(oldAuthorityList)) {
+                    dashboardMapper.insertDashboardAuthorityList(oldAuthorityList, oldDashboardVo.getUuid());
                 }
             } else {
                 oldDashboardVo.setType(DashboardVo.DashBoardType.CUSTOM.getValue());
