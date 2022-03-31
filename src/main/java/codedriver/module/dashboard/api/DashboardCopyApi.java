@@ -72,6 +72,8 @@ public class DashboardCopyApi extends PrivateApiComponentBase {
                 oldDashboardVo.setType(DashboardVo.DashBoardType.CUSTOM.getValue());
             }
         }
+        oldDashboardVo.setFcu(null);
+        oldDashboardVo.setLcu(null);
         oldDashboardVo.setName(paramDashboardVo.getName());
         dashboardMapper.insertDashboard(oldDashboardVo);
 
