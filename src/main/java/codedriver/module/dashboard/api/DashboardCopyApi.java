@@ -62,12 +62,13 @@ public class DashboardCopyApi extends PrivateApiComponentBase {
             throw new DashboardNotFoundException(oldDashboardVoUid);
         }
         updateWidgetList(oldDashboardVo);
-        //修改dashboard
+
         if (StringUtils.equals(oldDashboardVo.getType(), DashboardVo.DashBoardType.SYSTEM.getValue())) {
+            //如果是复制的是系统类型的仪表板，且拥有仪表板的管理权限，复制仪表板的授权范围
             if (AuthActionChecker.checkByUserUuid(UserContext.get().getUserUuid(), DASHBOARD_MODIFY.class.getSimpleName())) {
-                //如果是复制的是系统类型的仪表板，且拥有仪表板的管理权限，复制仪表板的授权范围
                 dashboardMapper.insertDashboardAuthorityList(dashboardMapper.getAuthorizedDashboardByDashboardUuid(oldDashboardVoUid).getAuthorityList(), oldDashboardVo.getUuid());
             } else {
+                //没有仪表板的管理权限，变成自定义类型
                 oldDashboardVo.setType(DashboardVo.DashBoardType.CUSTOM.getValue());
             }
         }
