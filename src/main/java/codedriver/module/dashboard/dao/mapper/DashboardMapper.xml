@@ -285,6 +285,23 @@
 		
 	</select>
 
+	<select id="getAuthorizedDashboardByDashboardUuid" parameterType="java.lang.String" resultMap="dashboardMap">
+		SELECT d.`uuid`,
+			   d.`name`,
+			   d.`description`,
+			   d.`is_active` AS isActive,
+			   d.`type`,
+			   d.`fcd`,
+			   d.`fcu`,
+			   d.`lcd`,
+			   d.`lcu`,
+			   da.uuid       as `authUuid`,
+			   da.type       as `authType`
+		FROM `dashboard` d
+				 LEFT JOIN `dashboard_authority` da ON d.`uuid` = da.`dashboard_uuid`
+		where d.`uuid` = #{value}
+	</select>
+
 	<select id="getDashboardWidgetByDashboardUuid" parameterType="java.lang.String" resultType="codedriver.framework.dashboard.dto.DashboardWidgetVo">
 		SELECT
 		`uuid`,
@@ -332,17 +349,26 @@
 	</update>
 
 	<insert id="insertDashboardAuthority">
+		INSERT INTO `dashboard_authority` (`dashboard_uuid`,
+										   `type`,
+										   `uuid`)
+		VALUES (#{dashboardUuid},
+				#{authorityVo.type},
+				#{authorityVo.uuid})
+	</insert>
+
+	<insert id="insertDashboardAuthorityList">
 		INSERT INTO `dashboard_authority` (
-		  `dashboard_uuid`,
-		  `type`,
-		  `uuid`
-		) 
+		`dashboard_uuid`,
+		`type`,
+		`uuid`
+		)
 		VALUES
-		  (
-		    #{dashboardUuid},
-		    #{authorityVo.type},
-		    #{authorityVo.uuid}
-		  ) ;
+		<foreach collection="authorityVoList" item="authorityVo" separator=",">
+			(#{dashboardUuid},
+			#{authorityVo.type},
+			#{authorityVo.uuid})
+		</foreach>
 	</insert>
 
 	<insert id="insertDashboardVisitCounter" parameterType="codedriver.framework.dashboard.dto.DashboardVisitCounterVo">

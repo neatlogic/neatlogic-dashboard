@@ -71,19 +71,7 @@ public class DashboardSearchApi extends PrivateApiComponentBase {
 	@Description(desc = "仪表板查询接口")
 	@Override
 	public Object myDoService(JSONObject jsonObj) throws Exception {
-		DashboardVo dashboardVo = new DashboardVo();
-		if (jsonObj.containsKey("currentPage")) {
-			dashboardVo.setCurrentPage(jsonObj.getInteger("currentPage"));
-		}
-		if (jsonObj.containsKey("pageSize")) {
-			dashboardVo.setPageSize(jsonObj.getInteger("pageSize"));
-		}
-		if(jsonObj.containsKey("keyword")) {
-			dashboardVo.setKeyword(jsonObj.getString("keyword"));
-		}
-		if(jsonObj.containsKey("type")) {
-			dashboardVo.setIsMine(jsonObj.getString("type").equals("mine")?1:0);
-		}
+		DashboardVo dashboardVo = jsonObj.toJavaObject(DashboardVo.class);
 		String userUuid = UserContext.get().getUserUuid(true);
 		dashboardVo.setFcu(userUuid);
 		AuthenticationInfoVo authenticationInfoVo = authenticationInfoService.getAuthenticationInfo(userUuid);

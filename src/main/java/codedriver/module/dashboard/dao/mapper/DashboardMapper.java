@@ -5,14 +5,14 @@
 
 package codedriver.module.dashboard.dao.mapper;
 
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
-
 import codedriver.framework.dashboard.dto.DashboardDefaultVo;
 import codedriver.framework.dashboard.dto.DashboardVisitCounterVo;
 import codedriver.framework.dashboard.dto.DashboardVo;
 import codedriver.framework.dashboard.dto.DashboardWidgetVo;
 import codedriver.framework.dto.AuthorityVo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface DashboardMapper {
 	public List<DashboardDefaultVo> getDefaultDashboardUuidByUserUuid(String userUuid);
@@ -30,7 +30,9 @@ public interface DashboardMapper {
 	public DashboardWidgetVo getDashboardWidgetByUuid(String dashboardWidgetUuid);
 
 	public DashboardVo getDashboardByUuid(String dashboardUuid);
-	
+
+	public DashboardVo getAuthorizedDashboardByDashboardUuid(String dashboardUuid);
+
 	public DashboardVo getAuthorizedDashboardByUuid(DashboardVo dashboardVo);
 
 	public DashboardVisitCounterVo getDashboardVisitCounter(@Param("dashboardUuid") String dashboardUuid, @Param("userUuid") String userUuid);
@@ -44,7 +46,9 @@ public interface DashboardMapper {
 	public int insertDashboard(DashboardVo dashboardVo);
 
 	public int insertDashboardAuthority(@Param("authorityVo")AuthorityVo authorityVo,@Param("dashboardUuid") String dashboardUuid);
-	
+
+	public int insertDashboardAuthorityList(@Param("authorityVoList")List<AuthorityVo> authorityVoLst,@Param("dashboardUuid") String dashboardUuid);
+
 	public int insertDashboardWidget(DashboardWidgetVo dashboardWidgetVo);
 
 	public int insertDashboardDefault(@Param("dashboardUuid") String dashboardUuid, @Param("userUuid") String userUuid, @Param("type") String type);
