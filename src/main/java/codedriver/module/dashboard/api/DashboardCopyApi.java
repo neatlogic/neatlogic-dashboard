@@ -64,11 +64,11 @@ public class DashboardCopyApi extends PrivateApiComponentBase {
         updateWidgetList(oldDashboardVo);
 
         if (StringUtils.equals(oldDashboardVo.getType(), DashboardVo.DashBoardType.SYSTEM.getValue())) {
-            //如果是复制的是系统类型的仪表板，且拥有仪表板的管理权限，复制仪表板的授权范围
+            //如果复制的仪表板是系统类型，且当前登录人拥有仪表板的管理权限，则复制仪表板的授权范围
             if (AuthActionChecker.checkByUserUuid(UserContext.get().getUserUuid(), DASHBOARD_MODIFY.class.getSimpleName())) {
                 dashboardMapper.insertDashboardAuthorityList(dashboardMapper.getAuthorizedDashboardByDashboardUuid(oldDashboardVoUid).getAuthorityList(), oldDashboardVo.getUuid());
             } else {
-                //没有仪表板的管理权限，变成自定义类型
+                //如果没有仪表板的管理权限，变成自定义类型
                 oldDashboardVo.setType(DashboardVo.DashBoardType.CUSTOM.getValue());
             }
         }
