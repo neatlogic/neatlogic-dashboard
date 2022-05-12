@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  2022 TechSure Co.,Ltd.  All Rights Reserved.
+ * Copyright(c) 2022 TechSure Co., Ltd. All Rights Reserved.
  * 本内容仅限于深圳市赞悦科技有限公司内部传阅，禁止外泄以及用于其他的商业项目。
  */
 
@@ -15,57 +15,59 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface DashboardMapper {
-	public List<DashboardDefaultVo> getDefaultDashboardUuidByUserUuid(String userUuid);
+    List<DashboardDefaultVo> getDefaultDashboardUuidByUserUuid(String userUuid);
 
-	public int searchDashboardCount(DashboardVo dashboardVo);
+    int searchDashboardCount(DashboardVo dashboardVo);
 
-	public List<String> searchAuthorizedDashboardUuid(DashboardVo dashboardVo);
-	
-	public List<DashboardVo> getDashboardListByUuidList(@Param("uuidList")List<String> uuidList);
+    List<Long> searchDashboardId(DashboardVo dashboardVo);
 
-	public List<DashboardVo> searchTopVisitDashboard(DashboardVo dashboardVo);
+    List<String> searchAuthorizedDashboardUuid(DashboardVo dashboardVo);
 
-	public int checkDashboardNameIsExists(DashboardVo dashboardVo);
+    List<DashboardVo> getDashboardByIdList(@Param("idList") List<Long> idList);
 
-	public DashboardWidgetVo getDashboardWidgetByUuid(String dashboardWidgetUuid);
+    // List<DashboardVo> searchTopVisitDashboard(DashboardVo dashboardVo);
 
-	public DashboardVo getDashboardByUuid(String dashboardUuid);
+    int checkDashboardNameIsExists(DashboardVo dashboardVo);
 
-	public DashboardVo getAuthorizedDashboardByDashboardUuid(String dashboardUuid);
+    //DashboardWidgetVo getDashboardWidgetByUuid(String dashboardWidgetUuid);
 
-	public DashboardVo getAuthorizedDashboardByUuid(DashboardVo dashboardVo);
+    DashboardVo getDashboardById(Long id);
 
-	public DashboardVisitCounterVo getDashboardVisitCounter(@Param("dashboardUuid") String dashboardUuid, @Param("userUuid") String userUuid);
+    DashboardVo getAuthorizedDashboardByDashboardUuid(String dashboardUuid);
 
-	public List<DashboardWidgetVo> getDashboardWidgetByDashboardUuid(String dashboardUuid);
-	
-	public int updateDashboard(DashboardVo dashboardVo);
+    DashboardVo getAuthorizedDashboardByUuid(DashboardVo dashboardVo);
 
-	public int updateDashboardVisitCounter(DashboardVisitCounterVo dashboardVisitCounterVo);
+    DashboardVisitCounterVo getDashboardVisitCounter(@Param("dashboardId") Long dashboardId, @Param("userUuid") String userUuid);
 
-	public int insertDashboard(DashboardVo dashboardVo);
+    //List<DashboardWidgetVo> getDashboardWidgetByDashboardUuid(String dashboardUuid);
 
-	public int insertDashboardAuthority(@Param("authorityVo")AuthorityVo authorityVo,@Param("dashboardUuid") String dashboardUuid);
+    int updateDashboard(DashboardVo dashboardVo);
 
-	public int insertDashboardAuthorityList(@Param("authorityVoList")List<AuthorityVo> authorityVoLst,@Param("dashboardUuid") String dashboardUuid);
+    int updateDashboardVisitCounter(DashboardVisitCounterVo dashboardVisitCounterVo);
 
-	public int insertDashboardWidget(DashboardWidgetVo dashboardWidgetVo);
+    int insertDashboard(DashboardVo dashboardVo);
 
-	public int insertDashboardDefault(@Param("dashboardUuid") String dashboardUuid, @Param("userUuid") String userUuid, @Param("type") String type);
+    int insertDashboardAuthority(@Param("authorityVo") AuthorityVo authorityVo, @Param("dashboardId") Long dashboardId);
 
-	public int insertDashboardVisitCounter(DashboardVisitCounterVo dashboardVisitCounterVo);
+    int insertDashboardAuthorityList(@Param("authorityList") List<AuthorityVo> authorityList, @Param("dashboardId") Long dashboardId);
 
-	public int deleteDashboardByUuid(String dashboardUuid);
+    int insertDashboardWidget(DashboardWidgetVo dashboardWidgetVo);
 
-	public int deleteDashboardWidgetByDashboardUuid(String dashboardUuid);
+    int insertDashboardDefault(@Param("dashboardUuid") String dashboardUuid, @Param("userUuid") String userUuid, @Param("type") String type);
 
-	public int deleteDashboardAuthorityByUuid(@Param("dashboardUuid")String dashboardUuid);
+    int insertDashboardVisitCounter(DashboardVisitCounterVo dashboardVisitCounterVo);
 
-	public int deleteDashboardDefaultByDashboardUuid(String dashboardUuid);
+    int deleteDashboardById(Long dashboardId);
 
-	public int deleteDashboardVisitCounterByDashboardUuid(String dashboardUuid);
+    int deleteDashboardWidgetByDashboardUuid(String dashboardUuid);
 
-	public int deleteDashboardDefaultByUserUuid(@Param("userUuid") String userUuid, @Param("type") String type);
+    int deleteDashboardAuthorityByDashboardId(@Param("dashboardId") Long dashboardId);
 
-	public int deleteDashboardWidgetByUuid(@Param("dashboardUuid")String dashboardUuid,@Param("uuid")String uuid);
+    int deleteDashboardDefaultByDashboardId(Long dashboardId);
+
+    int deleteDashboardVisitCounterByDashboardId(Long dashboardId);
+
+    int deleteDashboardDefaultByUserUuid(@Param("userUuid") String userUuid, @Param("type") String type);
+
+    //int deleteDashboardWidgetByUuid(@Param("dashboardUuid") String dashboardUuid, @Param("uuid") String uuid);
 }

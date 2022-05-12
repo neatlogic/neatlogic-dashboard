@@ -1,510 +1,491 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-  ~ Copyright (c)  2022 TechSure Co.,Ltd.  All Rights Reserved.
+  ~ Copyright(c) 2022 TechSure Co., Ltd. All Rights Reserved.
   ~ 本内容仅限于深圳市赞悦科技有限公司内部传阅，禁止外泄以及用于其他的商业项目。
   -->
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="codedriver.module.dashboard.dao.mapper.DashboardMapper">
 
-	<select id="getDefaultDashboardUuidByUserUuid" parameterType="java.lang.String" resultType="codedriver.framework.dashboard.dto.DashboardDefaultVo">
-		SELECT
-		`dashboard_uuid` as dashboardUuid,
-		`user_uuid` as userUuid,
-		`type`
-		FROM `dashboard_default`
-		WHERE `user_uuid` = #{value} 
-	</select>
+    <select id="getDefaultDashboardUuidByUserUuid" parameterType="java.lang.String"
+            resultType="codedriver.framework.dashboard.dto.DashboardDefaultVo">
+        SELECT `dashboard_uuid` as dashboardUuid,
+               `user_uuid`      as userUuid,
+               `type`
+        FROM `dashboard_default`
+        WHERE `user_uuid` = #{value}
+    </select>
 
-	<select id="getDashboardVisitCounter" resultType="codedriver.framework.dashboard.dto.DashboardVisitCounterVo">
-		SELECT
-		`dashboard_uuid` AS dashboardUuid,
-		`user_uuid` AS userUuid,
-		`visit_count` AS visitCount
-		FROM `dashboard_visitcounter`
-		WHERE `dashboard_uuid` = #{dashboardUuid} 
-		AND `user_uuid` = #{userUuid}
-	</select>
+    <select id="getDashboardVisitCounter" resultType="codedriver.framework.dashboard.dto.DashboardVisitCounterVo">
+        SELECT `dashboard_uuid` AS dashboardUuid,
+               `user_uuid`      AS userUuid,
+               `visit_count`    AS visitCount
+        FROM `dashboard_visitcounter`
+        WHERE `dashboard_uuid` = #{dashboardUuid}
+          AND `user_uuid` = #{userUuid}
+    </select>
 
-	<sql id="searchDashboardCondition">
-		SELECT
-		a.*
-		FROM
-		`dashboard` a
-		LEFT JOIN `dashboard_authority` da ON a.`uuid` = da.`dashboard_uuid`
-		<where>
-			
-			<if test="keyword !=null and keyword!=''">
-				a.name LIKE concat('%', #{keyword}, '%')
-			</if>
-				and ((da.type = 'common' AND da.`uuid` = 'alluser')
-			<if test="userUuid != null and userUuid != ''">
-				OR	(da.type = 'user' AND da.`uuid` = #{userUuid})
-			</if>
-			<if test="teamUuidList != null and teamUuidList.size() > 0">
-				OR (da.type = 'team' AND da.`uuid` IN 
-				<foreach collection="teamUuidList" item="teamUuid" open="(" separator=","  close=")">
-					#{teamUuid}
-				</foreach>
-					)
-			</if>
-			<if test="roleUuidList != null and roleUuidList.size() > 0">
-				OR (da.type = 'role' AND da.`uuid` IN 
-					<foreach collection="roleUuidList" item="roleUuid" open="(" separator=","  close=")">
-						#{roleUuid}
-					</foreach>
-					)
-			</if>
-			<if test="fcu != null and fcu != ''">
-			or	a.`fcu` = #{fcu}
-			</if>
-			)
-			<if test="isMine != null and isMine == 1">
-				and a.`fcu` = #{fcu}
-			</if>
-		</where>
-	</sql>
+    <sql id="searchDashboardCondition">
+        <where>
+            <if test="keyword !=null and keyword!=''">
+                and a.name LIKE concat('%', #{keyword}, '%')
+            </if>
+            <choose>
+                <when test="isAdmin">
+                    and (a.type = 'system' or (a.type='custom' and a.`fcu` = #{fcu}))
+                </when>
+                <otherwise>
+                    and ((da.type = 'common' AND da.`uuid` = 'alluser')
+                    <if test="userUuid != null and userUuid != ''">
+                        OR (da.type = 'user' AND da.`uuid` = #{userUuid})
+                    </if>
+                    <if test="teamUuidList != null and teamUuidList.size() > 0">
+                        OR (da.type = 'team' AND da.`uuid` IN
+                        <foreach collection="teamUuidList" item="teamUuid" open="(" separator="," close=")">
+                            #{teamUuid}
+                        </foreach>
+                        )
+                    </if>
+                    <if test="roleUuidList != null and roleUuidList.size() > 0">
+                        OR (da.type = 'role' AND da.`uuid` IN
+                        <foreach collection="roleUuidList" item="roleUuid" open="(" separator="," close=")">
+                            #{roleUuid}
+                        </foreach>
+                        )
+                    </if>
+                    <if test="fcu != null and fcu != ''">
+                        or a.`fcu` = #{fcu}
+                    </if>
+                    )
+                </otherwise>
+            </choose>
+            <if test="isMine != null and isMine == 1">
+                and a.`fcu` = #{fcu}
+            </if>
+        </where>
+    </sql>
 
-	<select id="searchDashboardCount" parameterType="codedriver.framework.dashboard.dto.DashboardVo" resultType="int">
-		SELECT
-		count(DISTINCT `uuid`)
-		FROM (
-		<include refid="searchDashboardCondition" />
-		) tmp
-	</select>
-	
-	<resultMap id="dashboardMap" type="codedriver.framework.dashboard.dto.DashboardVo">
-		<id column="uuid" property="uuid" />
-		<result column="name" property="name" />
-		<result column="description" property="description" />
-		<result column="fcu" property="fcu" />
-		<!-- <result column="fcuName" property="fcuName" />-->
-		<result column="fcd" property="fcd" />
-		<result column="lcu" property="lcu" />
-		<!--<result column="lcuName" property="lcuName" />-->
-		<result column="lcd" property="lcd" />
-		<result column="defaultUser" property="defaultUser" />
-		<result column="defaultType" property="defaultType" />
-		<result column="type" property="type" />
-		<result column="sort" property="sort" />
-		<result column="condition_config" property="conditionConfig" />
-		<collection property="authorityList" ofType="codedriver.framework.dto.AuthorityVo">
-			<result column="authUuid" property="uuid" />
-			<result column="authType" property="type" />
-		</collection>
-	</resultMap>
-	
-	<select id="searchAuthorizedDashboardUuid" parameterType="codedriver.framework.dashboard.dto.DashboardVo" resultType="java.lang.String">
-		SELECT b.uuid FROM ( 
-			SELECT
-			DISTINCT
-			a.uuid
-			FROM
-			`dashboard` a
-			LEFT JOIN `dashboard_authority` da ON a.`uuid` = da.`dashboard_uuid`
-			<where>
-				<if test="keyword !=null and keyword!=''">
-					AND a.name LIKE concat('%', #{keyword}, '%')
-				</if>
-					and ((da.type = 'common' AND da.`uuid` = 'alluser')
-				<if test="userUuid != null and userUuid != ''">
-				  	OR	(da.type = 'user' AND da.`uuid` = #{userUuid})
-				</if>
-				<if test="teamUuidList != null and teamUuidList.size() > 0">
-					OR (da.type = 'team' AND da.`uuid` IN 
-					<foreach collection="teamUuidList" item="teamUuid" open="(" separator=","  close=")">
-						#{teamUuid}
-					</foreach>
-						)
-				</if>
-				<if test="roleUuidList != null and roleUuidList.size() > 0">
-					OR (da.type = 'role' AND da.`uuid` IN 
-						<foreach collection="roleUuidList" item="roleUuid" open="(" separator=","  close=")">
-							#{roleUuid}
-						</foreach>
-						)
-				</if>
-				<if test="fcu != null and fcu != ''">
-				or	a.`fcu` = #{fcu}
-				</if>
-				)
-				<if test="isMine != null and isMine == 1">
-					and a.`fcu` = #{fcu}
-				</if>
-			</where>
-		)b LEFT JOIN `dashboard` c on b.uuid = c.uuid
-		ORDER BY c.fcd DESC
-		<if test="needPage">
-			LIMIT #{startNum}, #{pageSize}
-		</if>
-	</select>
+    <select id="searchDashboardCount" parameterType="codedriver.framework.dashboard.dto.DashboardVo" resultType="int">
+        SELECT
+        count(DISTINCT a.`id`)
+        FROM
+        `dashboard` a
+        LEFT JOIN `dashboard_authority` da ON a.`id` = da.`dashboard_id`
+        <include refid="searchDashboardCondition"/>
+    </select>
 
-	<select id="getDashboardListByUuidList" parameterType="java.util.List" resultMap="dashboardMap">
-		SELECT
-		a.`uuid`,
-		a.`name`,
-		a.description,
-		a.is_active AS isActive,
-		a.fcu,
-		<!--(SELECT user_name FROM `user` x WHERE x.uuid = a.`fcu`) AS fcuName,-->
-		a.fcd,
-		a.lcu,
-		<!--(SELECT user_name FROM `user` x WHERE x.uuid = a.`lcu`) AS lcuName,-->
-		a.lcd,
-		a.type,
-		da.`type` as authType,
-		da.`uuid` as authUuid,
-		do.`user_uuid` as `defaultUser`,
-		do.`type` as `defaultType`
-		FROM
-		`dashboard` a
-		LEFT JOIN `dashboard_authority` da ON a.`uuid` = da.`dashboard_uuid`
-		LEFT JOIN `dashboard_default` do ON a.`uuid` = do.`dashboard_uuid`
-		<where>
-			<if test="uuidList != null and uuidList.size() > 0">
-				 a.`uuid` IN 
-				<foreach collection="uuidList" item="uuid" open="(" separator=","  close=")">
-					#{uuid}
-				</foreach>
-			</if>
-		</where>
-		ORDER BY fcd DESC
-	</select>
-
-	<select id="searchTopVisitDashboard" parameterType="codedriver.framework.dashboard.dto.DashboardVo" resultType="codedriver.framework.dashboard.dto.DashboardVo">
-		SELECT
-		DISTINCT
-		`uuid`,
-		`name`,
-		description,
-		is_active AS isActive,
-		fcu,
-		fcd,
-		lcu,
-		lcd,
-		b.visit_count
-		FROM (
-		<include refid="searchDashboardCondition" />
-		) tmp 
-		LEFT JOIN dashboard_visitcounter b ON tmp.uuid = b.dashboard_uuid AND b.user_uuid = #{fcu}
-		ORDER BY b.visit_count DESC, fcd DESC
-		LIMIT #{pageSize}
-	</select>
-
-	<select id="checkDashboardNameIsExists" parameterType="codedriver.framework.dashboard.dto.DashboardVo" resultType="int">
-		SELECT
-		count(1)
-		FROM
-		`dashboard`
-		WHERE uuid != #{uuid}
-		AND
-		name = #{name}
-	</select>
-
-	<select id="getDashboardWidgetByUuid" parameterType="java.lang.String" resultType="codedriver.framework.dashboard.dto.DashboardWidgetVo">
-		SELECT
-		`uuid`,
-		`name`,
-		`refresh_interval` AS refreshInterval,
-		`description`,
-		`dashboard_uuid` AS dashboardUuid,
-		`handler`,
-		`chart_type` AS chartType,
-		`condition_config` AS conditionConfig,
-		`chart_config` AS chartConfig,
-		`x`,
-		`y`,
-		`i`,
-		`h`,
-		`w`,
-		`detail_widget_uuid` AS detailWidgetUuid
-		FROM
-		`dashboard_widget`
-		WHERE
-		uuid = #{value}
-	</select>
-
-	<select id="getDashboardByUuid" parameterType="java.lang.String" resultType="codedriver.framework.dashboard.dto.DashboardVo">
-		SELECT
-		d.`uuid`,
-		d.`name`,
-		d.`description`,
-		d.`is_active` AS isActive,
-		d.`type`,
-		d.`fcd`,
-		d.`fcu`,
-		d.`lcd`,
-		d.`lcu`
-		FROM
-		`dashboard` d
-		where
-		`uuid` = #{value}
-	</select>
-	
-	<select id="getAuthorizedDashboardByUuid" parameterType="java.lang.String" resultMap="dashboardMap">
-		SELECT
-		d.`uuid`,
-		d.`name`,
-		d.`description`,
-		d.`is_active` AS isActive,
-		d.`type`,
-		d.`fcd`,
-		d.`fcu`,
-		d.`lcd`,
-		d.`lcu`,
-		da.uuid as `authUuid`,
-		da.type as `authType`
-		FROM `dashboard` d
-		LEFT JOIN `dashboard_authority` da ON d.`uuid` = da.`dashboard_uuid`
-		<where>
-			d.`uuid` = #{uuid}
-			and
-			((da.type = 'common' AND da.`uuid` = 'alluser')
-			<if test="userUuid != null and userUuid != ''">
-			  	OR	(da.type = 'user' AND da.`uuid` = #{userUuid})
-			</if>
-			<if test="teamUuidList != null and teamUuidList.size() > 0">
-				OR (da.type = 'team' AND da.`uuid` IN 
-				<foreach collection="teamUuidList" item="teamUuid" open="(" separator=","  close=")">
-					#{teamUuid}
-				</foreach>
-					)
-			</if>
-			<if test="roleUuidList != null and roleUuidList.size() > 0">
-				OR (da.type = 'role' AND da.`uuid` IN 
-					<foreach collection="roleUuidList" item="roleUuid" open="(" separator=","  close=")">
-						#{roleUuid}
-					</foreach>
-					)
-			</if>
-			<if test="fcu != null and fcu != ''">
-			or	d.`fcu` = #{fcu}
-			</if>
-			)
-		</where>
-		
-	</select>
-
-	<select id="getAuthorizedDashboardByDashboardUuid" parameterType="java.lang.String" resultMap="dashboardMap">
-		SELECT d.`uuid`,
-			   d.`name`,
-			   d.`description`,
-			   d.`is_active` AS isActive,
-			   d.`type`,
-			   d.`fcd`,
-			   d.`fcu`,
-			   d.`lcd`,
-			   d.`lcu`,
-			   da.uuid       as `authUuid`,
-			   da.type       as `authType`
-		FROM `dashboard` d
-				 LEFT JOIN `dashboard_authority` da ON d.`uuid` = da.`dashboard_uuid`
-		where d.`uuid` = #{value}
-	</select>
-
-	<select id="getDashboardWidgetByDashboardUuid" parameterType="java.lang.String" resultType="codedriver.framework.dashboard.dto.DashboardWidgetVo">
-		SELECT
-		`uuid`,
-		`name`,
-		`refresh_interval` AS refreshInterval,
-		`description`,
-		`dashboard_uuid` AS dashboardUuid,
-		`condition_config` AS conditionConfig,
-		`chart_config` AS chartConfig,
-		`handler`,
-		`chart_type` AS chartType,
-		`x`,
-		`y`,
-		`i`,
-		`h`,
-		`w`,
-		`detail_widget_uuid` AS detailWidgetUuid
-		FROM
-		`dashboard_widget`
-		WHERE
-		dashboard_uuid = #{value}
-	</select>
+    <select id="searchDashboardId" parameterType="codedriver.framework.dashboard.dto.DashboardVo"
+            resultType="java.lang.Long">
+        SELECT
+        DISTINCT a.`id`
+        FROM
+        `dashboard` a
+        LEFT JOIN `dashboard_authority` da ON a.`id` = da.`dashboard_id`
+        <include refid="searchDashboardCondition"/>
+        ORDER BY a.id DESC
+    </select>
 
 
-	<update id="updateDashboard" parameterType="codedriver.framework.dashboard.dto.DashboardVo">
-		UPDATE
-		`dashboard`
-		SET
-		`name` = #{name},
-		`description` = #{description},
-		`is_active` = #{isActive},
-		`type` = #{type},
-		`lcd` = NOW(3),
-		`lcu` = #{lcu}
-		WHERE `uuid` = #{uuid}
-	</update>
+    <resultMap id="dashboardMap" type="codedriver.framework.dashboard.dto.DashboardVo">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="description" property="description"/>
+        <result column="isActive" property="isActive"/>
+        <result column="fcu" property="fcu"/>
+        <result column="fcd" property="fcd"/>
+        <result column="lcu" property="lcu"/>
+        <result column="lcd" property="lcd"/>
+        <result column="type" property="type"/>
+        <result column="widgetListStr" property="widgetListStr"/>
+        <collection property="authorityList" ofType="codedriver.framework.dto.AuthorityVo">
+            <result column="authUuid" property="uuid"/>
+            <result column="authType" property="type"/>
+        </collection>
+    </resultMap>
 
-	<update id="updateDashboardVisitCounter" parameterType="codedriver.framework.dashboard.dto.DashboardVisitCounterVo">
-		UPDATE
-		`dashboard_visitcounter`
-		SET
-		`visit_count` = `visit_count` + 1
-		WHERE `dashboard_uuid` = #{dashboardUuid}
-		AND `user_uuid` = #{userUuid}
-	</update>
+    <select id="searchAuthorizedDashboardUuid" parameterType="codedriver.framework.dashboard.dto.DashboardVo"
+            resultType="java.lang.String">
+        SELECT b.uuid FROM (
+        SELECT
+        DISTINCT
+        a.uuid
+        FROM
+        `dashboard` a
+        LEFT JOIN `dashboard_authority` da ON a.`uuid` = da.`dashboard_uuid`
+        <where>
+            <if test="keyword !=null and keyword!=''">
+                AND a.name LIKE concat('%', #{keyword}, '%')
+            </if>
+            and ((da.type = 'common' AND da.`uuid` = 'alluser')
+            <if test="userUuid != null and userUuid != ''">
+                OR (da.type = 'user' AND da.`uuid` = #{userUuid})
+            </if>
+            <if test="teamUuidList != null and teamUuidList.size() > 0">
+                OR (da.type = 'team' AND da.`uuid` IN
+                <foreach collection="teamUuidList" item="teamUuid" open="(" separator="," close=")">
+                    #{teamUuid}
+                </foreach>
+                )
+            </if>
+            <if test="roleUuidList != null and roleUuidList.size() > 0">
+                OR (da.type = 'role' AND da.`uuid` IN
+                <foreach collection="roleUuidList" item="roleUuid" open="(" separator="," close=")">
+                    #{roleUuid}
+                </foreach>
+                )
+            </if>
+            <if test="fcu != null and fcu != ''">
+                or a.`fcu` = #{fcu}
+            </if>
+            )
+            <if test="isMine != null and isMine == 1">
+                and a.`fcu` = #{fcu}
+            </if>
+        </where>
+        )b LEFT JOIN `dashboard` c on b.uuid = c.uuid
+        ORDER BY c.fcd DESC
+        <if test="needPage">
+            LIMIT #{startNum}, #{pageSize}
+        </if>
+    </select>
 
-	<insert id="insertDashboardAuthority">
-		INSERT INTO `dashboard_authority` (`dashboard_uuid`,
-										   `type`,
-										   `uuid`)
-		VALUES (#{dashboardUuid},
-				#{authorityVo.type},
-				#{authorityVo.uuid})
-	</insert>
+    <select id="getDashboardByIdList" resultMap="dashboardMap">
+        SELECT
+        a.`id`,
+        a.`name`,
+        a.`description`,
+        a.`is_active` AS isActive,
+        a.`fcu`,
+        a.`fcd`,
+        a.`lcu`,
+        a.`lcd`,
+        a.`type`,
+        a.`widget_list` AS widgetListStr,
+        b.`uuid` AS authUuid,
+        b.`type` AS authType
+        FROM
+        `dashboard` a
+        left join `dashboard_authority` b ON a.id = b.dashboard_id
+        WHERE
+        a.`id` IN
+        <foreach collection="idList" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY a.id DESC
+    </select>
 
-	<insert id="insertDashboardAuthorityList">
-		INSERT INTO `dashboard_authority` (
-		`dashboard_uuid`,
-		`type`,
-		`uuid`
-		)
-		VALUES
-		<foreach collection="authorityVoList" item="authorityVo" separator=",">
-			(#{dashboardUuid},
-			#{authorityVo.type},
-			#{authorityVo.uuid})
-		</foreach>
-	</insert>
+    <!--<select id="searchTopVisitDashboard" parameterType="codedriver.framework.dashboard.dto.DashboardVo"
+            resultType="codedriver.framework.dashboard.dto.DashboardVo">
+        SELECT
+        DISTINCT
+        `id`,
+        `name`,
+        description,
+        is_active AS isActive,
+        fcu,
+        fcd,
+        lcu,
+        lcd,
+        b.visit_count
+        FROM (
+        <include refid="searchDashboardCondition"/>
+        ) tmp
+        LEFT JOIN dashboard_visitcounter b ON tmp.uuid = b.dashboard_uuid AND b.user_uuid = #{fcu}
+        ORDER BY b.visit_count DESC, fcd DESC
+        LIMIT #{pageSize}
+    </select>-->
 
-	<insert id="insertDashboardVisitCounter" parameterType="codedriver.framework.dashboard.dto.DashboardVisitCounterVo">
-		INSERT INTO `dashboard_visitcounter` (
-		`dashboard_uuid`,
-		`user_uuid`,
-		`visit_count`
-		)
-		VALUES
-		(
-		#{dashboardUuid},
-		#{userUuid},
-		#{visitCount}
-		)
-	</insert>
+    <select id="checkDashboardNameIsExists" parameterType="codedriver.framework.dashboard.dto.DashboardVo"
+            resultType="int">
+        SELECT count(1)
+        FROM `dashboard`
+        WHERE id != #{id}
+          AND name = #{name}
+    </select>
 
-	<insert id="insertDashboard" parameterType="codedriver.framework.dashboard.dto.DashboardVo">
-		INSERT INTO `dashboard` (
-		`uuid`,
-		`name`,
-		`type`,
-		`description`,
-		`is_active`,
-		`fcd`,
-		`fcu`,
-		`lcd`,
-		`lcu`
-		)
-		VALUES
-		(
-		#{uuid},
-		#{name},
-		#{type},
-		#{description},
-		#{isActive},
-		NOW(3),
-		#{fcu},
-		NOW(3),
-		#{fcu}
-		)
-	</insert>
+    <!--<select id="getDashboardWidgetByUuid" parameterType="java.lang.String"
+            resultType="codedriver.framework.dashboard.dto.DashboardWidgetVo">
+        SELECT `uuid`,
+               `name`,
+               `refresh_interval`   AS refreshInterval,
+               `description`,
+               `dashboard_uuid`     AS dashboardUuid,
+               `handler`,
+               `chart_type`         AS chartType,
+               `condition_config`   AS conditionConfig,
+               `chart_config`       AS chartConfig,
+               `x`,
+               `y`,
+               `i`,
+               `h`,
+               `w`,
+               `detail_widget_uuid` AS detailWidgetUuid
+        FROM `dashboard_widget`
+        WHERE uuid = #{value}
+    </select>-->
 
-	<insert id="insertDashboardWidget" parameterType="codedriver.framework.dashboard.dto.DashboardWidgetVo">
-		INSERT INTO `dashboard_widget` (
-		`uuid`,
-		`name`,
-		`refresh_interval`,
-		`description`,
-		`dashboard_uuid`,
-		`handler`,
-		`chart_type`,
-		`condition_config`,
-		`chart_config`,
-		`detail_widget_uuid`,
-		`x`,
-		`y`,
-		`h`,
-		`w`,
-		`i`
-		)
-		VALUES
-		(
-		#{uuid},
-		#{name},
-		#{refreshInterval},
-		#{description},
-		#{dashboardUuid},
-		#{handler},
-		#{chartType},
-		#{conditionConfig},
-		#{chartConfig},
-		#{detailWidgetUuid},
-		#{x},
-		#{y},
-		#{h},
-		#{w},
-		#{i}
-		)
-	</insert>
+    <select id="getDashboardById" parameterType="java.lang.Long"
+            resultMap="dashboardMap">
+        SELECT a.`id`,
+               a.`name`,
+               a.`description`,
+               a.`is_active`   AS isActive,
+               a.`type`,
+               a.`fcd`,
+               a.`fcu`,
+               a.`lcd`,
+               a.`lcu`,
+               a.`widget_list` AS widgetListStr,
+               b.`uuid`        AS authUuid,
+               b.`type`        AS authType
+        FROM `dashboard` a
+                 left join `dashboard_authority` b ON a.id = b.dashboard_id
+        where `id` = #{id}
+    </select>
 
-	<insert id="insertDashboardDefault">
-		INSERT INTO `dashboard_default` (`dashboard_uuid`, `user_uuid`, `type`)
-		VALUES (#{dashboardUuid}, #{userUuid}, #{type})
-	</insert>
+    <select id="getAuthorizedDashboardByUuid" parameterType="java.lang.String" resultMap="dashboardMap">
+        SELECT
+        d.`uuid`,
+        d.`name`,
+        d.`description`,
+        d.`is_active` AS isActive,
+        d.`type`,
+        d.`fcd`,
+        d.`fcu`,
+        d.`lcd`,
+        d.`lcu`,
+        da.uuid as `authUuid`,
+        da.type as `authType`
+        FROM `dashboard` d
+        LEFT JOIN `dashboard_authority` da ON d.`uuid` = da.`dashboard_uuid`
+        <where>
+            d.`uuid` = #{uuid}
+            and
+            ((da.type = 'common' AND da.`uuid` = 'alluser')
+            <if test="userUuid != null and userUuid != ''">
+                OR (da.type = 'user' AND da.`uuid` = #{userUuid})
+            </if>
+            <if test="teamUuidList != null and teamUuidList.size() > 0">
+                OR (da.type = 'team' AND da.`uuid` IN
+                <foreach collection="teamUuidList" item="teamUuid" open="(" separator="," close=")">
+                    #{teamUuid}
+                </foreach>
+                )
+            </if>
+            <if test="roleUuidList != null and roleUuidList.size() > 0">
+                OR (da.type = 'role' AND da.`uuid` IN
+                <foreach collection="roleUuidList" item="roleUuid" open="(" separator="," close=")">
+                    #{roleUuid}
+                </foreach>
+                )
+            </if>
+            <if test="fcu != null and fcu != ''">
+                or d.`fcu` = #{fcu}
+            </if>
+            )
+        </where>
 
-	<delete id="deleteDashboardWidgetByDashboardUuid" parameterType="java.lang.String">
-		DELETE
-		FROM
-		`dashboard_widget`
-		WHERE `dashboard_uuid` = #{value}
-	</delete>
+    </select>
 
-	<delete id="deleteDashboardDefaultByDashboardUuid" parameterType="java.lang.String">
-		DELETE
-		FROM
-		`dashboard_default`
-		WHERE `dashboard_uuid` = #{value}
-	</delete>
+    <select id="getAuthorizedDashboardByDashboardUuid" parameterType="java.lang.String" resultMap="dashboardMap">
+        SELECT d.`uuid`,
+               d.`name`,
+               d.`description`,
+               d.`is_active` AS isActive,
+               d.`type`,
+               d.`fcd`,
+               d.`fcu`,
+               d.`lcd`,
+               d.`lcu`,
+               da.uuid       as `authUuid`,
+               da.type       as `authType`
+        FROM `dashboard` d
+                 LEFT JOIN `dashboard_authority` da ON d.`uuid` = da.`dashboard_uuid`
+        where d.`uuid` = #{value}
+    </select>
 
-	<delete id="deleteDashboardDefaultByUserUuid" parameterType="java.lang.String">
-		DELETE
-		FROM
-		`dashboard_default`
-		<where>
-			<if test="type != 'system'">
-			`user_uuid` = #{userUuid} 
-			</if>
-			and `type` = #{type}
-		</where>
-	</delete>
+    <!--<select id="getDashboardWidgetByDashboardUuid" parameterType="java.lang.String"
+            resultType="codedriver.framework.dashboard.dto.DashboardWidgetVo">
+        SELECT `uuid`,
+               `name`,
+               `refresh_interval`   AS refreshInterval,
+               `description`,
+               `dashboard_uuid`     AS dashboardUuid,
+               `condition_config`   AS conditionConfig,
+               `chart_config`       AS chartConfig,
+               `handler`,
+               `chart_type`         AS chartType,
+               `x`,
+               `y`,
+               `i`,
+               `h`,
+               `w`,
+               `detail_widget_uuid` AS detailWidgetUuid
+        FROM `dashboard_widget`
+        WHERE dashboard_uuid = #{value}
+    </select>-->
 
-	<delete id="deleteDashboardAuthorityByUuid" parameterType="java.lang.String">
-		DELETE 
-		FROM
-		  `dashboard_authority`
-		WHERE `dashboard_uuid` = #{dashboardUuid} ;
-	</delete>
 
-	<delete id="deleteDashboardByUuid" parameterType="java.lang.String">
-		DELETE
-		FROM
-		`dashboard`
-		WHERE `uuid` = #{value}
-	</delete>
+    <update id="updateDashboard" parameterType="codedriver.framework.dashboard.dto.DashboardVo">
+        UPDATE
+            `dashboard`
+        SET `name`        = #{name},
+            `description` = #{description},
+            `is_active`   = #{isActive},
+            `type`        = #{type},
+            `lcd`         = NOW(3),
+            `lcu`         = #{lcu},
+            `widget_list` = #{widgetListStr,typeHandler=CompressHandler}
+        WHERE `id` = #{id}
+    </update>
 
-	<delete id="deleteDashboardVisitCounterByDashboardUuid" parameterType="java.lang.String">
-		DELETE
-		FROM
-		`dashboard_visitcounter`
-		WHERE `dashboard_uuid` = #{dashboardUuid}
-	</delete>
-	
-	<delete id="deleteDashboardWidgetByUuid" parameterType="java.lang.String">
-		DELETE
-		FROM
-		`dashboard_widget`
-		WHERE `dashboard_uuid`= #{dashboardUuid} and `uuid` = #{uuid}
-	</delete>
+    <update id="updateDashboardVisitCounter" parameterType="codedriver.framework.dashboard.dto.DashboardVisitCounterVo">
+        UPDATE
+            `dashboard_visitcounter`
+        SET `visit_count` = `visit_count` + 1
+        WHERE `dashboard_id` = #{dashboardId}
+          AND `user_uuid` = #{userUuid}
+    </update>
+
+    <insert id="insertDashboardAuthority">
+        INSERT IGNORE INTO `dashboard_authority` (`dashboard_id`,
+                                                  `type`,
+                                                  `uuid`)
+        VALUES (#{dashboardId},
+                #{authorityVo.type},
+                #{authorityVo.uuid})
+    </insert>
+
+    <insert id="insertDashboardAuthorityList">
+        INSERT IGNORE INTO `dashboard_authority` (
+        `dashboard_id`,
+        `type`,
+        `uuid`
+        )
+        VALUES
+        <foreach collection="authorityList" item="authorityVo" separator=",">
+            (#{dashboardId},
+            #{authorityVo.type},
+            #{authorityVo.uuid})
+        </foreach>
+    </insert>
+
+    <insert id="insertDashboardVisitCounter" parameterType="codedriver.framework.dashboard.dto.DashboardVisitCounterVo">
+        INSERT INTO `dashboard_visitcounter` (`dashboard_uuid`,
+                                              `user_uuid`,
+                                              `visit_count`)
+        VALUES (#{dashboardUuid},
+                #{userUuid},
+                #{visitCount})
+    </insert>
+
+    <insert id="insertDashboard" parameterType="codedriver.framework.dashboard.dto.DashboardVo">
+        INSERT INTO `dashboard` (`id`,
+                                 `name`,
+                                 `type`,
+                                 `description`,
+                                 `is_active`,
+                                 `fcd`,
+                                 `fcu`,
+                                 `lcd`,
+                                 `lcu`,
+                                 `widget_list`)
+        VALUES (#{id},
+                #{name},
+                #{type},
+                #{description},
+                #{isActive},
+                NOW(3),
+                #{fcu},
+                NOW(3),
+                #{fcu},
+                #{widgetListStr,typeHandler=CompressHandler})
+    </insert>
+
+    <insert id="insertDashboardWidget" parameterType="codedriver.framework.dashboard.dto.DashboardWidgetVo">
+        INSERT INTO `dashboard_widget` (`uuid`,
+                                        `name`,
+                                        `refresh_interval`,
+                                        `description`,
+                                        `dashboard_uuid`,
+                                        `handler`,
+                                        `chart_type`,
+                                        `condition_config`,
+                                        `chart_config`,
+                                        `detail_widget_uuid`,
+                                        `x`,
+                                        `y`,
+                                        `h`,
+                                        `w`,
+                                        `i`)
+        VALUES (#{uuid},
+                #{name},
+                #{refreshInterval},
+                #{description},
+                #{dashboardUuid},
+                #{handler},
+                #{chartType},
+                #{conditionConfig},
+                #{chartConfig},
+                #{detailWidgetUuid},
+                #{x},
+                #{y},
+                #{h},
+                #{w},
+                #{i})
+    </insert>
+
+    <insert id="insertDashboardDefault">
+        INSERT INTO `dashboard_default` (`dashboard_uuid`, `user_uuid`, `type`)
+        VALUES (#{dashboardUuid}, #{userUuid}, #{type})
+    </insert>
+
+    <delete id="deleteDashboardWidgetByDashboardUuid" parameterType="java.lang.String">
+        DELETE
+        FROM `dashboard_widget`
+        WHERE `dashboard_uuid` = #{value}
+    </delete>
+
+    <delete id="deleteDashboardDefaultByDashboardId" parameterType="java.lang.Long">
+        DELETE
+        FROM `dashboard_default`
+        WHERE `dashboard_id` = #{value}
+    </delete>
+
+    <delete id="deleteDashboardDefaultByUserUuid" parameterType="java.lang.String">
+        DELETE
+        FROM
+        `dashboard_default`
+        <where>
+            <if test="type != 'system'">
+                `user_uuid` = #{userUuid}
+            </if>
+            and `type` = #{type}
+        </where>
+    </delete>
+
+    <delete id="deleteDashboardAuthorityByDashboardId" parameterType="java.lang.Long">
+        DELETE
+        FROM `dashboard_authority`
+        WHERE `dashboard_id` = #{dashboardId}
+    </delete>
+
+    <delete id="deleteDashboardById" parameterType="java.lang.Long">
+        DELETE
+        FROM `dashboard`
+        WHERE `id` = #{value}
+    </delete>
+
+    <delete id="deleteDashboardVisitCounterByDashboardId" parameterType="java.lang.Long">
+        DELETE
+        FROM `dashboard_visitcounter`
+        WHERE `dashboard_id` = #{dashboardId}
+    </delete>
+
+    <!-- <delete id="deleteDashboardWidgetByUuid" parameterType="java.lang.String">
+         DELETE
+         FROM `dashboard_widget`
+         WHERE `dashboard_uuid` = #{dashboardUuid}
+           and `uuid` = #{uuid}
+     </delete>-->
 </mapper>
