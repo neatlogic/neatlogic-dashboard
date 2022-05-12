@@ -22,6 +22,7 @@ import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
 import codedriver.module.dashboard.auth.label.DASHBOARD_BASE;
 import codedriver.module.dashboard.dao.mapper.DashboardMapper;
 import codedriver.module.dashboard.exception.DashboardAuthenticationException;
+import codedriver.module.dashboard.exception.DashboardNotFoundException;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,9 @@ public class GetDashboardApi extends PrivateApiComponentBase {
     public Object myDoService(JSONObject jsonObj) throws Exception {
         Long id = jsonObj.getLong("id");
         DashboardVo dashboardVo = dashboardMapper.getDashboardById(id);
+        if (dashboardVo == null) {
+            throw new DashboardNotFoundException(id);
+        }
         if (dashboardVo.getType().equals(DashboardType.SYSTEM.getValue())) {
             if (!dashboardVo.isAdmin()) {
                 if (CollectionUtils.isNotEmpty(dashboardVo.getAuthorityList())) {
