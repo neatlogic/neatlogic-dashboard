@@ -27,7 +27,7 @@
 
     <sql id="searchDashboardCondition">
         <where>
-            <if test="keyword !=null and keyword!=''">
+            <if test="keyword != null and keyword != ''">
                 and a.name LIKE concat('%', #{keyword}, '%')
             </if>
             <choose>
@@ -54,13 +54,13 @@
                         )
                     </if>
                     <if test="fcu != null and fcu != ''">
-                        or a.`fcu` = #{fcu}
+                        or (a.type='custom' and a.`fcu` = #{fcu})
                     </if>
                     )
                 </otherwise>
             </choose>
-            <if test="isMine != null and isMine == 1">
-                and a.`fcu` = #{fcu}
+            <if test="searchType != 'all'">
+                and a.`type` = #{searchType}
             </if>
         </where>
     </sql>

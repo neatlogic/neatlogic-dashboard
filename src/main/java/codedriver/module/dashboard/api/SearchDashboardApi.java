@@ -62,7 +62,7 @@ public class SearchDashboardApi extends PrivateApiComponentBase {
     @Input({
             @Param(name = "keyword", type = ApiParamType.STRING, desc = "关键字"),
             @Param(name = "isActive", type = ApiParamType.INTEGER, desc = "是否激活"),
-            @Param(name = "searchType", type = ApiParamType.ENUM, rule = "all,mine", desc = "类型，all或mine，默认值:all"),
+            @Param(name = "searchType", type = ApiParamType.ENUM, rule = "all,system,custom", desc = "类型，all或mine，默认值:all"),
             @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "当前页数"),
             @Param(name = "pageSize", type = ApiParamType.INTEGER, desc = "每页展示数量 默认20"),
             @Param(name = "needPage", type = ApiParamType.BOOLEAN, desc = "是否分页")})
