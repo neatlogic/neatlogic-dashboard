@@ -64,7 +64,7 @@ public class DeleteDashboardApi extends PrivateApiComponentBase {
             throw new DashboardNotFoundException(dashboardId);
         }
         if ((dashboardVo.getType().equals(DashboardType.SYSTEM.getValue()) && !AuthActionChecker.check("DASHBOARD_MODIFY"))
-                || (dashboardVo.getType().equals(DashboardType.CUSTOM.getValue()) && dashboardVo.getFcu().equals(UserContext.get().getUserUuid(true)))) {
+                || (dashboardVo.getType().equals(DashboardType.CUSTOM.getValue()) && !dashboardVo.getFcu().equals(UserContext.get().getUserUuid(true)))) {
             throw new DashboardAuthenticationException("删除");
         }
         dashboardMapper.deleteDashboardVisitCounterByDashboardId(dashboardId);
