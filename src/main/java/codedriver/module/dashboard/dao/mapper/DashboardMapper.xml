@@ -59,7 +59,7 @@
                     )
                 </otherwise>
             </choose>
-            <if test="searchType != 'all'">
+            <if test="searchType != null and searchType != '' and searchType != 'all'">
                 and a.`type` = #{searchType}
             </if>
         </where>
