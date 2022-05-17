@@ -73,11 +73,11 @@ public class SearchDashboardApi extends PrivateApiComponentBase {
     })
     @Description(desc = "查询仪表板接口")
     @Override
-    public Object myDoService(JSONObject jsonObj) throws Exception {
+    public Object myDoService(JSONObject jsonObj) {
         DashboardVo dashboardVo = JSONObject.toJavaObject(jsonObj, DashboardVo.class);
         String userUuid = UserContext.get().getUserUuid(true);
         dashboardVo.setFcu(userUuid);
-        if (!dashboardVo.isAdmin()) {
+        if (!dashboardVo.getIsAdmin()) {
             AuthenticationInfoVo authenticationInfoVo = authenticationInfoService.getAuthenticationInfo(userUuid);
             dashboardVo.setUserUuid(authenticationInfoVo.getUserUuid());
             dashboardVo.setTeamUuidList(authenticationInfoVo.getTeamUuidList());

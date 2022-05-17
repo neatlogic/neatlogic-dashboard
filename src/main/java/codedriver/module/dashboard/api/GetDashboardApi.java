@@ -71,7 +71,7 @@ public class GetDashboardApi extends PrivateApiComponentBase {
             throw new DashboardNotFoundException(id);
         }
         if (dashboardVo.getType().equals(DashboardType.SYSTEM.getValue())) {
-            if (!dashboardVo.isAdmin()) {
+            if (!dashboardVo.getIsAdmin()) {
                 if (CollectionUtils.isNotEmpty(dashboardVo.getAuthorityList())) {
                     List<String> teamUuidList = new ArrayList<>();
                     List<String> roleUuidList = new ArrayList<>();
