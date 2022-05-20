@@ -76,6 +76,7 @@ public class GetDashboardApi extends PrivateApiComponentBase {
                     List<String> teamUuidList = new ArrayList<>();
                     List<String> roleUuidList = new ArrayList<>();
                     List<String> commonList = new ArrayList<>();
+                    List<String> userList = new ArrayList<>();
                     for (AuthorityVo auth : dashboardVo.getAuthorityList()) {
                         if (auth.getType().equals(AuthType.TEAM.getValue())) {
                             teamUuidList.add(auth.getUuid());
@@ -83,10 +84,12 @@ public class GetDashboardApi extends PrivateApiComponentBase {
                             roleUuidList.add(auth.getUuid());
                         } else if (auth.getType().equals(AuthType.COMMON.getValue())) {
                             commonList.add(auth.getUuid());
+                        } else if (auth.getType().equals(AuthType.USER.getValue())) {
+                            userList.add(auth.getUuid());
                         }
                     }
                     AuthenticationInfoVo authInfo = UserContext.get().getAuthenticationInfoVo();
-                    if (!authInfo.validRole(roleUuidList) && !authInfo.validTeam(teamUuidList) && !commonList.contains(UserType.ALL.getValue()) && !commonList.contains(UserType.LOGIN_USER.getValue())) {
+                    if (!authInfo.validUser(userList) && !authInfo.validRole(roleUuidList) && !authInfo.validTeam(teamUuidList) && !commonList.contains(UserType.ALL.getValue()) && !commonList.contains(UserType.LOGIN_USER.getValue())) {
                         throw new DashboardAuthenticationException("查看");
                     }
                 }
