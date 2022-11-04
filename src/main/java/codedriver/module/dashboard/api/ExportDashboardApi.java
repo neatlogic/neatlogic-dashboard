@@ -9,9 +9,11 @@ import codedriver.framework.asynchronization.threadlocal.UserContext;
 import codedriver.framework.auth.core.AuthAction;
 import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.dashboard.dto.DashboardVo;
-import codedriver.framework.datawarehouse.dto.DataSourceVo;
 import codedriver.framework.dto.AuthenticationInfoVo;
-import codedriver.framework.restful.annotation.*;
+import codedriver.framework.restful.annotation.Description;
+import codedriver.framework.restful.annotation.Input;
+import codedriver.framework.restful.annotation.OperationType;
+import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.constvalue.OperationTypeEnum;
 import codedriver.framework.restful.core.privateapi.PrivateBinaryStreamApiComponentBase;
 import codedriver.framework.service.AuthenticationInfoService;
@@ -61,7 +63,6 @@ public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
             @Param(name = "isActive", type = ApiParamType.INTEGER, desc = "是否激活"),
             @Param(name = "searchType", type = ApiParamType.ENUM, rule = "all,system,custom", desc = "类型，all或mine，默认值:all"),
     })
-    @Output({@Param(explode = DataSourceVo.class)})
     @Description(desc = "导出仪表板")
     @Override
     public Object myDoService(JSONObject paramObj, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -94,11 +95,9 @@ public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
                             }
                         }
                     }
-
                 }
             }
         }
-
         return null;
     }
 
