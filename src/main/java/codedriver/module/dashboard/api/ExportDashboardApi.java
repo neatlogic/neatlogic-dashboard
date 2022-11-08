@@ -8,6 +8,9 @@ package codedriver.module.dashboard.api;
 import codedriver.framework.auth.core.AuthAction;
 import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.dashboard.dto.DashboardVo;
+import codedriver.framework.datawarehouse.dao.mapper.DataWarehouseDataSourceMapper;
+import codedriver.framework.datawarehouse.dto.DataSourceFieldVo;
+import codedriver.framework.datawarehouse.dto.DataSourceVo;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.OperationType;
@@ -17,15 +20,17 @@ import codedriver.framework.restful.core.privateapi.PrivateBinaryStreamApiCompon
 import codedriver.framework.util.FileUtil;
 import codedriver.module.dashboard.auth.label.DASHBOARD_MODIFY;
 import codedriver.module.dashboard.dao.mapper.DashboardMapper;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -36,6 +41,9 @@ public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
 
     @Resource
     private DashboardMapper dashboardMapper;
+
+    @Resource
+    DataWarehouseDataSourceMapper dataWarehouseDataSourceMapper;
 
     @Override
     public String getToken() {
@@ -76,6 +84,40 @@ public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
                         List<DashboardVo> dashboardList = dashboardMapper.getDashboardByIdList(dashboardIdList);
                         if (!dashboardList.isEmpty()) {
                             for (DashboardVo vo : dashboardList) {
+                                JSONArray widgetList = vo.getWidgetList();
+                                Set<Long> datasourceIdSet = new HashSet<>();
+                                Set<Long> datasourceFieldIdSet = new HashSet<>();
+                                if (CollectionUtils.isNotEmpty(widgetList)) {
+                                    for (int j = 0; j < widgetList.size(); j++) {
+                                        JSONObject widget = widgetList.getJSONObject(j);
+                                        Long datasourceId = widget.getLong("datasourceId");
+                                        JSONArray fields = widget.getJSONArray("fields");
+                                        if (datasourceId != null) {
+                                            datasourceIdSet.add(datasourceId);
+                                        }
+                                        if (CollectionUtils.isNotEmpty(fields)) {
+                                            for (int k = 0; k < fields.size(); k++) {
+                                                JSONObject field = fields.getJSONObject(k);
+                                                Long datasourceField = field.getLong("datasourceField");
+                                                if (datasourceField != null) {
+                                                    datasourceFieldIdSet.add(datasourceField);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if (datasourceIdSet.size() > 0) {
+                                    List<DataSourceVo> dataSourceNameList = dataWarehouseDataSourceMapper.getDataSourceNameListByIdList(new ArrayList<>(datasourceIdSet));
+                                    if (dataSourceNameList.size() > 0) {
+                                        vo.setDatasourceIdNameMap(dataSourceNameList.stream().collect(Collectors.toMap(DataSourceVo::getId, DataSourceVo::getName)));
+                                    }
+                                }
+                                if (datasourceFieldIdSet.size() > 0) {
+                                    List<DataSourceFieldVo> dataSourceFieldNameList = dataWarehouseDataSourceMapper.getDataSourceFieldNameListByIdList(new ArrayList<>(datasourceFieldIdSet));
+                                    if (dataSourceFieldNameList.size() > 0) {
+                                        vo.setDatasourceFieldIdNameMap(dataSourceFieldNameList.stream().collect(Collectors.toMap(DataSourceFieldVo::getId, DataSourceFieldVo::getName)));
+                                    }
+                                }
                                 zos.putNextEntry(new ZipEntry(vo.getName() + ".json"));
                                 zos.write(JSONObject.toJSONBytes(vo));
                                 zos.closeEntry();
