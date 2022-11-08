@@ -67,14 +67,8 @@ public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj, HttpServletRequest request, HttpServletResponse response) throws Exception {
         DashboardVo dashboardVo = JSONObject.toJavaObject(paramObj, DashboardVo.class);
-        String userUuid = UserContext.get().getUserUuid(true);
-        dashboardVo.setFcu(userUuid);
-        if (!dashboardVo.getIsAdmin()) {
-            AuthenticationInfoVo authenticationInfoVo = authenticationInfoService.getAuthenticationInfo(userUuid);
-            dashboardVo.setUserUuid(authenticationInfoVo.getUserUuid());
-            dashboardVo.setTeamUuidList(authenticationInfoVo.getTeamUuidList());
-            dashboardVo.setRoleUuidList(authenticationInfoVo.getRoleUuidList());
-        }
+        // 只导出系统面板
+        dashboardVo.setSearchType("system");
         int rowNum = dashboardMapper.searchDashboardCount(dashboardVo);
         dashboardVo.setRowNum(rowNum);
         if (rowNum > 0) {
