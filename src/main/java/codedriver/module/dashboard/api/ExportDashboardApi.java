@@ -5,11 +5,9 @@
 
 package codedriver.module.dashboard.api;
 
-import codedriver.framework.asynchronization.threadlocal.UserContext;
 import codedriver.framework.auth.core.AuthAction;
 import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.dashboard.dto.DashboardVo;
-import codedriver.framework.dto.AuthenticationInfoVo;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.OperationType;
@@ -18,7 +16,7 @@ import codedriver.framework.restful.constvalue.OperationTypeEnum;
 import codedriver.framework.restful.core.privateapi.PrivateBinaryStreamApiComponentBase;
 import codedriver.framework.service.AuthenticationInfoService;
 import codedriver.framework.util.FileUtil;
-import codedriver.module.dashboard.auth.label.DASHBOARD_BASE;
+import codedriver.module.dashboard.auth.label.DASHBOARD_MODIFY;
 import codedriver.module.dashboard.dao.mapper.DashboardMapper;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
@@ -33,7 +31,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @Service
-@AuthAction(action = DASHBOARD_BASE.class)
+@AuthAction(action = DASHBOARD_MODIFY.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
 public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
 
