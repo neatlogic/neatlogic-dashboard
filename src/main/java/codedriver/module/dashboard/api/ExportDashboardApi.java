@@ -14,7 +14,6 @@ import codedriver.framework.restful.annotation.OperationType;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.constvalue.OperationTypeEnum;
 import codedriver.framework.restful.core.privateapi.PrivateBinaryStreamApiComponentBase;
-import codedriver.framework.service.AuthenticationInfoService;
 import codedriver.framework.util.FileUtil;
 import codedriver.module.dashboard.auth.label.DASHBOARD_MODIFY;
 import codedriver.module.dashboard.dao.mapper.DashboardMapper;
@@ -38,9 +37,6 @@ public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
     @Resource
     private DashboardMapper dashboardMapper;
 
-    @Resource
-    private AuthenticationInfoService authenticationInfoService;
-
     @Override
     public String getToken() {
         return "dashboard/export";
@@ -59,7 +55,6 @@ public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
     @Input({
             @Param(name = "keyword", type = ApiParamType.STRING, desc = "关键字"),
             @Param(name = "isActive", type = ApiParamType.INTEGER, desc = "是否激活"),
-            @Param(name = "searchType", type = ApiParamType.ENUM, rule = "all,system,custom", desc = "类型，all或mine，默认值:all"),
     })
     @Description(desc = "导出仪表板")
     @Override
