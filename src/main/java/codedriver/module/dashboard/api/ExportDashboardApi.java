@@ -94,7 +94,7 @@ public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
                                         JSONArray fields = widget.getJSONArray("fields");
                                         if (datasourceId != null) {
                                             JSONObject config = new JSONObject();
-                                            config.put("widgetName", widget.getString("name"));
+                                            config.put("widgetUuid", widget.getString("uuid"));
                                             config.put("id", datasourceId);
                                             DataSourceVo datasource = datasourceMap.get(datasourceId);
                                             if (datasource == null) {
