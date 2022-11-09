@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -73,6 +72,7 @@ public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
         int rowNum = dashboardMapper.searchDashboardCount(dashboardVo);
         dashboardVo.setRowNum(rowNum);
         if (rowNum > 0) {
+            Map<Long, DataSourceVo> datasourceMap = new HashMap<>();
             String fileName = FileUtil.getEncodedFileName("仪表板." + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".pak");
             response.setContentType("application/zip");
             response.setHeader("Content-Disposition", " attachment; filename=\"" + fileName + "\"");
@@ -86,39 +86,45 @@ public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
                             for (DashboardVo vo : dashboardList) {
                                 // 查询每个图表的数据源和字段名称，以便导入时根据名称还原数据源配置
                                 JSONArray widgetList = vo.getWidgetList();
-                                Set<Long> datasourceIdSet = new HashSet<>();
-                                Set<Long> datasourceFieldIdSet = new HashSet<>();
+                                JSONArray datasourceInfoList = new JSONArray();
                                 if (CollectionUtils.isNotEmpty(widgetList)) {
                                     for (int j = 0; j < widgetList.size(); j++) {
                                         JSONObject widget = widgetList.getJSONObject(j);
                                         Long datasourceId = widget.getLong("datasourceId");
                                         JSONArray fields = widget.getJSONArray("fields");
                                         if (datasourceId != null) {
-                                            datasourceIdSet.add(datasourceId);
-                                        }
-                                        if (CollectionUtils.isNotEmpty(fields)) {
-                                            for (int k = 0; k < fields.size(); k++) {
-                                                JSONObject field = fields.getJSONObject(k);
-                                                Long datasourceField = field.getLong("datasourceField");
-                                                if (datasourceField != null) {
-                                                    datasourceFieldIdSet.add(datasourceField);
+                                            JSONObject config = new JSONObject();
+                                            config.put("widgetName", widget.getString("name"));
+                                            config.put("id", datasourceId);
+                                            DataSourceVo datasource = datasourceMap.get(datasourceId);
+                                            if (datasource == null) {
+                                                datasource = dataWarehouseDataSourceMapper.getDataSourceNameAndFieldNameListById(datasourceId);
+                                                if (datasource == null) {
+                                                    continue;
                                                 }
+                                                datasourceMap.put(datasourceId, datasource);
                                             }
+                                            config.put("name", datasource.getName());
+                                            List<DataSourceFieldVo> fieldList = datasource.getFieldList();
+                                            if (CollectionUtils.isNotEmpty(fieldList) && CollectionUtils.isNotEmpty(fields)) {
+                                                JSONArray fieldArray = new JSONArray();
+                                                for (int k = 0; k < fields.size(); k++) {
+                                                    JSONObject field = fields.getJSONObject(k);
+                                                    Optional<DataSourceFieldVo> opt = fieldList.stream().filter(o -> Objects.equals(o.getId(), field.getLong("datasourceField"))).findFirst();
+                                                    opt.ifPresent(dataSourceFieldVo -> fieldArray.add(new JSONObject() {
+                                                        {
+                                                            this.put("id", dataSourceFieldVo.getId());
+                                                            this.put("name", dataSourceFieldVo.getName());
+                                                        }
+                                                    }));
+                                                }
+                                                config.put("fieldList", fieldArray);
+                                            }
+                                            datasourceInfoList.add(config);
                                         }
                                     }
                                 }
-                                if (datasourceIdSet.size() > 0) {
-                                    List<DataSourceVo> dataSourceNameList = dataWarehouseDataSourceMapper.getDataSourceNameListByIdList(new ArrayList<>(datasourceIdSet));
-                                    if (dataSourceNameList.size() > 0) {
-                                        vo.setDatasourceIdNameMap(dataSourceNameList.stream().collect(Collectors.toMap(DataSourceVo::getId, DataSourceVo::getName)));
-                                    }
-                                }
-                                if (datasourceFieldIdSet.size() > 0) {
-                                    List<DataSourceFieldVo> dataSourceFieldNameList = dataWarehouseDataSourceMapper.getDataSourceFieldNameListByIdList(new ArrayList<>(datasourceFieldIdSet));
-                                    if (dataSourceFieldNameList.size() > 0) {
-                                        vo.setDatasourceFieldIdNameMap(dataSourceFieldNameList.stream().collect(Collectors.toMap(DataSourceFieldVo::getId, DataSourceFieldVo::getName)));
-                                    }
-                                }
+                                vo.setDatasourceInfoList(datasourceInfoList);
                                 zos.putNextEntry(new ZipEntry(vo.getName() + ".json"));
                                 zos.write(JSONObject.toJSONBytes(vo));
                                 zos.closeEntry();

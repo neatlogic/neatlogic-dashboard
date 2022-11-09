@@ -37,6 +37,8 @@ public interface DashboardMapper {
 
     DashboardVo getAuthorizedDashboardByUuid(DashboardVo dashboardVo);
 
+    DashboardVo getSystemDashBoardByName(String name);
+
     DashboardVisitCounterVo getDashboardVisitCounter(@Param("dashboardId") Long dashboardId, @Param("userUuid") String userUuid);
 
     //List<DashboardWidgetVo> getDashboardWidgetByDashboardUuid(String dashboardUuid);
