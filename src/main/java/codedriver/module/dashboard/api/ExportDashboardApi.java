@@ -84,6 +84,7 @@ public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
                         List<DashboardVo> dashboardList = dashboardMapper.getDashboardByIdList(dashboardIdList);
                         if (!dashboardList.isEmpty()) {
                             for (DashboardVo vo : dashboardList) {
+                                // 查询每个图表的数据源和字段名称，以便导入时根据名称还原数据源配置
                                 JSONArray widgetList = vo.getWidgetList();
                                 Set<Long> datasourceIdSet = new HashSet<>();
                                 Set<Long> datasourceFieldIdSet = new HashSet<>();
