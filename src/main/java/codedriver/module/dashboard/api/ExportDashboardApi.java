@@ -92,6 +92,7 @@ public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
                                         JSONObject widget = widgetList.getJSONObject(j);
                                         Long datasourceId = widget.getLong("datasourceId");
                                         JSONArray fields = widget.getJSONArray("fields");
+                                        JSONArray conditionList = widget.getJSONArray("conditionList");
                                         if (datasourceId != null) {
                                             JSONObject config = new JSONObject();
                                             config.put("widgetUuid", widget.getString("uuid"));
@@ -106,19 +107,35 @@ public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
                                             }
                                             config.put("name", datasource.getName());
                                             List<DataSourceFieldVo> fieldList = datasource.getFieldList();
-                                            if (CollectionUtils.isNotEmpty(fieldList) && CollectionUtils.isNotEmpty(fields)) {
-                                                JSONArray fieldArray = new JSONArray();
-                                                for (int k = 0; k < fields.size(); k++) {
-                                                    JSONObject field = fields.getJSONObject(k);
-                                                    Optional<DataSourceFieldVo> opt = fieldList.stream().filter(o -> Objects.equals(o.getId(), field.getLong("datasourceField"))).findFirst();
-                                                    opt.ifPresent(dataSourceFieldVo -> fieldArray.add(new JSONObject() {
-                                                        {
-                                                            this.put("id", dataSourceFieldVo.getId());
-                                                            this.put("name", dataSourceFieldVo.getName());
-                                                        }
-                                                    }));
+                                            if (CollectionUtils.isNotEmpty(fieldList)) {
+                                                if (CollectionUtils.isNotEmpty(fields)) {
+                                                    JSONArray fieldArray = new JSONArray();
+                                                    for (int k = 0; k < fields.size(); k++) {
+                                                        JSONObject field = fields.getJSONObject(k);
+                                                        Optional<DataSourceFieldVo> opt = fieldList.stream().filter(o -> Objects.equals(o.getId(), field.getLong("datasourceField"))).findFirst();
+                                                        opt.ifPresent(dataSourceFieldVo -> fieldArray.add(new JSONObject() {
+                                                            {
+                                                                this.put("id", dataSourceFieldVo.getId());
+                                                                this.put("name", dataSourceFieldVo.getName());
+                                                            }
+                                                        }));
+                                                    }
+                                                    config.put("fieldList", fieldArray);
                                                 }
-                                                config.put("fieldList", fieldArray);
+                                                if (CollectionUtils.isNotEmpty(conditionList)) {
+                                                    JSONArray conditionFieldArray = new JSONArray();
+                                                    for (int k = 0; k < conditionList.size(); k++) {
+                                                        JSONObject field = conditionList.getJSONObject(k);
+                                                        Optional<DataSourceFieldVo> opt = fieldList.stream().filter(o -> Objects.equals(o.getId(), field.getLong("id"))).findFirst();
+                                                        opt.ifPresent(dataSourceFieldVo -> conditionFieldArray.add(new JSONObject() {
+                                                            {
+                                                                this.put("id", dataSourceFieldVo.getId());
+                                                                this.put("name", dataSourceFieldVo.getName());
+                                                            }
+                                                        }));
+                                                    }
+                                                    config.put("conditionList", conditionFieldArray);
+                                                }
                                             }
                                             datasourceInfoList.add(config);
                                         }
