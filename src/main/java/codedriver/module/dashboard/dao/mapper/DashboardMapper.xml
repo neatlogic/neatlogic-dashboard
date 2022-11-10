@@ -287,6 +287,13 @@
 
     </select>
 
+    <select id="getSystemDashBoardByName" resultType="codedriver.framework.dashboard.dto.DashboardVo">
+        SELECT a.`id`,
+               a.`name`
+        FROM `dashboard` a
+        where a.`name` = #{value} and a.`type` = 'system'
+    </select>
+
     <select id="getAuthorizedDashboardByDashboardUuid" parameterType="java.lang.String" resultMap="dashboardMap">
         SELECT d.`uuid`,
                d.`name`,
