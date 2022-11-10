@@ -26,7 +26,6 @@ import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.constvalue.OperationTypeEnum;
 import codedriver.framework.restful.core.privateapi.PrivateBinaryStreamApiComponentBase;
 import codedriver.framework.transaction.util.TransactionUtil;
-import codedriver.framework.util.TimeUtil;
 import codedriver.module.dashboard.auth.label.DASHBOARD_MODIFY;
 import codedriver.module.dashboard.dao.mapper.DashboardMapper;
 import com.alibaba.fastjson.JSONArray;
@@ -34,7 +33,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,16 +54,16 @@ import java.util.zip.ZipInputStream;
 public class ImportDashboardApi extends PrivateBinaryStreamApiComponentBase {
 
     @Resource
-    private DashboardMapper dashboardMapper;
+    DashboardMapper dashboardMapper;
 
     @Resource
-    private UserMapper userMapper;
+    UserMapper userMapper;
 
     @Resource
-    private TeamMapper teamMapper;
+    TeamMapper teamMapper;
 
     @Resource
-    private RoleMapper roleMapper;
+    RoleMapper roleMapper;
 
     @Resource
     DataWarehouseDataSourceMapper dataWarehouseDataSourceMapper;
@@ -143,13 +141,15 @@ public class ImportDashboardApi extends PrivateBinaryStreamApiComponentBase {
     }
 
     private JSONObject save(DashboardVo dashboardVo) {
-        // todo 一旦某个图表有问题，整个dashboard跳过
         List<String> failReasonList = new ArrayList<>();
-        // todo 根据每个图的数据源以及字段名称寻找id
+        String name = dashboardVo.getName();
         JSONArray widgetList = dashboardVo.getWidgetList();
         JSONArray datasourceInfoList = dashboardVo.getDatasourceInfoList();
+        /*
+        datasourceInfoList中存放了压缩包中dashboard的数据源（包含字段、条件字段）id与名称信息，需要根据这些信息还原到被导入的目标系统中的数据源信息
+        一旦某个图表有问题，跳过整个dashboard
+         */
         if (CollectionUtils.isNotEmpty(widgetList) && CollectionUtils.isNotEmpty(datasourceInfoList)) {
-            // todo 根据datasourceInfoList里的数据源名称找到所有数据源及其字段名称
             Map<String, JSONObject> datasourceInfoMap = new HashMap<>();
             for (int i = 0; i < datasourceInfoList.size(); i++) {
                 JSONObject obj = datasourceInfoList.getJSONObject(i);
@@ -251,15 +251,8 @@ public class ImportDashboardApi extends PrivateBinaryStreamApiComponentBase {
             }
         }
         if (failReasonList.size() == 0) {
-            DashboardVo oldDashboardVo = null;
             dashboardVo.setId(null);
-            String name = dashboardVo.getName();
-            if (StringUtils.isBlank(name)) {
-                name = "unknown_dashboard_" + TimeUtil.convertDateToString(Calendar.getInstance().getTime(), TimeUtil.yyyyMMddHHmmss);
-                dashboardVo.setName(name);
-            } else {
-                oldDashboardVo = dashboardMapper.getSystemDashBoardByName(name);
-            }
+            DashboardVo oldDashboardVo = dashboardMapper.getSystemDashBoardByName(name);
             if (oldDashboardVo == null) {
                 dashboardVo.setFcu(UserContext.get().getUserUuid());
                 dashboardMapper.insertDashboard(dashboardVo);
@@ -297,6 +290,12 @@ public class ImportDashboardApi extends PrivateBinaryStreamApiComponentBase {
                     dashboardMapper.insertDashboardAuthorityList(authorityList, dashboardVo.getId());
                 }
             }
+        }
+        if (CollectionUtils.isNotEmpty(failReasonList)) {
+            JSONObject result = new JSONObject();
+            result.put("item", "导入：" + name + "时出现如下问题：");
+            result.put("list", failReasonList);
+            return result;
         }
         return null;
     }
