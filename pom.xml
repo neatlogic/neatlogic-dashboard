@@ -11,7 +11,7 @@
 		<version>[2.0.0, 3.0.0)</version>
 	</parent>
 	<artifactId>codedriver-dashboard</artifactId>
-    <version>2.0.2</version>
+    <version>1.1.6</version>
 	<build>
 		<resources>
 			<resource>
