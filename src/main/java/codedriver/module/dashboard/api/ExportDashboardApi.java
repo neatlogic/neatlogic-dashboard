@@ -5,21 +5,25 @@
 
 package codedriver.module.dashboard.api;
 
+import codedriver.framework.asynchronization.threadlocal.UserContext;
 import codedriver.framework.auth.core.AuthAction;
 import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.dashboard.dto.DashboardVo;
 import codedriver.framework.datawarehouse.dao.mapper.DataWarehouseDataSourceMapper;
 import codedriver.framework.datawarehouse.dto.DataSourceFieldVo;
 import codedriver.framework.datawarehouse.dto.DataSourceVo;
+import codedriver.framework.dto.AuthenticationInfoVo;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.OperationType;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.constvalue.OperationTypeEnum;
 import codedriver.framework.restful.core.privateapi.PrivateBinaryStreamApiComponentBase;
+import codedriver.framework.service.AuthenticationInfoService;
 import codedriver.framework.util.FileUtil;
 import codedriver.module.dashboard.auth.label.DASHBOARD_MODIFY;
 import codedriver.module.dashboard.dao.mapper.DashboardMapper;
+import codedriver.module.dashboard.exception.DashboardExportNotFoundException;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections4.CollectionUtils;
@@ -44,6 +48,9 @@ public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
     @Resource
     DataWarehouseDataSourceMapper dataWarehouseDataSourceMapper;
 
+    @Resource
+    private AuthenticationInfoService authenticationInfoService;
+
     @Override
     public String getToken() {
         return "dashboard/export";
@@ -61,14 +68,21 @@ public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
 
     @Input({
             @Param(name = "keyword", type = ApiParamType.STRING, desc = "关键字"),
-            @Param(name = "isActive", type = ApiParamType.INTEGER, desc = "是否激活"),
+            @Param(name = "searchType", type = ApiParamType.ENUM, rule = "all,system,custom", desc = "类型，all或mine，默认值:all"),
+            @Param(name = "isActive", type = ApiParamType.INTEGER, desc = "是否激活")
     })
     @Description(desc = "导出仪表板")
     @Override
     public Object myDoService(JSONObject paramObj, HttpServletRequest request, HttpServletResponse response) throws Exception {
         DashboardVo dashboardVo = JSONObject.toJavaObject(paramObj, DashboardVo.class);
-        // 只导出系统面板
-        dashboardVo.setSearchType("system");
+        String userUuid = UserContext.get().getUserUuid(true);
+        dashboardVo.setFcu(userUuid);
+        if (!dashboardVo.getIsAdmin()) {
+            AuthenticationInfoVo authenticationInfoVo = authenticationInfoService.getAuthenticationInfo(userUuid);
+            dashboardVo.setUserUuid(authenticationInfoVo.getUserUuid());
+            dashboardVo.setTeamUuidList(authenticationInfoVo.getTeamUuidList());
+            dashboardVo.setRoleUuidList(authenticationInfoVo.getRoleUuidList());
+        }
         int rowNum = dashboardMapper.searchDashboardCount(dashboardVo);
         dashboardVo.setRowNum(rowNum);
         if (rowNum > 0) {
@@ -150,6 +164,8 @@ public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
                     }
                 }
             }
+        } else {
+            throw new DashboardExportNotFoundException();
         }
         return null;
     }
