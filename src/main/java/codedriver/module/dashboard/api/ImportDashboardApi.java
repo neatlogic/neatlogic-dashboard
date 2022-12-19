@@ -33,6 +33,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,7 +44,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -52,7 +53,7 @@ import java.util.zip.ZipInputStream;
 @AuthAction(action = DASHBOARD_MODIFY.class)
 @OperationType(type = OperationTypeEnum.OPERATE)
 public class ImportDashboardApi extends PrivateBinaryStreamApiComponentBase {
-
+    static Logger logger = LoggerFactory.getLogger(ImportDashboardApi.class);
     @Resource
     DashboardMapper dashboardMapper;
 
@@ -118,7 +119,9 @@ public class ImportDashboardApi extends PrivateBinaryStreamApiComponentBase {
                         result = save(dashboardVo);
                         TransactionUtil.commitTx(tx);
                     } catch (Exception ex) {
+                        logger.error(ex.getMessage(), ex);
                         TransactionUtil.rollbackTx(tx);
+                        throw new Exception(ex.getMessage(), ex);
                     }
                     if (MapUtils.isNotEmpty(result)) {
                         resultList.add(result);
@@ -128,7 +131,7 @@ public class ImportDashboardApi extends PrivateBinaryStreamApiComponentBase {
                     }
                     out.reset();
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new FileExtNotAllowedException(multipartFile.getOriginalFilename());
             }
         }
@@ -149,35 +152,45 @@ public class ImportDashboardApi extends PrivateBinaryStreamApiComponentBase {
         datasourceInfoList中存放了压缩包中dashboard的数据源（包含字段、条件字段）id与名称信息，需要根据这些信息还原到被导入的目标系统中的数据源信息
         一旦某个图表有问题，跳过整个dashboard
          */
-        if (CollectionUtils.isNotEmpty(widgetList) && CollectionUtils.isNotEmpty(datasourceInfoList)) {
-            Map<String, JSONObject> datasourceInfoMap = new HashMap<>();
-            for (int i = 0; i < datasourceInfoList.size(); i++) {
-                JSONObject obj = datasourceInfoList.getJSONObject(i);
+        Map<String, JSONObject> datasourceInfoMap = new HashMap<>();
+        Map<String, DataSourceVo> allDataSourceVoMap = new HashMap<>();
+        List<DataSourceVo> allDatasource = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(datasourceInfoList)) {
+            for (int j = 0; j < datasourceInfoList.size(); j++) {
+                JSONObject obj = datasourceInfoList.getJSONObject(j);
                 datasourceInfoMap.put(obj.getString("widgetUuid"), obj);
             }
             Set<String> allDatasourceName = new HashSet<>();
-            datasourceInfoList.forEach(o -> allDatasourceName.add(((JSONObject) o).getString("name")));
-            List<DataSourceVo> allDatasource = dataWarehouseDataSourceMapper.getDataSourceListByNameList(new ArrayList<>(allDatasourceName));
-            if (allDatasource.size() > 0) {
-                Map<String, DataSourceVo> allDataSourceVoMap = allDatasource.stream().collect(Collectors.toMap(DataSourceVo::getName, o -> o));
-                JSONArray newWidgetList = new JSONArray();
-                dashboardVo.setWidgetList(newWidgetList);
-                for (int i = 0; i < widgetList.size(); i++) {
-                    JSONObject widget = widgetList.getJSONObject(i);
-                    String uuid = widget.getString("uuid");
-                    String dataType = widget.getString("dataType");
+            Set<String> finalAllDatasourceName = allDatasourceName;
+            datasourceInfoList.forEach(o -> finalAllDatasourceName.add(((JSONObject) o).getString("name")));
+            allDatasource = dataWarehouseDataSourceMapper.getDataSourceListByNameList(new ArrayList<>(allDatasourceName));
+            List<DataSourceVo> finalAllDatasource = allDatasource;
+            allDatasourceName = allDatasourceName.stream().filter(o -> finalAllDatasource.stream().noneMatch(e -> Objects.equals(o, e.getName()))).collect(Collectors.toSet());
+            if (allDatasourceName.size() != 0 ) {
+                failReasonList.add("不存在的数据源：" + String.join("、", allDatasourceName));
+            }
+            allDataSourceVoMap = allDatasource.stream().collect(Collectors.toMap(DataSourceVo::getName, o -> o));
+        }
+        if (CollectionUtils.isNotEmpty(widgetList)) {
+            JSONArray newWidgetList = new JSONArray();
+            dashboardVo.setWidgetList(newWidgetList);
+            for (int i = 0; i < widgetList.size(); i++) {
+                JSONObject widget = widgetList.getJSONObject(i);
+                String uuid = widget.getString("uuid");
+                String dataType = widget.getString("dataType");
+                if (allDatasource.size() > 0 && datasourceInfoMap.containsKey(uuid)) {
                     JSONObject datasourceConfig = datasourceInfoMap.get(uuid);
                     if ("dynamic".equals(dataType) && datasourceConfig == null) {
                         failReasonList.add(widget.getString("name") + "未配置数据源");
-                        continue;
+                        break;
                     }
                     String datasourceName = datasourceConfig.getString("name"); // 数据源名称
                     JSONArray fieldIdNameList = datasourceConfig.getJSONArray("fieldList"); // 数据源字段名称与旧ID
                     JSONArray conditionIdNameList = datasourceConfig.getJSONArray("conditionList"); // 条件字段名称与旧ID
                     DataSourceVo dataSourceVo = allDataSourceVoMap.get(datasourceName);
                     if (dataSourceVo == null) {
-                        failReasonList.add("不存在的数据源：" + datasourceName);
-                        continue;
+                        //failReasonList.add("不存在的数据源：" + datasourceName);
+                        break;
                     }
                     widget.put("datasourceId", dataSourceVo.getId());
                     List<DataSourceFieldVo> allField = dataSourceVo.getFieldList();
@@ -244,11 +257,11 @@ public class ImportDashboardApi extends PrivateBinaryStreamApiComponentBase {
                             failReasonList.add("数据源：" + datasourceName + "中不存在字段：" + String.join("、", allUnknownFieldNames));
                         }
                     }
-                    newWidgetList.add(widget);
                 }
-            } else {
-                failReasonList.add("不存在的数据源：" + String.join("、", allDatasourceName));
+                newWidgetList.add(widget);
             }
+        } else {
+            throw new FileExtNotAllowedException(dashboardVo.getName());
         }
         if (failReasonList.size() == 0) {
             dashboardVo.setId(null);
