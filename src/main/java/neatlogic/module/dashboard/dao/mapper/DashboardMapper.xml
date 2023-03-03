@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+Copyright(c) $today.year NeatLogic Co., Ltd. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="neatlogic.module.dashboard.dao.mapper.DashboardMapper">
+
+    <select id="getDefaultDashboardUuidByUserUuid" parameterType="java.lang.String"
+            resultType="neatlogic.framework.dashboard.dto.DashboardDefaultVo">
+        SELECT `dashboard_uuid` as dashboardUuid,
+               `user_uuid`      as userUuid,
+               `type`
+        FROM `dashboard_default`
+        WHERE `user_uuid` = #{value}
+    </select>
+
+    <select id="getDashboardVisitCounter" resultType="neatlogic.framework.dashboard.dto.DashboardVisitCounterVo">
+        SELECT `dashboard_uuid` AS dashboardUuid,
+               `user_uuid`      AS userUuid,
+               `visit_count`    AS visitCount
+        FROM `dashboard_visitcounter`
+        WHERE `dashboard_uuid` = #{dashboardUuid}
+          AND `user_uuid` = #{userUuid}
+    </select>
+
+    <sql id="searchDashboardCondition">
+        <where>
+            <if test="keyword != null and keyword != ''">
+                and a.name LIKE concat('%', #{keyword}, '%')
+            </if>
+            <choose>
+                <when test="isAdmin">
+                    and (a.type = 'system' or (a.type='custom' and a.`fcu` = #{fcu}))
+                </when>
+                <otherwise>
+                    and ((da.type = 'common' AND da.`uuid` = 'alluser')
+                    <if test="userUuid != null and userUuid != ''">
+                        OR (da.type = 'user' AND da.`uuid` = #{userUuid})
+                    </if>
+                    <if test="teamUuidList != null and teamUuidList.size() > 0">
+                        OR (da.type = 'team' AND da.`uuid` IN
+                        <foreach collection="teamUuidList" item="teamUuid" open="(" separator="," close=")">
+                            #{teamUuid}
+                        </foreach>
+                        )
+                    </if>
+                    <if test="roleUuidList != null and roleUuidList.size() > 0">
+                        OR (da.type = 'role' AND da.`uuid` IN
+                        <foreach collection="roleUuidList" item="roleUuid" open="(" separator="," close=")">
+                            #{roleUuid}
+                        </foreach>
+                        )
+                    </if>
+                    <if test="fcu != null and fcu != ''">
+                        or (a.type='custom' and a.`fcu` = #{fcu})
+                    </if>
+                    )
+                </otherwise>
+            </choose>
+            <if test="searchType != null and searchType != '' and searchType != 'all'">
+                and a.`type` = #{searchType}
+            </if>
+        </where>
+    </sql>
+
+    <select id="searchDashboardCount" parameterType="neatlogic.framework.dashboard.dto.DashboardVo" resultType="int">
+        SELECT
+        count(DISTINCT a.`id`)
+        FROM
+        `dashboard` a
+        LEFT JOIN `dashboard_authority` da ON a.`id` = da.`dashboard_id`
+        <include refid="searchDashboardCondition"/>
+    </select>
+
+    <select id="searchDashboardId" parameterType="neatlogic.framework.dashboard.dto.DashboardVo"
+            resultType="java.lang.Long">
+        SELECT
+        DISTINCT a.`id`
+        FROM
+        `dashboard` a
+        LEFT JOIN `dashboard_authority` da ON a.`id` = da.`dashboard_id`
+        <include refid="searchDashboardCondition"/>
+        ORDER BY a.id DESC
+    </select>
+
+
+    <resultMap id="dashboardMap" type="neatlogic.framework.dashboard.dto.DashboardVo">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="description" property="description"/>
+        <result column="isActive" property="isActive"/>
+        <result column="fcu" property="fcu"/>
+        <result column="fcd" property="fcd"/>
+        <result column="lcu" property="lcu"/>
+        <result column="lcd" property="lcd"/>
+        <result column="type" property="type"/>
+        <result column="widgetListStr" property="widgetListStr"/>
+        <collection property="authorityList" ofType="neatlogic.framework.dto.AuthorityVo">
+            <result column="authUuid" property="uuid"/>
+            <result column="authType" property="type"/>
+        </collection>
+    </resultMap>
+
+    <select id="searchAuthorizedDashboardUuid" parameterType="neatlogic.framework.dashboard.dto.DashboardVo"
+            resultType="java.lang.String">
+        SELECT b.uuid FROM (
+        SELECT
+        DISTINCT
+        a.uuid
+        FROM
+        `dashboard` a
+        LEFT JOIN `dashboard_authority` da ON a.`uuid` = da.`dashboard_uuid`
+        <where>
+            <if test="keyword !=null and keyword!=''">
+                AND a.name LIKE concat('%', #{keyword}, '%')
+            </if>
+            and ((da.type = 'common' AND da.`uuid` = 'alluser')
+            <if test="userUuid != null and userUuid != ''">
+                OR (da.type = 'user' AND da.`uuid` = #{userUuid})
+            </if>
+            <if test="teamUuidList != null and teamUuidList.size() > 0">
+                OR (da.type = 'team' AND da.`uuid` IN
+                <foreach collection="teamUuidList" item="teamUuid" open="(" separator="," close=")">
+                    #{teamUuid}
+                </foreach>
+                )
+            </if>
+            <if test="roleUuidList != null and roleUuidList.size() > 0">
+                OR (da.type = 'role' AND da.`uuid` IN
+                <foreach collection="roleUuidList" item="roleUuid" open="(" separator="," close=")">
+                    #{roleUuid}
+                </foreach>
+                )
+            </if>
+            <if test="fcu != null and fcu != ''">
+                or a.`fcu` = #{fcu}
+            </if>
+            )
+            <if test="isMine != null and isMine == 1">
+                and a.`fcu` = #{fcu}
+            </if>
+        </where>
+        )b LEFT JOIN `dashboard` c on b.uuid = c.uuid
+        ORDER BY c.fcd DESC
+        <if test="needPage">
+            LIMIT #{startNum}, #{pageSize}
+        </if>
+    </select>
+
+    <select id="getDashboardByIdList" resultMap="dashboardMap">
+        SELECT
+        a.`id`,
+        a.`name`,
+        a.`description`,
+        a.`is_active` AS isActive,
+        a.`fcu`,
+        a.`fcd`,
+        a.`lcu`,
+        a.`lcd`,
+        a.`type`,
+        a.`widget_list` AS widgetListStr,
+        b.`uuid` AS authUuid,
+        b.`type` AS authType
+        FROM
+        `dashboard` a
+        left join `dashboard_authority` b ON a.id = b.dashboard_id
+        WHERE
+        a.`id` IN
+        <foreach collection="idList" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY a.id DESC
+    </select>
+
+    <!--<select id="searchTopVisitDashboard" parameterType="neatlogic.framework.dashboard.dto.DashboardVo"
+            resultType="neatlogic.framework.dashboard.dto.DashboardVo">
+        SELECT
+        DISTINCT
+        `id`,
+        `name`,
+        description,
+        is_active AS isActive,
+        fcu,
+        fcd,
+        lcu,
+        lcd,
+        b.visit_count
+        FROM (
+        <include refid="searchDashboardCondition"/>
+        ) tmp
+        LEFT JOIN dashboard_visitcounter b ON tmp.uuid = b.dashboard_uuid AND b.user_uuid = #{fcu}
+        ORDER BY b.visit_count DESC, fcd DESC
+        LIMIT #{pageSize}
+    </select>-->
+
+    <select id="checkDashboardNameIsExists" parameterType="neatlogic.framework.dashboard.dto.DashboardVo"
+            resultType="int">
+        SELECT count(1)
+        FROM `dashboard`
+        WHERE id != #{id}
+          AND name = #{name}
+    </select>
+
+    <!--<select id="getDashboardWidgetByUuid" parameterType="java.lang.String"
+            resultType="neatlogic.framework.dashboard.dto.DashboardWidgetVo">
+        SELECT `uuid`,
+               `name`,
+               `refresh_interval`   AS refreshInterval,
+               `description`,
+               `dashboard_uuid`     AS dashboardUuid,
+               `handler`,
+               `chart_type`         AS chartType,
+               `condition_config`   AS conditionConfig,
+               `chart_config`       AS chartConfig,
+               `x`,
+               `y`,
+               `i`,
+               `h`,
+               `w`,
+               `detail_widget_uuid` AS detailWidgetUuid
+        FROM `dashboard_widget`
+        WHERE uuid = #{value}
+    </select>-->
+
+    <select id="getDashboardById" parameterType="java.lang.Long"
+            resultMap="dashboardMap">
+        SELECT a.`id`,
+               a.`name`,
+               a.`description`,
+               a.`is_active`   AS isActive,
+               a.`type`,
+               a.`fcd`,
+               a.`fcu`,
+               a.`lcd`,
+               a.`lcu`,
+               a.`widget_list` AS widgetListStr,
+               b.`uuid`        AS authUuid,
+               b.`type`        AS authType
+        FROM `dashboard` a
+                 left join `dashboard_authority` b ON a.id = b.dashboard_id
+        where `id` = #{id}
+    </select>
+
+    <select id="getAuthorizedDashboardByUuid" parameterType="java.lang.String" resultMap="dashboardMap">
+        SELECT
+        d.`uuid`,
+        d.`name`,
+        d.`description`,
+        d.`is_active` AS isActive,
+        d.`type`,
+        d.`fcd`,
+        d.`fcu`,
+        d.`lcd`,
+        d.`lcu`,
+        da.uuid as `authUuid`,
+        da.type as `authType`
+        FROM `dashboard` d
+        LEFT JOIN `dashboard_authority` da ON d.`uuid` = da.`dashboard_uuid`
+        <where>
+            d.`uuid` = #{uuid}
+            and
+            ((da.type = 'common' AND da.`uuid` = 'alluser')
+            <if test="userUuid != null and userUuid != ''">
+                OR (da.type = 'user' AND da.`uuid` = #{userUuid})
+            </if>
+            <if test="teamUuidList != null and teamUuidList.size() > 0">
+                OR (da.type = 'team' AND da.`uuid` IN
+                <foreach collection="teamUuidList" item="teamUuid" open="(" separator="," close=")">
+                    #{teamUuid}
+                </foreach>
+                )
+            </if>
+            <if test="roleUuidList != null and roleUuidList.size() > 0">
+                OR (da.type = 'role' AND da.`uuid` IN
+                <foreach collection="roleUuidList" item="roleUuid" open="(" separator="," close=")">
+                    #{roleUuid}
+                </foreach>
+                )
+            </if>
+            <if test="fcu != null and fcu != ''">
+                or d.`fcu` = #{fcu}
+            </if>
+            )
+        </where>
+
+    </select>
+
+    <select id="getSystemDashBoardByName" resultType="neatlogic.framework.dashboard.dto.DashboardVo">
+        SELECT a.`id`,
+               a.`name`
+        FROM `dashboard` a
+        where a.`name` = #{value} and a.`type` = 'system'
+    </select>
+
+    <select id="getAuthorizedDashboardByDashboardUuid" parameterType="java.lang.String" resultMap="dashboardMap">
+        SELECT d.`uuid`,
+               d.`name`,
+               d.`description`,
+               d.`is_active` AS isActive,
+               d.`type`,
+               d.`fcd`,
+               d.`fcu`,
+               d.`lcd`,
+               d.`lcu`,
+               da.uuid       as `authUuid`,
+               da.type       as `authType`
+        FROM `dashboard` d
+                 LEFT JOIN `dashboard_authority` da ON d.`uuid` = da.`dashboard_uuid`
+        where d.`uuid` = #{value}
+    </select>
+
+    <!--<select id="getDashboardWidgetByDashboardUuid" parameterType="java.lang.String"
+            resultType="neatlogic.framework.dashboard.dto.DashboardWidgetVo">
+        SELECT `uuid`,
+               `name`,
+               `refresh_interval`   AS refreshInterval,
+               `description`,
+               `dashboard_uuid`     AS dashboardUuid,
+               `condition_config`   AS conditionConfig,
+               `chart_config`       AS chartConfig,
+               `handler`,
+               `chart_type`         AS chartType,
+               `x`,
+               `y`,
+               `i`,
+               `h`,
+               `w`,
+               `detail_widget_uuid` AS detailWidgetUuid
+        FROM `dashboard_widget`
+        WHERE dashboard_uuid = #{value}
+    </select>-->
+
+
+    <update id="updateDashboard" parameterType="neatlogic.framework.dashboard.dto.DashboardVo">
+        UPDATE
+            `dashboard`
+        SET `name`        = #{name},
+            `description` = #{description},
+            `is_active`   = #{isActive},
+            `type`        = #{type},
+            `lcd`         = NOW(3),
+            `lcu`         = #{lcu},
+            `widget_list` = #{widgetListStr,typeHandler=CompressHandler}
+        WHERE `id` = #{id}
+    </update>
+
+    <update id="updateDashboardVisitCounter" parameterType="neatlogic.framework.dashboard.dto.DashboardVisitCounterVo">
+        UPDATE
+            `dashboard_visitcounter`
+        SET `visit_count` = `visit_count` + 1
+        WHERE `dashboard_id` = #{dashboardId}
+          AND `user_uuid` = #{userUuid}
+    </update>
+
+    <insert id="insertDashboardAuthority">
+        INSERT IGNORE INTO `dashboard_authority` (`dashboard_id`,
+                                                  `type`,
+                                                  `uuid`)
+        VALUES (#{dashboardId},
+                #{authorityVo.type},
+                #{authorityVo.uuid})
+    </insert>
+
+    <insert id="insertDashboardAuthorityList">
+        INSERT IGNORE INTO `dashboard_authority` (
+        `dashboard_id`,
+        `type`,
+        `uuid`
+        )
+        VALUES
+        <foreach collection="authorityList" item="authorityVo" separator=",">
+            (#{dashboardId},
+            #{authorityVo.type},
+            #{authorityVo.uuid})
+        </foreach>
+    </insert>
+
+    <insert id="insertDashboardVisitCounter" parameterType="neatlogic.framework.dashboard.dto.DashboardVisitCounterVo">
+        INSERT INTO `dashboard_visitcounter` (`dashboard_uuid`,
+                                              `user_uuid`,
+                                              `visit_count`)
+        VALUES (#{dashboardUuid},
+                #{userUuid},
+                #{visitCount})
+    </insert>
+
+    <insert id="insertDashboard" parameterType="neatlogic.framework.dashboard.dto.DashboardVo">
+        INSERT INTO `dashboard` (`id`,
+                                 `name`,
+                                 `type`,
+                                 `description`,
+                                 `is_active`,
+                                 `fcd`,
+                                 `fcu`,
+                                 `lcd`,
+                                 `lcu`,
+                                 `widget_list`)
+        VALUES (#{id},
+                #{name},
+                #{type},
+                #{description},
+                #{isActive},
+                NOW(3),
+                #{fcu},
+                NOW(3),
+                #{fcu},
+                #{widgetListStr,typeHandler=CompressHandler})
+    </insert>
+
+    <insert id="insertDashboardWidget" parameterType="neatlogic.framework.dashboard.dto.DashboardWidgetVo">
+        INSERT INTO `dashboard_widget` (`uuid`,
+                                        `name`,
+                                        `refresh_interval`,
+                                        `description`,
+                                        `dashboard_uuid`,
+                                        `handler`,
+                                        `chart_type`,
+                                        `condition_config`,
+                                        `chart_config`,
+                                        `detail_widget_uuid`,
+                                        `x`,
+                                        `y`,
+                                        `h`,
+                                        `w`,
+                                        `i`)
+        VALUES (#{uuid},
+                #{name},
+                #{refreshInterval},
+                #{description},
+                #{dashboardUuid},
+                #{handler},
+                #{chartType},
+                #{conditionConfig},
+                #{chartConfig},
+                #{detailWidgetUuid},
+                #{x},
+                #{y},
+                #{h},
+                #{w},
+                #{i})
+    </insert>
+
+    <insert id="insertDashboardDefault">
+        INSERT INTO `dashboard_default` (`dashboard_uuid`, `user_uuid`, `type`)
+        VALUES (#{dashboardUuid}, #{userUuid}, #{type})
+    </insert>
+
+    <delete id="deleteDashboardWidgetByDashboardUuid" parameterType="java.lang.String">
+        DELETE
+        FROM `dashboard_widget`
+        WHERE `dashboard_uuid` = #{value}
+    </delete>
+
+    <delete id="deleteDashboardDefaultByDashboardId" parameterType="java.lang.Long">
+        DELETE
+        FROM `dashboard_default`
+        WHERE `dashboard_id` = #{value}
+    </delete>
+
+    <delete id="deleteDashboardDefaultByUserUuid" parameterType="java.lang.String">
+        DELETE
+        FROM
+        `dashboard_default`
+        <where>
+            <if test="type != 'system'">
+                `user_uuid` = #{userUuid}
+            </if>
+            and `type` = #{type}
+        </where>
+    </delete>
+
+    <delete id="deleteDashboardAuthorityByDashboardId" parameterType="java.lang.Long">
+        DELETE
+        FROM `dashboard_authority`
+        WHERE `dashboard_id` = #{dashboardId}
+    </delete>
+
+    <delete id="deleteDashboardById" parameterType="java.lang.Long">
+        DELETE
+        FROM `dashboard`
+        WHERE `id` = #{value}
+    </delete>
+
+    <delete id="deleteDashboardVisitCounterByDashboardId" parameterType="java.lang.Long">
+        DELETE
+        FROM `dashboard_visitcounter`
+        WHERE `dashboard_id` = #{dashboardId}
+    </delete>
+
+    <!-- <delete id="deleteDashboardWidgetByUuid" parameterType="java.lang.String">
+         DELETE
+         FROM `dashboard_widget`
+         WHERE `dashboard_uuid` = #{dashboardUuid}
+           and `uuid` = #{uuid}
+     </delete>-->
+</mapper>
