@@ -16,6 +16,7 @@
 
 package neatlogic.module.dashboard.api;
 
+import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
@@ -32,9 +33,8 @@ import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.dashboard.auth.label.DASHBOARD_BASE;
 import neatlogic.module.dashboard.dao.mapper.DashboardMapper;
-import neatlogic.module.dashboard.exception.DashboardAuthenticationException;
+import neatlogic.module.dashboard.exception.DashboardAuthenticationReadException;
 import neatlogic.module.dashboard.exception.DashboardNotFoundException;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -101,12 +101,12 @@ public class GetDashboardApi extends PrivateApiComponentBase {
                     }
                     AuthenticationInfoVo authInfo = UserContext.get().getAuthenticationInfoVo();
                     if (!authInfo.validUser(userList) && !authInfo.validRole(roleUuidList) && !authInfo.validTeam(teamUuidList) && !commonList.contains(UserType.ALL.getValue()) && !commonList.contains(UserType.LOGIN_USER.getValue())) {
-                        throw new DashboardAuthenticationException("查看");
+                        throw new DashboardAuthenticationReadException();
                     }
                 }
             }
         } else if (dashboardVo.getType().equals(DashboardType.CUSTOM.getValue()) && !dashboardVo.getFcu().equals(UserContext.get().getUserUuid(true))) {
-            throw new DashboardAuthenticationException("查看");
+            throw new DashboardAuthenticationReadException();
         }
         return dashboardVo;
     }

@@ -16,6 +16,7 @@
 
 package neatlogic.module.dashboard.api;
 
+import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.auth.core.AuthActionChecker;
@@ -31,9 +32,8 @@ import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.dashboard.auth.label.DASHBOARD_BASE;
 import neatlogic.module.dashboard.dao.mapper.DashboardMapper;
-import neatlogic.module.dashboard.exception.DashboardAuthenticationException;
+import neatlogic.module.dashboard.exception.DashboardAuthenticationDeleteException;
 import neatlogic.module.dashboard.exception.DashboardNotFoundException;
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,7 +76,7 @@ public class DeleteDashboardApi extends PrivateApiComponentBase {
         }
         if ((dashboardVo.getType().equals(DashboardType.SYSTEM.getValue()) && !AuthActionChecker.check("DASHBOARD_MODIFY"))
                 || (dashboardVo.getType().equals(DashboardType.CUSTOM.getValue()) && !dashboardVo.getFcu().equals(UserContext.get().getUserUuid(true)))) {
-            throw new DashboardAuthenticationException("删除");
+            throw new DashboardAuthenticationDeleteException();
         }
         dashboardMapper.deleteDashboardVisitCounterByDashboardId(dashboardId);
         dashboardMapper.deleteDashboardDefaultByDashboardId(dashboardId);
