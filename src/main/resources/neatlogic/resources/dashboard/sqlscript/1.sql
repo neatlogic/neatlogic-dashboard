@@ -1,7 +1,7 @@
 -- ----------------------------
 -- Table structure for dashboard
 -- ----------------------------
-CREATE TABLE `dashboard` (
+CREATE TABLE IF NOT EXISTS `dashboard` (
   `id` bigint NOT NULL COMMENT '唯一标识',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '名称',
   `description` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '描述',
@@ -20,7 +20,7 @@ CREATE TABLE `dashboard` (
 -- ----------------------------
 -- Table structure for dashboard_authority
 -- ----------------------------
-CREATE TABLE `dashboard_authority` (
+CREATE TABLE IF NOT EXISTS `dashboard_authority` (
   `dashboard_id` bigint NOT NULL COMMENT '面板id',
   `type` enum('common','user','team','role') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '查看权限类型',
   `uuid` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '查看权限uuid',
@@ -33,7 +33,7 @@ CREATE TABLE `dashboard_authority` (
 -- ----------------------------
 -- Table structure for dashboard_default
 -- ----------------------------
-CREATE TABLE `dashboard_default` (
+CREATE TABLE IF NOT EXISTS `dashboard_default` (
   `dashboard_id` bigint NOT NULL COMMENT '仪表板唯一标识',
   `user_uuid` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '仪表板用户',
   `type` enum('custom','system') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'custom' COMMENT '仪表板类型',
@@ -44,7 +44,7 @@ CREATE TABLE `dashboard_default` (
 -- ----------------------------
 -- Table structure for dashboard_userdefault
 -- ----------------------------
-CREATE TABLE `dashboard_userdefault` (
+CREATE TABLE IF NOT EXISTS `dashboard_userdefault` (
   `dashboard_id` bigint NOT NULL COMMENT '仪表板唯一标识',
   `user_uuid` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '用户uuid',
   PRIMARY KEY (`dashboard_id`,`user_uuid`) USING BTREE,
@@ -54,7 +54,7 @@ CREATE TABLE `dashboard_userdefault` (
 -- ----------------------------
 -- Table structure for dashboard_visitcounter
 -- ----------------------------
-CREATE TABLE `dashboard_visitcounter` (
+CREATE TABLE IF NOT EXISTS `dashboard_visitcounter` (
   `dashboard_id` bigint NOT NULL COMMENT '仪表板id',
   `user_uuid` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '用户uuid',
   `visit_count` int DEFAULT NULL COMMENT '访问次数',
@@ -65,7 +65,7 @@ CREATE TABLE `dashboard_visitcounter` (
 -- ----------------------------
 -- Table structure for dashboard_widget
 -- ----------------------------
-CREATE TABLE `dashboard_widget` (
+CREATE TABLE IF NOT EXISTS `dashboard_widget` (
   `uuid` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '唯一标识',
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'porlet名称',
   `refresh_interval` int NOT NULL DEFAULT '1' COMMENT '自动刷新间隔，单位秒，0代表不刷新',
