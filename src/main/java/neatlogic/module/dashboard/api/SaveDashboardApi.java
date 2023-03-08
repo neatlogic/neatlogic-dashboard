@@ -16,6 +16,7 @@
 
 package neatlogic.module.dashboard.api;
 
+import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.auth.core.AuthActionChecker;
@@ -28,10 +29,10 @@ import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.util.RegexUtils;
 import neatlogic.module.dashboard.auth.label.DASHBOARD_BASE;
 import neatlogic.module.dashboard.dao.mapper.DashboardMapper;
-import neatlogic.module.dashboard.exception.DashboardAuthenticationException;
+import neatlogic.module.dashboard.exception.DashboardAuthenticationManageException;
+import neatlogic.module.dashboard.exception.DashboardAuthenticationSaveException;
 import neatlogic.module.dashboard.exception.DashboardNameExistsException;
 import neatlogic.module.dashboard.exception.DashboardNotFoundException;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,7 +89,7 @@ public class SaveDashboardApi extends PrivateApiComponentBase {
         if (DashboardType.SYSTEM.getValue().equals(dashboardVo.getType()) || (oldDashboardVo != null && DashboardType.SYSTEM.getValue().equals(oldDashboardVo.getType()))) {
             //判断是否有管理员权限
             if (!AuthActionChecker.check("DASHBOARD_MODIFY")) {
-                throw new DashboardAuthenticationException("管理");
+                throw new DashboardAuthenticationManageException();
             }
         }
         if (id == null) {
@@ -96,7 +97,7 @@ public class SaveDashboardApi extends PrivateApiComponentBase {
             dashboardMapper.insertDashboard(dashboardVo);
         } else {
             if (DashboardType.CUSTOM.getValue().equals(oldDashboardVo.getType()) && !oldDashboardVo.getFcu().equals(userUuid)) {
-                throw new DashboardAuthenticationException("修改");
+                throw new DashboardAuthenticationSaveException();
             }
             dashboardMapper.deleteDashboardAuthorityByDashboardId(id);
             dashboardVo.setLcu(userUuid);
