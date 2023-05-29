@@ -1,6 +1,15 @@
 [中文](README.md) / English
 
-## about
+<p align="left">
+    <a href="https://opensource.org/licenses/Apache-2.0" alt="License">
+        <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" /></a>
+<a target="_blank" href="https://join.slack.com/t/neatlogichome/shared_invite/zt-1w037axf8-r_i2y4pPQ1Z8FxOkAbb64w">
+<img src="https://img.shields.io/badge/Slack-Neatlogic-orange" /></a>
+</p>
+
+---
+
+## About
 
 neatlogic-dashboard is a dashboard module of neatlogic, which supports setting a dashboard as the default home page.
 
