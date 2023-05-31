@@ -6,6 +6,6 @@ public class DashboardParamException extends ApiRuntimeException {
     private static final long serialVersionUID = -8922008245435838956L;
 
     public DashboardParamException(String name) {
-        super("exception.dashboard.dashboardparamexception", name);
+        super("exception.paramexception", name);
     }
 }
