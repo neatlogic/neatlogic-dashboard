@@ -26,12 +26,12 @@ public class DASHBOARD_BASE extends AuthBase {
 
     @Override
     public String getAuthDisplayName() {
-        return "auth.dashboard.dashboardbase.name";
+        return "面板查看权限";
     }
 
     @Override
     public String getAuthIntroduction() {
-        return "auth.dashboard.dashboardbase.introduction";
+        return "查看系统类面板";
     }
 
     @Override

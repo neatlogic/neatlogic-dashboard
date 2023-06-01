@@ -24,6 +24,6 @@ import neatlogic.framework.exception.core.ApiRuntimeException;
 
 public class DashboardAuthenticationManageException extends ApiRuntimeException {
     public DashboardAuthenticationManageException(){
-        super("exception.dashboard.dashboardauthenticationmanageexception");
+        super("您没有管理当前仪表板的权限");
     }
 }

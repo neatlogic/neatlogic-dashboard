@@ -22,7 +22,7 @@ public class DashboardNotFoundException extends ApiRuntimeException {
     private static final long serialVersionUID = 2115999834233454277L;
 
     public DashboardNotFoundException(Long id) {
-        super("exception.dashboard.dashboardnotfoundexception", id);
+        super("仪表板“{0}”不存在", id);
     }
 
 }

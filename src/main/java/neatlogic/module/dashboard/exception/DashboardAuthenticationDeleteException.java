@@ -24,6 +24,6 @@ import neatlogic.framework.exception.core.ApiRuntimeException;
 
 public class DashboardAuthenticationDeleteException extends ApiRuntimeException {
     public DashboardAuthenticationDeleteException(){
-        super("exception.dashboard.dashboardauthenticationdeleteexception");
+        super("您没有删除当前仪表板的权限");
     }
 }

@@ -6,7 +6,7 @@ public class DashboardNameExistsException extends ApiRuntimeException {
     private static final long serialVersionUID = 4230545560652554738L;
 
     public DashboardNameExistsException(String uuid) {
-        super("exception.dashboard.dashboardnameexistsexception", uuid);
+        super("仪表板：“{0}”已存在", uuid);
     }
 
 }

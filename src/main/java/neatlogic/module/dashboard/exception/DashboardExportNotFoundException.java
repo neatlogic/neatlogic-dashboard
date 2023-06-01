@@ -23,7 +23,7 @@ public class DashboardExportNotFoundException extends ApiRuntimeException {
     private static final long serialVersionUID = 2953134440892832028L;
 
     public DashboardExportNotFoundException() {
-        super("exception.dashboard.dashboardexportnotfoundexception");
+        super("暂无可导出的仪表板");
     }
 
 }

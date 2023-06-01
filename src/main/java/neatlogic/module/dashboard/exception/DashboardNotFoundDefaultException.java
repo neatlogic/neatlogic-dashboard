@@ -7,7 +7,7 @@ public class DashboardNotFoundDefaultException extends ApiRuntimeException {
     private static final long serialVersionUID = 339485229374813366L;
 
     public DashboardNotFoundDefaultException() {
-        super("exception.dashboard.dashboardnotfounddefaultexception");
+        super("暂无默认首页，请设置默认首页");
     }
 
 }

@@ -9,6 +9,6 @@ public class DashboardWidgetNotFoundException extends ApiRuntimeException {
     private static final long serialVersionUID = 4236727381596990432L;
 
     public DashboardWidgetNotFoundException(String uuid) {
-        super("exception.dashboard.dashboardwidgetnotfoundexception", uuid);
+        super("仪表板组件：{0}不存在", uuid);
     }
 }

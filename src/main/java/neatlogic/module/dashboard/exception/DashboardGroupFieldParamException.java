@@ -23,6 +23,6 @@ public class DashboardGroupFieldParamException extends ApiRuntimeException {
 	private static final long serialVersionUID = -6341459237046543846L;
 
 	public DashboardGroupFieldParamException() {
-		super("exception.dashboard.dashboardgroupfieldparamexception");
+		super("格式展示 -> 分组条件 不能为空，请检查后重试");
 	}
 }

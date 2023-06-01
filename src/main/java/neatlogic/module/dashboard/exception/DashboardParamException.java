@@ -6,6 +6,6 @@ public class DashboardParamException extends ApiRuntimeException {
     private static final long serialVersionUID = -8922008245435838956L;
 
     public DashboardParamException(String name) {
-        super("exception.paramexception", name);
+        super("过滤条件参数 “{0}”非法", name);
     }
 }

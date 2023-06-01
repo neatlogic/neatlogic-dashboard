@@ -15,7 +15,7 @@
 		http://neatlogic.com/schema/neatlogic
 		http://neatlogic.com/schema/neatlogic.xsd">
 
-	<neatlogic:module id="dashboard" name="仪表板模块" groupName="modulegroup.dashboard.a" group="dashboard" groupSort="0" groupDescription="modulegroup.dashboard.desc" />
+	<neatlogic:module id="dashboard" name="仪表板模块" groupName="仪表板" group="dashboard" groupSort="0" groupDescription="灵活高效的数据可视化平台" />
 
 	<context:component-scan base-package="neatlogic.module.dashboard" />
 

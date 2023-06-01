@@ -24,6 +24,6 @@ import neatlogic.framework.exception.core.ApiRuntimeException;
 
 public class DashboardAuthenticationSaveException extends ApiRuntimeException {
     public DashboardAuthenticationSaveException(){
-        super("exception.dashboard.dashboardauthenticationsaveexception");
+        super("您没有修改当前仪表板的权限");
     }
 }

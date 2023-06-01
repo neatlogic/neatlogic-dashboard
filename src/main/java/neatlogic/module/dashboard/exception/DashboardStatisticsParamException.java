@@ -23,6 +23,6 @@ public class DashboardStatisticsParamException extends ApiRuntimeException {
 	private static final long serialVersionUID = -2962374819787746397L;
 
 	public DashboardStatisticsParamException() {
-		super("exception.dashboard.dashboardstatisticsparamexception");
+		super("格式展示 -> 聚合方式 不能为空，请检查后重试");
 	}
 }

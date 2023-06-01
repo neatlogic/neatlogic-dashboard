@@ -23,6 +23,6 @@ public class DashboardLimitCountParamException extends ApiRuntimeException {
 	private static final long serialVersionUID = 1303238213985736668L;
 
 	public DashboardLimitCountParamException() {
-		super("exception.dashboard.dashboardlimitcountparamexception");
+		super("格式展示 -> 最大组数量 不能为空，请检查后重试");
 	}
 }
