@@ -19,6 +19,7 @@ package neatlogic.module.dashboard.api;
 import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
+import neatlogic.framework.common.dto.BasePageVo;
 import neatlogic.framework.dao.mapper.TeamMapper;
 import neatlogic.framework.dao.mapper.UserMapper;
 import neatlogic.framework.dashboard.dto.DashboardVo;
@@ -26,7 +27,6 @@ import neatlogic.framework.dto.AuthenticationInfoVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.framework.service.AuthenticationInfoService;
 import neatlogic.framework.util.TableResultUtil;
 import neatlogic.module.dashboard.auth.label.DASHBOARD_BASE;
 import neatlogic.module.dashboard.dao.mapper.DashboardMapper;
@@ -52,9 +52,6 @@ public class SearchDashboardApi extends PrivateApiComponentBase {
     @Autowired
     TeamMapper teamMapper;
 
-    @Resource
-    private AuthenticationInfoService authenticationInfoService;
-
     @Override
     public String getToken() {
         return "dashboard/search";
@@ -62,7 +59,7 @@ public class SearchDashboardApi extends PrivateApiComponentBase {
 
     @Override
     public String getName() {
-        return "查询仪表板";
+        return "nmda.searchdashboardapi.getname";
     }
 
     @Override
@@ -71,25 +68,24 @@ public class SearchDashboardApi extends PrivateApiComponentBase {
     }
 
     @Input({
-            @Param(name = "keyword", type = ApiParamType.STRING, desc = "关键字"),
-            @Param(name = "isActive", type = ApiParamType.INTEGER, desc = "是否激活"),
-            @Param(name = "searchType", type = ApiParamType.ENUM, rule = "all,system,custom", desc = "类型，all或mine，默认值:all"),
-            @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "当前页数"),
-            @Param(name = "pageSize", type = ApiParamType.INTEGER, desc = "每页展示数量 默认20"),
-            @Param(name = "needPage", type = ApiParamType.BOOLEAN, desc = "是否分页")})
-    @Output({@Param(name = "pageCount", type = ApiParamType.INTEGER, desc = "总页数"),
-            @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "当前页数"),
-            @Param(name = "pageSize", type = ApiParamType.INTEGER, desc = "每页展示数量"),
-            @Param(name = "tbodyList", explode = DashboardVo[].class, desc = "仪表板列表")
+            @Param(name = "keyword", type = ApiParamType.STRING, desc = "common.keyword"),
+            @Param(name = "isActive", type = ApiParamType.INTEGER, desc = "common.isactive"),
+            @Param(name = "searchType", type = ApiParamType.ENUM, rule = "all,system,custom", desc = "common.type", help = "all：所有，system：系统面板，custom：个人面板，默认值：all"),
+            @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "common.currentpage"),
+            @Param(name = "pageSize", type = ApiParamType.INTEGER, desc = "common.pagesize"),
+            @Param(name = "needPage", type = ApiParamType.BOOLEAN, desc = "common.isneedpage")})
+    @Output({
+            @Param(explode = BasePageVo.class),
+            @Param(name = "tbodyList", explode = DashboardVo[].class, desc = "common.tbodylist")
     })
-    @Description(desc = "查询仪表板接口")
+    @Description(desc = "nmda.searchdashboardapi.getname")
     @Override
     public Object myDoService(JSONObject jsonObj) {
         DashboardVo dashboardVo = JSONObject.toJavaObject(jsonObj, DashboardVo.class);
         String userUuid = UserContext.get().getUserUuid(true);
         dashboardVo.setFcu(userUuid);
         if (!dashboardVo.getIsAdmin()) {
-            AuthenticationInfoVo authenticationInfoVo = authenticationInfoService.getAuthenticationInfo(userUuid);
+            AuthenticationInfoVo authenticationInfoVo = UserContext.get().getAuthenticationInfoVo();
             dashboardVo.setUserUuid(authenticationInfoVo.getUserUuid());
             dashboardVo.setTeamUuidList(authenticationInfoVo.getTeamUuidList());
             dashboardVo.setRoleUuidList(authenticationInfoVo.getRoleUuidList());
