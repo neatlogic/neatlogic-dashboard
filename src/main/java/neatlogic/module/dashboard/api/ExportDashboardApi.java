@@ -30,7 +30,6 @@ import neatlogic.framework.restful.annotation.OperationType;
 import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateBinaryStreamApiComponentBase;
-import neatlogic.framework.service.AuthenticationInfoService;
 import neatlogic.framework.util.FileUtil;
 import neatlogic.module.dashboard.auth.label.DASHBOARD_MODIFY;
 import neatlogic.module.dashboard.dao.mapper.DashboardMapper;
@@ -59,9 +58,6 @@ public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
     @Resource
     DataWarehouseDataSourceMapper dataWarehouseDataSourceMapper;
 
-    @Resource
-    private AuthenticationInfoService authenticationInfoService;
-
     @Override
     public String getToken() {
         return "dashboard/export";
@@ -69,7 +65,7 @@ public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
 
     @Override
     public String getName() {
-        return "导出仪表板";
+        return "nmda.exportdashboardapi.getname";
     }
 
     @Override
@@ -78,18 +74,18 @@ public class ExportDashboardApi extends PrivateBinaryStreamApiComponentBase {
     }
 
     @Input({
-            @Param(name = "keyword", type = ApiParamType.STRING, desc = "关键字"),
-            @Param(name = "searchType", type = ApiParamType.ENUM, rule = "all,system,custom", desc = "类型，all或mine，默认值:all"),
-            @Param(name = "isActive", type = ApiParamType.INTEGER, desc = "是否激活")
+            @Param(name = "keyword", type = ApiParamType.STRING, desc = "common.keyword"),
+            @Param(name = "searchType", type = ApiParamType.ENUM, rule = "all,system,custom", desc = "common.type", help = "all：所有，system：系统面板，custom：个人面板，默认值：all"),
+            @Param(name = "isActive", type = ApiParamType.INTEGER, desc = "common.isactive")
     })
-    @Description(desc = "导出仪表板")
+    @Description(desc = "nmda.exportdashboardapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj, HttpServletRequest request, HttpServletResponse response) throws Exception {
         DashboardVo dashboardVo = JSONObject.toJavaObject(paramObj, DashboardVo.class);
         String userUuid = UserContext.get().getUserUuid(true);
         dashboardVo.setFcu(userUuid);
         if (!dashboardVo.getIsAdmin()) {
-            AuthenticationInfoVo authenticationInfoVo = authenticationInfoService.getAuthenticationInfo(userUuid);
+            AuthenticationInfoVo authenticationInfoVo = UserContext.get().getAuthenticationInfoVo();
             dashboardVo.setUserUuid(authenticationInfoVo.getUserUuid());
             dashboardVo.setTeamUuidList(authenticationInfoVo.getTeamUuidList());
             dashboardVo.setRoleUuidList(authenticationInfoVo.getRoleUuidList());
