@@ -16,12 +16,11 @@
 
 package neatlogic.module.dashboard.api;
 
+import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.common.dto.BasePageVo;
-import neatlogic.framework.dao.mapper.TeamMapper;
-import neatlogic.framework.dao.mapper.UserMapper;
 import neatlogic.framework.dashboard.dto.DashboardVo;
 import neatlogic.framework.dto.AuthenticationInfoVo;
 import neatlogic.framework.restful.annotation.*;
@@ -30,9 +29,7 @@ import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.util.TableResultUtil;
 import neatlogic.module.dashboard.auth.label.DASHBOARD_BASE;
 import neatlogic.module.dashboard.dao.mapper.DashboardMapper;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -45,12 +42,6 @@ public class SearchDashboardApi extends PrivateApiComponentBase {
 
     @Resource
     private DashboardMapper dashboardMapper;
-
-    @Autowired
-    UserMapper userMapper;
-
-    @Autowired
-    TeamMapper teamMapper;
 
     @Override
     public String getToken() {
