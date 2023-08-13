@@ -21,7 +21,6 @@ import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.auth.core.AuthActionChecker;
 import neatlogic.framework.common.constvalue.ApiParamType;
-import neatlogic.framework.dao.mapper.UserMapper;
 import neatlogic.framework.dashboard.dto.DashboardVo;
 import neatlogic.framework.dashboard.enums.DashboardType;
 import neatlogic.framework.restful.annotation.Description;
@@ -34,9 +33,10 @@ import neatlogic.module.dashboard.auth.label.DASHBOARD_BASE;
 import neatlogic.module.dashboard.dao.mapper.DashboardMapper;
 import neatlogic.module.dashboard.exception.DashboardAuthenticationDeleteException;
 import neatlogic.module.dashboard.exception.DashboardNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
 
 @Service
 @Transactional
@@ -44,11 +44,9 @@ import org.springframework.transaction.annotation.Transactional;
 @OperationType(type = OperationTypeEnum.DELETE)
 public class DeleteDashboardApi extends PrivateApiComponentBase {
 
-    @Autowired
+    @Resource
     private DashboardMapper dashboardMapper;
 
-    @Autowired
-    UserMapper userMapper;
 
     @Override
     public String getToken() {
