@@ -39,6 +39,7 @@
 				<value>classpath:neatlogic/module/dashboard/dao/mapper/**/*.xml</value>
 			</list>
 		</property>
+		<property name="databaseIdProvider" ref="neatLogicDatabaseIdProvider"/>
 	</bean>
 
 
