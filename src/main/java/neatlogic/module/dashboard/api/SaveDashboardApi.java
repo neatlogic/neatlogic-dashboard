@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
 package neatlogic.module.dashboard.api;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
@@ -73,7 +74,7 @@ public class SaveDashboardApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject jsonObj) {
         Long id = jsonObj.getLong("id");
-        DashboardVo dashboardVo = JSONObject.toJavaObject(jsonObj, DashboardVo.class);
+        DashboardVo dashboardVo = JSON.toJavaObject(jsonObj, DashboardVo.class);
         String userUuid = UserContext.get().getUserUuid(true);
         DashboardVo oldDashboardVo = null;
         if (id != null) {

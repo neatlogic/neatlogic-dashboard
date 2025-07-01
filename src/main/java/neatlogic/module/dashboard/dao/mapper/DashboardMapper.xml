@@ -106,7 +106,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.-->
         <result column="lcu" property="lcu"/>
         <result column="lcd" property="lcd"/>
         <result column="type" property="type"/>
-        <result column="widgetListStr" property="widgetListStr"/>
+        <result column="widgetListStr" property="widgetListStr" typeHandler="CompressHandler"/>
         <collection property="authorityList" ofType="neatlogic.framework.dto.AuthorityVo">
             <result column="authUuid" property="uuid"/>
             <result column="authType" property="type"/>
@@ -301,7 +301,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.-->
         SELECT a.`id`,
                a.`name`
         FROM `dashboard` a
-        where a.`name` = #{value} and a.`type` = 'system'
+        where a.`name` = #{value}
+          and a.`type` = 'system'
     </select>
 
     <select id="getAuthorizedDashboardByDashboardUuid" parameterType="java.lang.String" resultMap="dashboardMap">
