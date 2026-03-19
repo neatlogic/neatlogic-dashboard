@@ -27,7 +27,7 @@ import neatlogic.framework.restful.annotation.Input;
 import neatlogic.framework.restful.annotation.OperationType;
 import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
-import neatlogic.framework.restful.core.privateapi.PrivateBinaryStreamApiComponentBase;
+import neatlogic.framework.restful.core.privateapi.binarystream.PrivateBinaryStreamApiComponentBase;
 import neatlogic.framework.util.FileUtil;
 import neatlogic.module.dashboard.auth.label.DASHBOARD_MODIFY;
 import neatlogic.module.dashboard.dao.mapper.DashboardMapper;
