@@ -1,0 +1,95 @@
+{
+  "moduleId": "dashboard",
+  "name": "dashboard_widget",
+  "label": "dashboard_widget",
+  "description": "dashboard_widget 可用于仪表板相关数据的查询、筛选和报表展示。",
+  "fields": [
+    {
+      "name": "uuid",
+      "type": "char(32)",
+      "description": "唯一标识，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "name",
+      "type": "varchar(100)",
+      "description": "porlet名称。"
+    },
+    {
+      "name": "refresh_interval",
+      "type": "int",
+      "description": "自动刷新间隔，单位秒，0代表不刷新。"
+    },
+    {
+      "name": "description",
+      "type": "varchar(100)",
+      "description": "描述。"
+    },
+    {
+      "name": "dashboard_uuid",
+      "type": "char(32)",
+      "description": "面板Id。"
+    },
+    {
+      "name": "handler",
+      "type": "varchar(255)",
+      "description": "组件。"
+    },
+    {
+      "name": "chart_type",
+      "type": "enum('barchart','piechart','stackbarchart','areachart','linechart','columnchart','stackcolumnchart','tablechart','numberchart','donutchart')",
+      "description": "视图模板。"
+    },
+    {
+      "name": "condition_config",
+      "type": "mediumtext",
+      "description": "条件配置。"
+    },
+    {
+      "name": "chart_config",
+      "type": "mediumtext",
+      "description": "图表配置。"
+    },
+    {
+      "name": "detail_widget_uuid",
+      "type": "char(32)",
+      "description": "明细组件uuid。"
+    },
+    {
+      "name": "x",
+      "type": "int",
+      "description": "x。"
+    },
+    {
+      "name": "y",
+      "type": "int",
+      "description": "y。"
+    },
+    {
+      "name": "h",
+      "type": "int",
+      "description": "h。"
+    },
+    {
+      "name": "w",
+      "type": "int",
+      "description": "w。"
+    },
+    {
+      "name": "i",
+      "type": "int",
+      "description": "i。"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "uuid"
+      ],
+      "description": "主键索引，覆盖 uuid 字段，适合用于唯一定位记录和主表关联查询。"
+    }
+  ]
+}

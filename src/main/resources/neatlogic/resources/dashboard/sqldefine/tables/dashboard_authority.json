@@ -1,0 +1,67 @@
+{
+  "moduleId": "dashboard",
+  "name": "dashboard_authority",
+  "label": "仪表板权限表",
+  "description": "仪表板权限表 可用于仪表板相关的关联查询等报表查询场景。",
+  "fields": [
+    {
+      "name": "dashboard_id",
+      "type": "bigint",
+      "description": "面板id，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "type",
+      "type": "enum('common','user','team','role')",
+      "description": "查看权限类型，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "uuid",
+      "type": "varchar(32)",
+      "description": "查看权限uuid，作为当前表记录的主键或唯一定位字段。"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "dashboard_id",
+        "type",
+        "uuid"
+      ],
+      "description": "主键索引，覆盖 dashboard_id、type、uuid 字段，适合用于唯一定位记录和主表关联查询。"
+    },
+    {
+      "name": "idx_dashboard_uuid",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "dashboard_id"
+      ],
+      "description": "普通索引，覆盖 dashboard_id 字段，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "idx_type",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "type"
+      ],
+      "description": "普通索引，覆盖 type 字段，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "idx_uuid",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "uuid"
+      ],
+      "description": "普通索引，覆盖 uuid 字段，适合用于过滤、关联或排序查询。"
+    }
+  ]
+}

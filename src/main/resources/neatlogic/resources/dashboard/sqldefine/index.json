@@ -1,0 +1,35 @@
+{
+  "moduleId": "dashboard",
+  "tables": [
+    {
+      "name": "dashboard",
+      "label": "仪表板表",
+      "description": "仪表板表 可用于仪表板相关的启用状态筛选、时间维度统计等报表查询场景。"
+    },
+    {
+      "name": "dashboard_authority",
+      "label": "仪表板权限表",
+      "description": "仪表板权限表 可用于仪表板相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "dashboard_default",
+      "label": "仪表板默认表",
+      "description": "仪表板默认表 可用于仪表板相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "dashboard_userdefault",
+      "label": "用户默认仪表板表",
+      "description": "用户默认仪表板表 可用于仪表板相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "dashboard_visitcounter",
+      "label": "仪表板访问统计表",
+      "description": "仪表板访问统计表 可用于仪表板相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "dashboard_widget",
+      "label": "dashboard_widget",
+      "description": "dashboard_widget 可用于仪表板相关数据的查询、筛选和报表展示。"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "moduleId": "dashboard",
+  "name": "dashboard_visitcounter",
+  "label": "仪表板访问统计表",
+  "description": "仪表板访问统计表 可用于仪表板相关的关联查询等报表查询场景。",
+  "fields": [
+    {
+      "name": "dashboard_id",
+      "type": "bigint",
+      "description": "仪表板id，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "user_uuid",
+      "type": "char(32)",
+      "description": "用户uuid，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "visit_count",
+      "type": "int",
+      "description": "访问次数。"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "dashboard_id",
+        "user_uuid"
+      ],
+      "description": "主键索引，覆盖 dashboard_id、user_uuid 字段，适合用于唯一定位记录和主表关联查询。"
+    },
+    {
+      "name": "idx_user_uuid",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "user_uuid"
+      ],
+      "description": "普通索引，覆盖 user_uuid 字段，适合用于过滤、关联或排序查询。"
+    }
+  ]
+}
