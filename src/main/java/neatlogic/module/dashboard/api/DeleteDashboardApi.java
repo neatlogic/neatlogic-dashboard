@@ -26,6 +26,7 @@ import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.dashboard.auth.label.DASHBOARD_BASE;
+import neatlogic.module.dashboard.auth.label.DASHBOARD_MODIFY;
 import neatlogic.module.dashboard.dao.mapper.DashboardMapper;
 import neatlogic.module.dashboard.exception.DashboardAuthenticationDeleteException;
 import neatlogic.module.dashboard.exception.DashboardNotFoundException;
@@ -68,7 +69,7 @@ public class DeleteDashboardApi extends PrivateApiComponentBase {
         if (dashboardVo == null) {
             throw new DashboardNotFoundException(dashboardId);
         }
-        if ((dashboardVo.getType().equals(DashboardType.SYSTEM.getValue()) && !AuthActionChecker.check("DASHBOARD_MODIFY"))
+        if ((dashboardVo.getType().equals(DashboardType.SYSTEM.getValue()) && !AuthActionChecker.check(DASHBOARD_MODIFY.class))
                 || (dashboardVo.getType().equals(DashboardType.CUSTOM.getValue()) && !dashboardVo.getFcu().equals(UserContext.get().getUserUuid(true)))) {
             throw new DashboardAuthenticationDeleteException();
         }

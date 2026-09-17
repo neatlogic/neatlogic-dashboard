@@ -25,6 +25,7 @@ import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.util.RegexUtils;
 import neatlogic.module.dashboard.auth.label.DASHBOARD_BASE;
+import neatlogic.module.dashboard.auth.label.DASHBOARD_MODIFY;
 import neatlogic.module.dashboard.dao.mapper.DashboardMapper;
 import neatlogic.module.dashboard.exception.DashboardAuthenticationManageException;
 import neatlogic.module.dashboard.exception.DashboardAuthenticationSaveException;
@@ -85,7 +86,7 @@ public class SaveDashboardApi extends PrivateApiComponentBase {
         }
         if (DashboardType.SYSTEM.getValue().equals(dashboardVo.getType()) || (oldDashboardVo != null && DashboardType.SYSTEM.getValue().equals(oldDashboardVo.getType()))) {
             //判断是否有管理员权限
-            if (!AuthActionChecker.check("DASHBOARD_MODIFY")) {
+            if (!AuthActionChecker.check(DASHBOARD_MODIFY.class)) {
                 throw new DashboardAuthenticationManageException();
             }
         }
