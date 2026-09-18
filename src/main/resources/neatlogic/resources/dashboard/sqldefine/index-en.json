@@ -1,0 +1,35 @@
+{
+  "moduleId": "dashboard",
+  "tables": [
+    {
+      "name": "dashboard",
+      "label": "Dashboard Table",
+      "description": "Dashboard table for enabling state filtering, time dimension statistics, and other reporting scenarios related to dashboard."
+    },
+    {
+      "name": "dashboard_authority",
+      "label": "Dashboard Permissions Table",
+      "description": "Dashboard permissions table is used for related queries for dashboarding scenarios such as reporting."
+    },
+    {
+      "name": "dashboard_default",
+      "label": "Default Dashboard Table",
+      "description": "The default dashboard table is used for related queries and report queries related to dashboards."
+    },
+    {
+      "name": "dashboard_userdefault",
+      "label": "User Default Dashboard Table",
+      "description": "The user default dashboard table is used for related queries and report queries related to dashboarding."
+    },
+    {
+      "name": "dashboard_visitcounter",
+      "label": "Dashboard Access Statistics Table",
+      "description": "The dashboard access statistics table is used for related queries for dashboard-related reports."
+    },
+    {
+      "name": "dashboard_widget",
+      "label": "dashboard_widget",
+      "description": "The `dashboard_widget` is used for querying, filtering, and reporting on data related to dashboard."
+    }
+  ]
+}

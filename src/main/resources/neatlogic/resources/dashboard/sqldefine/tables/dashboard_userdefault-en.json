@@ -1,0 +1,41 @@
+{
+  "moduleId": "dashboard",
+  "name": "dashboard_userdefault",
+  "label": "User Default Dashboard Table",
+  "description": "The user default dashboard table is used for related queries and report queries related to dashboarding.",
+  "fields": [
+    {
+      "name": "dashboard_id",
+      "type": "bigint",
+      "description": "Dashboard unique identifier, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "user_uuid",
+      "type": "char(32)",
+      "description": "User_uuid, used as the primary key or unique identifier for records in this table."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "dashboard_id",
+        "user_uuid"
+      ],
+      "description": "Primary key index covering the dashboard_id, user_uuid fields, suitable for uniquely identifying records and queries that join the primary table."
+    },
+    {
+      "name": "uk_user_uuid",
+      "type": "BTREE",
+      "unique": true,
+      "primary": false,
+      "columns": [
+        "user_uuid"
+      ],
+      "description": "Unique index covering the user_uuid field, suitable for exact-match retrieval, uniqueness checks, and duplicate detection."
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "moduleId": "dashboard",
+  "name": "dashboard_authority",
+  "label": "Dashboard Permissions Table",
+  "description": "Dashboard permissions table is used for related queries for dashboarding scenarios such as reporting.",
+  "fields": [
+    {
+      "name": "dashboard_id",
+      "type": "bigint",
+      "description": "Panel ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "type",
+      "type": "enum('common','user','team','role')",
+      "description": "View permission types, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "uuid",
+      "type": "varchar(32)",
+      "description": "View permission UUID, used as the primary key or unique identifier for records in this table."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "dashboard_id",
+        "type",
+        "uuid"
+      ],
+      "description": "Primary key index covering the dashboard_id, type, UUID fields, suitable for uniquely identifying records and queries that join the primary table."
+    },
+    {
+      "name": "idx_dashboard_uuid",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "dashboard_id"
+      ],
+      "description": "Standard index covering the dashboard_id field, suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "idx_type",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "type"
+      ],
+      "description": "Standard index covering the type field, suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "idx_uuid",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "uuid"
+      ],
+      "description": "Standard index covering the UUID field, suitable for filtering, join, and sort queries."
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "moduleId": "dashboard",
+  "name": "dashboard_widget",
+  "label": "dashboard_widget",
+  "description": "The `dashboard_widget` is used for querying, filtering, and reporting on data related to dashboard.",
+  "fields": [
+    {
+      "name": "uuid",
+      "type": "char(32)",
+      "description": "Unique identifier, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "name",
+      "type": "varchar(100)",
+      "description": "Portlet name."
+    },
+    {
+      "name": "refresh_interval",
+      "type": "int",
+      "description": "Refresh interval, in seconds, 0 means no refresh."
+    },
+    {
+      "name": "description",
+      "type": "varchar(100)",
+      "description": "Description."
+    },
+    {
+      "name": "dashboard_uuid",
+      "type": "char(32)",
+      "description": "Panel ID."
+    },
+    {
+      "name": "handler",
+      "type": "varchar(255)",
+      "description": "Components."
+    },
+    {
+      "name": "chart_type",
+      "type": "enum('barchart','piechart','stackbarchart','areachart','linechart','columnchart','stackcolumnchart','tablechart','numberchart','donutchart')",
+      "description": "View template."
+    },
+    {
+      "name": "condition_config",
+      "type": "mediumtext",
+      "description": "Condition configuration."
+    },
+    {
+      "name": "chart_config",
+      "type": "mediumtext",
+      "description": "Chart configuration."
+    },
+    {
+      "name": "detail_widget_uuid",
+      "type": "char(32)",
+      "description": "Unique identifier of the component."
+    },
+    {
+      "name": "x",
+      "type": "int",
+      "description": "X."
+    },
+    {
+      "name": "y",
+      "type": "int",
+      "description": "Y."
+    },
+    {
+      "name": "h",
+      "type": "int",
+      "description": "H."
+    },
+    {
+      "name": "w",
+      "type": "int",
+      "description": "W."
+    },
+    {
+      "name": "i",
+      "type": "int",
+      "description": "I."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "uuid"
+      ],
+      "description": "Primary key index covering the UUID field, suitable for uniquely identifying records and queries that join the primary table."
+    }
+  ]
+}

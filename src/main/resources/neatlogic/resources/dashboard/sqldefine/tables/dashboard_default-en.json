@@ -1,0 +1,49 @@
+{
+  "moduleId": "dashboard",
+  "name": "dashboard_default",
+  "label": "Default Dashboard Table",
+  "description": "The default dashboard table is used for related queries and report queries related to dashboards.",
+  "fields": [
+    {
+      "name": "dashboard_id",
+      "type": "bigint",
+      "description": "Dashboard unique identifier, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "user_uuid",
+      "type": "varchar(32)",
+      "description": "Dashboard users, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "type",
+      "type": "enum('custom','system')",
+      "description": "Dashboard type, used as the primary key or unique identifier for records in this table."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "dashboard_id",
+        "user_uuid",
+        "type"
+      ],
+      "description": "Primary key index covering the dashboard_id, user_uuid, type fields, suitable for uniquely identifying records and queries that join the primary table."
+    },
+    {
+      "name": "idx_uuid_userid_type",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "dashboard_id",
+        "user_uuid",
+        "type"
+      ],
+      "description": "Standard index covering the dashboard_id, user_uuid, type fields, suitable for filtering, join, and sort queries."
+    }
+  ]
+}
