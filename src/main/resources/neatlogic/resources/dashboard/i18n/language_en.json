@@ -1,0 +1,23 @@
+{
+  "nmda": {
+    "exportdashboardapi": {
+      "getname": "Export Dashboard"
+    },
+    "searchdashboardapi": {
+      "getname": "Query Dashboard"
+    },
+    "searchtemplateapi": {
+      "input": {
+        "param": {
+          "desc": "Parent template id"
+        }
+      }
+    }
+  },
+  "term": {
+    "dashboard": {
+      "groupdesc": "Flexible and efficient Data and information visualization platform",
+      "name": "Dashboard"
+    }
+  }
+}

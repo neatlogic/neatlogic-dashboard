@@ -1,0 +1,23 @@
+{
+  "nmda": {
+    "exportdashboardapi": {
+      "getname": "导出仪表板"
+    },
+    "searchdashboardapi": {
+      "getname": "查询仪表板"
+    },
+    "searchtemplateapi": {
+      "input": {
+        "param": {
+          "desc": "父模板id"
+        }
+      }
+    }
+  },
+  "term": {
+    "dashboard": {
+      "groupdesc": "灵活高效的数据可视化平台",
+      "name": "仪表板模块"
+    }
+  }
+}
